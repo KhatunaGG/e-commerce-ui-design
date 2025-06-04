@@ -32,9 +32,13 @@ export type SignUpType = z.infer<typeof signUpSchema>;
 const SignUpForm = () => {
   const {
     register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
+    // handleSubmit,
+    formState: {
+      errors,
+
+      // isSubmitting
+    },
+    // reset,
   } = useForm<SignUpType>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -44,6 +48,8 @@ const SignUpForm = () => {
       password: "",
     },
   });
+
+
 
   return (
     <form className="w-full flex flex-col gap-8 px-8 lg:px-0">

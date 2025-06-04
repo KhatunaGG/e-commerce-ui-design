@@ -1,4 +1,4 @@
-import Image from "next/image";
+// import Image from "next/image";
 import Dashboard from "./components/__organism/dashboard/Dashboard";
 
 export default function Home() {

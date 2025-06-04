@@ -14,10 +14,12 @@ export type InputPropsType<T extends FieldValues> = {
 };
 
 export default function Input<T extends FieldValues>({
-  register,
-  errors,
+//   register,
+//   errors,
   fieldName,
 }: InputPropsType<T>) {
+
+    // console.log(register, errors)
   const labelText =
     fieldName === "yourName"
       ? "Your Name"
@@ -45,7 +47,7 @@ export default function Input<T extends FieldValues>({
             <Eye />
           </div>
         )}
-        
+
       </div>
     </div>
   );
