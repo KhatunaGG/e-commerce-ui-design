@@ -10,7 +10,7 @@ const SignIn = () => {
         <p className="text-[#6C7275] text-base font-semibold">
           Don’t have an account yet?{" "}
           <Link
-            href="/sign-in"
+            href="/sign-up"
             className="text-[#38CB89] cursor-pointer inline-block transform hover:underline transition-transform duration-300 ease-in-out hover:scale-105"
           >
             Sign up
@@ -18,7 +18,6 @@ const SignIn = () => {
         </p>
       </div>
       <SignInForm />
-
     </section>
   );
 };
