@@ -1,9 +1,15 @@
-import Header from "../header/Header";
+import Hero from "../hero/Hero";
+
 
 const Dashboard = () => {
   return (
-    <section>
-      <Header />
+    <section className="w-full">
+   
+      <div className="DASHBOARD w-full h-full">
+      <Hero />
+      </div>
+
+      
     </section>
   );
 };
