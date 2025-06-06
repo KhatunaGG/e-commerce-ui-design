@@ -1,13 +1,11 @@
-import Header from "../header/Header"
-
+import Header from "../header/Header";
 
 const Dashboard = () => {
   return (
     <section>
-        <Header />
-
+      <Header />
     </section>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;
