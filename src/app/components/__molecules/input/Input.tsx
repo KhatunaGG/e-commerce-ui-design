@@ -27,6 +27,8 @@ export default function Input<T extends FieldValues>({
       ? "User Name"
       : fieldName === "email"
       ? "Email"
+      : fieldName === "signInName"
+      ? "Your username or email address"
       : "Password";
 
   return (
