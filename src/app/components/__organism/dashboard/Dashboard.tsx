@@ -8,8 +8,6 @@ const Dashboard = () => {
       <div className="DASHBOARD w-full h-full">
       <Hero />
       </div>
-
-      
     </section>
   );
 };
