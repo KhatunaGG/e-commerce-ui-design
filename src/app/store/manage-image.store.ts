@@ -43,8 +43,10 @@ export interface IUseManageImageStore {
   axiosError: string | null;
   imagesData: IImageData[];
   loading: boolean;
-  fetchImages: () => Promise<void>;
+  currentPath: string;
+  setPath: (path: string) => void;
   clearImages: () => void;
+  fetchImagesByPage: (page: string) => void;
 }
 
 const useManageImageStore = create<IUseManageImageStore>((set) => ({
@@ -52,12 +54,17 @@ const useManageImageStore = create<IUseManageImageStore>((set) => ({
   loading: false,
   error: null,
   axiosError: "",
+  currentPath: "",
 
-  fetchImages: async () => {
-    set({ loading: true, axiosError: null });
+  setPath: (path: string) => set({ currentPath: path }),
+
+  fetchImagesByPage: async (page: string) => {
+    set({ loading: true });
     try {
-      const response = await axiosInstance.get<IImageData[]>("/all-images");
-      set({ imagesData: response.data, loading: false });
+      const res = await axiosInstance.get(`/utilities/by-page?page=${page}`);
+      if (res.status >= 200 && res.status <= 204) {
+        set({ imagesData: res.data, loading: false });
+      }
     } catch (e) {
       const errorMessage = handleApiError(e as AxiosError<ErrorResponse>);
       set({ axiosError: errorMessage });

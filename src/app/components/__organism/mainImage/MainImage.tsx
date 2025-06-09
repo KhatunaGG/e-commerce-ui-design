@@ -46,20 +46,19 @@
 import Image from "next/image";
 import { Logo } from "../../__atoms";
 import useManageImageStore from "@/app/store/manage-image.store";
-import { useEffect  } from "react";
+import { useEffect } from "react";
 
 const MainImage = () => {
-  const {  fetchImages } = useManageImageStore();
-  // const [isMounts, setIsMounts] = useState(false);
+  const { imagesData, fetchImagesByPage, currentPath } = useManageImageStore();
 
   useEffect(() => {
-    fetchImages();
-  }, [fetchImages]);
+    fetchImagesByPage(currentPath);
+  }, [fetchImagesByPage,     currentPath]);
 
   return (
     <div className="relative w-full h-[430px] lg:min-h-screen">
       <Image
-        src="/assets/main_image.png"
+        src={imagesData[0]?.url || "/assets/main_image.png"}
         alt="Main hero image"
         fill
         style={{ objectFit: "cover" }}
