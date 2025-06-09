@@ -8,6 +8,7 @@ import { axiosInstance } from "@/app/libs/axiosInstance";
 
 const formSchema = z.object({
   imageName: z.string().min(1, "Image name is required"),
+  pages: z.string().min(1, "Tags cannot be empty"),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -23,6 +24,7 @@ const Admin = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       imageName: "",
+      pages: "",
     },
   });
 
@@ -38,13 +40,19 @@ const Admin = () => {
       toast.error("Please select a file before submitting.");
       return;
     }
+    const pagesArray: string[] = formData.pages
+      .toString()
+      .split(",")
+      .map((page) => page.trim())
+      .filter((page) => page.length > 0);
+
     const fileUploadForm = new FormData();
     fileUploadForm.append("file", file);
 
     try {
       const uploadRes = await axiosInstance.post("/upload", fileUploadForm);
       const filePath = uploadRes.data;
-      console.log(filePath, "filePath")
+      console.log(filePath, "filePath");
       if (!filePath) {
         throw new Error("No filePath returned from S3 upload.");
       }
@@ -52,6 +60,7 @@ const Admin = () => {
       const res = await axiosInstance.post(`utilities`, {
         imageName: formData.imageName,
         filePath: filePath,
+        pages: pagesArray, 
       });
 
       if (res.status >= 200 && res.status <= 204) {
@@ -62,7 +71,6 @@ const Admin = () => {
       console.log(e);
     }
   };
-
 
   return (
     <form
@@ -89,6 +97,18 @@ const Admin = () => {
             onChange={handleFile}
             type="file"
             className="flex-1 py-2 px-4 rounded-lg border border-gray-400 outline-none"
+          />
+        </div>
+
+        <div className="w-full flex items-center justify-center gap-6">
+          <label htmlFor="" className="w-[20%]">
+            pages (comma separated)
+          </label>
+          <input
+            {...register("pages")}
+            type="text"
+            className="flex-1 py-2 px-4 rounded-lg border border-gray-400 outline-none"
+            placeholder="e.g. home, sign-in"
           />
         </div>
       </div>

@@ -1,3 +1,4 @@
+
 import React from "react";
 
 export type SubmitPropsType = {
@@ -5,6 +6,7 @@ export type SubmitPropsType = {
 };
 const Submit = ({ isSubmitting }: SubmitPropsType) => {
   console.log(isSubmitting, "isSubmitting")
+
   return (
     <button
       type="submit"

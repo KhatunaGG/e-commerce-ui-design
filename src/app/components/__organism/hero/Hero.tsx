@@ -31,20 +31,6 @@
 
 // export default Hero;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 // import React, { useRef, useEffect, useState } from "react";
 // import { Swiper, SwiperSlide } from "swiper/react";
@@ -132,11 +118,6 @@
 
 // export default Hero;
 
-
-
-
-
-
 // "use client";
 // import React, { useEffect, useState } from "react";
 // import { Swiper, SwiperSlide } from "swiper/react";
@@ -154,7 +135,6 @@
 //   useEffect(() => {
 //     fetchImages();
 //   }, [fetchImages]);
-
 
 //   useEffect(() => {
 //     setIsMounts(true);
@@ -213,8 +193,6 @@
 
 // export default Hero;
 
-
-
 "use client";
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -227,22 +205,25 @@ import useManageImageStore from "@/app/store/manage-image.store";
 import { AnimateSpin } from "../../__molecules";
 
 const Hero = () => {
-  const { imagesData, loading, fetchImages } = useManageImageStore();
   const [isMounts, setIsMounts] = useState(false);
+  const { imagesData, fetchImagesByPage, loading, currentPath } = useManageImageStore();
 
   useEffect(() => {
-    fetchImages();
-  }, [fetchImages]);
+    fetchImagesByPage(currentPath);
+  }, [fetchImagesByPage,      currentPath]);
 
   useEffect(() => {
     setIsMounts(true);
   }, []);
 
-  if (loading) return (
-    <div className=" w-full h-full flex items-center justify-center">
-      <AnimateSpin />
-    </div>
-  );
+  console.log(currentPath, "currentPath")
+
+  if (loading)
+    return (
+      <div className=" w-full h-full lg:max-h-[536px] flex items-center justify-center">
+        <AnimateSpin />
+      </div>
+    );
 
   return (
     <div className="relative h-[304px] lg:h-[536px] rounded-lg overflow-hidden shadow-2xl">
@@ -255,8 +236,8 @@ const Hero = () => {
             disableOnInteraction: false,
           }}
           navigation={{
-            prevEl: '.custom-prev',
-            nextEl: '.custom-next',
+            prevEl: ".custom-prev",
+            nextEl: ".custom-next",
           }}
           speed={900}
           className="rounded-lg h-full"
@@ -269,7 +250,7 @@ const Hero = () => {
                 fill
                 style={{ objectFit: "cover" }}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                priority={index === 0} // Only prioritize the first image
+                priority={index === 0}
               />
             </SwiperSlide>
           ))}

@@ -3,7 +3,7 @@ import { Input, Submit } from "../../__molecules";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
-import { useSignUpStore } from "@/app/store/sign-in.store";
+import { useSignUpStore } from "@/app/store/sign-up.store";
 
 export const signUpSchema = z.object({
   yourName: z
