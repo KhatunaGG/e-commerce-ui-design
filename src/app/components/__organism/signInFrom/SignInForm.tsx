@@ -27,7 +27,7 @@ const SignInForm = () => {
     formState: {
       errors,
 
-      // isSubmitting
+      isSubmitting
     },
     // reset,
   } = useForm<SignInType>({
@@ -58,7 +58,7 @@ const SignInForm = () => {
           </p>
         </Link>
       </div>
-      <Submit />
+      <Submit isSubmitting={isSubmitting} />
     </form>
   );
 };

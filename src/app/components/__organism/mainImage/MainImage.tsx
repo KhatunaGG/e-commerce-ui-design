@@ -42,10 +42,20 @@
 
 // export default MainImage;
 
+"use client";
 import Image from "next/image";
 import { Logo } from "../../__atoms";
+import useManageImageStore from "@/app/store/manage-image.store";
+import { useEffect  } from "react";
 
 const MainImage = () => {
+  const {  fetchImages } = useManageImageStore();
+  // const [isMounts, setIsMounts] = useState(false);
+
+  useEffect(() => {
+    fetchImages();
+  }, [fetchImages]);
+
   return (
     <div className="relative w-full h-[430px] lg:min-h-screen">
       <Image

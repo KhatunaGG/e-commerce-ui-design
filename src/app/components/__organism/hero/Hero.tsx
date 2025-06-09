@@ -137,10 +137,89 @@
 
 
 
+// "use client";
+// import React, { useEffect, useState } from "react";
+// import { Swiper, SwiperSlide } from "swiper/react";
+// import { Navigation, Autoplay } from "swiper/modules";
+// import "swiper/css";
+// import "swiper/css/navigation";
+// import { SwipeLeft, SwipeRight } from "../../__atoms";
+// import useManageImageStore from "@/app/store/manage-image.store";
+// import { AnimateSpin } from "../../__molecules";
+
+// const Hero = () => {
+//   const { imagesData, loading, fetchImages } = useManageImageStore();
+//   const [isMounts, setIsMounts] = useState(false);
+
+//   useEffect(() => {
+//     fetchImages();
+//   }, [fetchImages]);
+
+
+//   useEffect(() => {
+//     setIsMounts(true);
+//   }, []);
+
+//   if (loading) return (
+//     <div className=" w-full h-full flex items-center justify-center">
+//       <AnimateSpin />
+//     </div>
+//   );
+
+//   return (
+//     <div className="relative h-[304px] lg:h-[536px] rounded-lg overflow-hidden shadow-2xl">
+//       {isMounts && (
+//         <Swiper
+//           modules={[Navigation, Autoplay]}
+//           loop={true}
+//           autoplay={{
+//             delay: 3000,
+//             disableOnInteraction: false,
+//           }}
+//           navigation={{
+//             prevEl: '.custom-prev',
+//             nextEl: '.custom-next',
+//           }}
+//           speed={900}
+//           className="rounded-lg h-full"
+//         >
+//           {imagesData.map(({ url, imageName }, index) => (
+//             <SwiperSlide key={index}>
+//               <img
+//                 src={url}
+//                 alt={imageName}
+//                 className="w-full h-full object-cover"
+//               />
+//             </SwiperSlide>
+//           ))}
+//         </Swiper>
+//       )}
+//       <button
+//         className="custom-prev cursor-pointer absolute top-1/2 left-4 z-10 -translate-y-1/2 bg-white bg-opacity-50 w-[38px] h-[38px] md:w-[48px] md:h-[48px] flex items-center justify-center rounded-full p-2 hover:bg-opacity-80 transition"
+//         aria-label="Previous Slide"
+//       >
+//         <SwipeLeft />
+//       </button>
+
+//       <button
+//         className="custom-next cursor-pointer absolute top-1/2 right-4 z-10 -translate-y-1/2 bg-white bg-opacity-50 w-[38px] h-[38px] md:w-[48px] md:h-[48px] flex items-center justify-center rounded-full p-2 hover:bg-opacity-80 transition"
+//         aria-label="Next Slide"
+//       >
+//         <SwipeRight />
+//       </button>
+//     </div>
+//   );
+// };
+
+// export default Hero;
+
+
+
 "use client";
 import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
+import Image from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 import { SwipeLeft, SwipeRight } from "../../__atoms";
@@ -149,13 +228,11 @@ import { AnimateSpin } from "../../__molecules";
 
 const Hero = () => {
   const { imagesData, loading, fetchImages } = useManageImageStore();
-  console.log(imagesData, "ImageData");
+  const [isMounts, setIsMounts] = useState(false);
 
   useEffect(() => {
     fetchImages();
   }, [fetchImages]);
-
-  const [isMounts, setIsMounts] = useState(false);
 
   useEffect(() => {
     setIsMounts(true);
@@ -185,11 +262,14 @@ const Hero = () => {
           className="rounded-lg h-full"
         >
           {imagesData.map(({ url, imageName }, index) => (
-            <SwiperSlide key={index}>
-              <img
+            <SwiperSlide key={index} className="relative">
+              <Image
                 src={url}
                 alt={imageName}
-                className="w-full h-full object-cover"
+                fill
+                style={{ objectFit: "cover" }}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority={index === 0} // Only prioritize the first image
               />
             </SwiperSlide>
           ))}
