@@ -8,7 +8,13 @@ import { axiosInstance } from "@/app/libs/axiosInstance";
 
 const formSchema = z.object({
   imageName: z.string().min(1, "Image name is required"),
-  pages: z.string().min(1, "Tags cannot be empty"),
+  pages: z.string().min(1, "Pages cannot be empty"),
+  components: z
+    .string()
+    .optional()
+    .refine((val) => val === undefined || val.trim().length > 0, {
+      message: "Components cannot be empty if provided",
+    }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -25,6 +31,7 @@ const Admin = () => {
     defaultValues: {
       imageName: "",
       pages: "",
+      components: "",
     },
   });
 
@@ -42,9 +49,17 @@ const Admin = () => {
     }
     const pagesArray: string[] = formData.pages
       .toString()
+      .toLowerCase()
       .split(",")
       .map((page) => page.trim())
       .filter((page) => page.length > 0);
+
+    const componentsArray: string[] = (formData.components || "")
+      .toString()
+      .toLowerCase()
+      .split(",")
+      .map((c) => c.trim())
+      .filter((c) => c.length > 0);
 
     const fileUploadForm = new FormData();
     fileUploadForm.append("file", file);
@@ -60,7 +75,8 @@ const Admin = () => {
       const res = await axiosInstance.post(`utilities`, {
         imageName: formData.imageName,
         filePath: filePath,
-        pages: pagesArray, 
+        pages: pagesArray,
+        componentUsage: componentsArray || "",
       });
 
       if (res.status >= 200 && res.status <= 204) {
@@ -109,6 +125,18 @@ const Admin = () => {
             type="text"
             className="flex-1 py-2 px-4 rounded-lg border border-gray-400 outline-none"
             placeholder="e.g. home, sign-in"
+          />
+        </div>
+
+        <div className="w-full flex items-center justify-center gap-6">
+          <label htmlFor="" className="w-[20%]">
+            component (comma separated)
+          </label>
+          <input
+            {...register("components")}
+            type="text"
+            className="flex-1 py-2 px-4 rounded-lg border border-gray-400 outline-none"
+            placeholder="e.g. Hero, ByRooms"
           />
         </div>
       </div>

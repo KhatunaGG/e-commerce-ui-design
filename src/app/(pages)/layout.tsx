@@ -6,7 +6,7 @@ export default function MainLayout({
   children: React.ReactNode;
 }) {
   return (
-    <section className="w-full min-h-screen ">
+    <section className="w-full min-h-screen">
       <div className="w-full  lg:px-[11.11%] px-[8.53%] md:px-[4.77%]">
         <Nav />
         {children}

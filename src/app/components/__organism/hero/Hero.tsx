@@ -194,31 +194,38 @@
 // export default Hero;
 
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import Image from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 import { SwipeLeft, SwipeRight } from "../../__atoms";
-import useManageImageStore from "@/app/store/manage-image.store";
+import useManageImageStore, {
+  IImageData,
+} from "@/app/store/manage-image.store";
 import { AnimateSpin } from "../../__molecules";
 
-const Hero = () => {
-  const [isMounts, setIsMounts] = useState(false);
-  const { imagesData, fetchImagesByPage, loading, currentPath } = useManageImageStore();
+const Hero = ({ images }: { images: IImageData[] }) => {
+  const [isMounted, setIsMounted] = useState(false);
+  const { isLoading } = useManageImageStore();
+
+  const heroImages = useMemo(() => {
+    return images.filter((img) =>
+      img.componentUsage?.map((c) => c.toLowerCase()).includes("hero")
+    );
+  }, [images]);
+
+  console.log(heroImages, "heroImages")
 
   useEffect(() => {
-    fetchImagesByPage(currentPath);
-  }, [fetchImagesByPage,      currentPath]);
-
-  useEffect(() => {
-    setIsMounts(true);
+    setIsMounted(true);
   }, []);
 
-  console.log(currentPath, "currentPath")
 
-  if (loading)
+  if (!heroImages.length) return null;
+
+  if (isLoading)
     return (
       <div className=" w-full h-full lg:max-h-[536px] flex items-center justify-center">
         <AnimateSpin />
@@ -227,10 +234,12 @@ const Hero = () => {
 
   return (
     <div className="relative h-[304px] lg:h-[536px] rounded-lg overflow-hidden shadow-2xl">
-      {isMounts && (
+      {isMounted && (
         <Swiper
           modules={[Navigation, Autoplay]}
-          loop={true}
+          slidesPerView={1}
+          loop={heroImages.length > 1}
+          // loop={true}
           autoplay={{
             delay: 3000,
             disableOnInteraction: false,
@@ -242,10 +251,10 @@ const Hero = () => {
           speed={900}
           className="rounded-lg h-full"
         >
-          {imagesData.map(({ url, imageName }, index) => (
+          {heroImages.map(({ presignedUrl, imageName }, index) => (
             <SwiperSlide key={index} className="relative">
               <Image
-                src={url}
+                src={presignedUrl}
                 alt={imageName}
                 fill
                 style={{ objectFit: "cover" }}
