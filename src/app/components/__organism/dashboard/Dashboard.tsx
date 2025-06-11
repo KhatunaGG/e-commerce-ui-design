@@ -4,13 +4,16 @@ import Hero from "../hero/Hero";
 // import useManageImageStore from "@/app/store/manage-image.store";
 import { useEffect } from "react";
 import { useSignInStore } from "@/app/store/sign-in.store";
-import { AnimateSpin } from "../../__molecules";
+import { AnimateSpin, SubText } from "../../__molecules";
+import ByRooms from "../byRooms/ByRooms";
+import useManageImageStore from "@/app/store/manage-image.store";
 
 const Dashboard = () => {
-  // const setPath = useManageImageStore((state) => state.setPath);
-  // const { currentPath } = useManageImageStore();
   const { accessToken, initialize, isLoading } = useSignInStore();
+  const { imagesData } = useManageImageStore();
   const router = useRouter();
+
+  console.log(imagesData, "imagesData");
 
   useEffect(() => {
     initialize();
@@ -23,8 +26,18 @@ const Dashboard = () => {
 
   return (
     <section className="w-full">
-      <div className="DASHBOARD w-full h-full">
-        <Hero />
+      <div className="w-full h-full">
+        <Hero
+          images={imagesData.filter((img) =>
+            img.componentUsage.includes("hero")
+          )}
+        />
+        <SubText />
+        <ByRooms
+          images={imagesData.filter((img) =>
+            img.componentUsage.includes("byroom")
+          )}
+        />
       </div>
     </section>
   );

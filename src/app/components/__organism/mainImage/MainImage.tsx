@@ -46,14 +46,15 @@
 import Image from "next/image";
 import { Logo } from "../../__atoms";
 import useManageImageStore from "@/app/store/manage-image.store";
-import { useEffect } from "react";
 
 const MainImage = () => {
-  const { imagesData, fetchImagesByPage, currentPath } = useManageImageStore();
+  const { imagesData } = useManageImageStore();
 
-  useEffect(() => {
-    fetchImagesByPage(currentPath);
-  }, [fetchImagesByPage,     currentPath]);
+  // useEffect(() => {
+  //   fetchImagesByPage(currentPath, "mainImage");
+  // }, [fetchImagesByPage,     currentPath]);
+
+  // console.log(imagesData, "imagesData from MainImage")
 
   return (
     <div className="relative w-full h-[430px] lg:min-h-screen">
