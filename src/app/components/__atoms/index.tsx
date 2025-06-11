@@ -5,3 +5,4 @@ export { default as User } from "./user/User";
 export { default as Bag } from "./bag/Bag";
 export { default as SwipeLeft } from "./swipeLeft/SwipeLeft";
 export { default as SwipeRight } from "./swipeRight/SwipeRight";
+export { default as ArrowRight } from "./arrowRight/ArrowRight";

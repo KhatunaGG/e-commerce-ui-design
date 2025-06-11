@@ -42,7 +42,7 @@
 //             sizes="(max-width: 1024px) 100vw, 50vw"
 //           />
 //         </div>
-        
+
 //         <div className="relative w-full flex-1 rounded-lg overflow-hidden">
 //           <Image
 //             src={byRoomsPages[2]?.presignedUrl || "/assets/byRoom_3.png"}
@@ -59,13 +59,12 @@
 
 // export default ByRooms;
 
-
-
-
 "use client";
 import { IImageData } from "@/app/store/manage-image.store";
 import { useMemo } from "react";
 import Image from "next/image";
+import { ArrowRight } from "../../__atoms";
+import Link from "next/link";
 
 const ByRooms = ({ images }: { images: IImageData[] }) => {
   const byRoomsPages = useMemo(() => {
@@ -92,6 +91,26 @@ const ByRooms = ({ images }: { images: IImageData[] }) => {
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
+
+            <Link href={""} className="w-full">
+              <div className="w-full absolute top-8 left-8 lg:top-[48px] lg:left-[48px] flex flex-col gap-2 lg:gap-3">
+                <h2 className="font-medium text-[28px] md:text-[34px] tracking-[-0.6px] leading-[36px] md:leading-[38px] text-[#141718]">
+                  Living Room
+                </h2>
+
+                <div className="w-full lg:w-[18.24%] h-auto flex flex-col items-start">
+                  <div className="w-auto flex items-center gap-2">
+                    <p className="text-sm md:text-base font-medium text-[#141718] leading-[24px] md:leading-[28px] lg:tracking-[-0.4px]">
+                      Shop Now
+                    </p>
+                    <span className="relative top-[2px]">
+                      <ArrowRight />
+                    </span>
+                  </div>
+                  <div className="w-[29.55%] md:w-[14.55%] lg:w-full bg-[#141718] h-[1px]" />
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
 
@@ -106,8 +125,28 @@ const ByRooms = ({ images }: { images: IImageData[] }) => {
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
+
+            <Link href={""} className="w-full">
+              <div className="w-full absolute bottom-8 left-8 md:bottom-[48px] lg:left-[48px] flex flex-col gap-2 lg:gap-3">
+                <h2 className="font-medium text-[28px] md:text-[34px] tracking-[-0.6px] leading-[36px] md:leading-[38px] text-[#141718]">
+                  Bedroom
+                </h2>
+
+                <div className="w-full lg:w-[18.24%] h-auto flex flex-col items-start">
+                  <div className="w-auto flex items-center gap-2">
+                    <p className="text-sm md:text-base font-medium text-[#141718] leading-[24px] md:leading-[28px] lg:tracking-[-0.4px]">
+                      Shop Now
+                    </p>
+                    <span className="relative top-[2px]">
+                      <ArrowRight />
+                    </span>
+                  </div>
+                  <div className="w-[29.55%] md:w-[14.55%] lg:w-full bg-[#141718] h-[1px]" />
+                </div>
+              </div>
+            </Link>
           </div>
-          
+
           <div className="relative w-full aspect-[16/10] lg:aspect-auto lg:flex-1 rounded-lg overflow-hidden">
             <Image
               src={byRoomsPages[2]?.presignedUrl || "/assets/byRoom_3.png"}
@@ -116,6 +155,25 @@ const ByRooms = ({ images }: { images: IImageData[] }) => {
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
+            <Link href={""} className="w-full">
+              <div className="w-full absolute bottom-8 left-8 md:bottom-[48px] lg:left-[48px] flex flex-col gap-2 lg:gap-3">
+                <h2 className="font-medium text-[28px] md:text-[34px] tracking-[-0.6px] leading-[36px] md:leading-[38px] text-[#141718]">
+                  Kitchen
+                </h2>
+
+                <div className="w-full lg:w-[18.24%] h-auto flex flex-col items-start">
+                  <div className="w-auto flex items-center gap-2">
+                    <p className="text-sm md:text-base font-medium text-[#141718] leading-[24px] md:leading-[28px] lg:tracking-[-0.4px]">
+                      Shop Now
+                    </p>
+                    <span className="relative top-[2px]">
+                      <ArrowRight />
+                    </span>
+                  </div>
+                  <div className="w-[29.55%] md:w-[14.55%] lg:w-full bg-[#141718] h-[1px]" />
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
       </div>
@@ -124,3 +182,8 @@ const ByRooms = ({ images }: { images: IImageData[] }) => {
 };
 
 export default ByRooms;
+
+
+
+
+//New Arrivals
