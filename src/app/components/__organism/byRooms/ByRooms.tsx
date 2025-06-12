@@ -78,9 +78,9 @@ const ByRooms = ({ images }: { images: IImageData[] }) => {
   }
 
   return (
-    <section className="w-full mt-10">
+    <section className="w-full mt-10 ">
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 lg:h-[600px]">
-        {/* Main large image - left side */}
+
         <div className="w-full lg:w-1/2">
           <div className="relative w-full aspect-[4/5] lg:aspect-auto lg:h-full rounded-lg overflow-hidden">
             <Image
@@ -114,7 +114,7 @@ const ByRooms = ({ images }: { images: IImageData[] }) => {
           </div>
         </div>
 
-        {/* Two stacked images - right side */}
+
         <div className="w-full lg:w-1/2 flex flex-col gap-4 lg:gap-6">
           <div className="relative w-full aspect-[16/10] lg:aspect-auto lg:flex-1 rounded-lg overflow-hidden">
             <Image
@@ -186,4 +186,5 @@ export default ByRooms;
 
 
 
-//New Arrivals
+//new Arrivals
+//new-arrivals

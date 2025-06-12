@@ -7,13 +7,13 @@ import { useSignInStore } from "@/app/store/sign-in.store";
 import { AnimateSpin, SubText } from "../../__molecules";
 import ByRooms from "../byRooms/ByRooms";
 import useManageImageStore from "@/app/store/manage-image.store";
+import NewArrivals from "../newArrivals/NewArrivals";
+import Info from "../info/Info";
 
 const Dashboard = () => {
   const { accessToken, initialize, isLoading } = useSignInStore();
   const { imagesData } = useManageImageStore();
   const router = useRouter();
-
-  console.log(imagesData, "imagesData");
 
   useEffect(() => {
     initialize();
@@ -25,8 +25,8 @@ const Dashboard = () => {
   if (!accessToken) router.push("/sign-up");
 
   return (
-    <section className="w-full">
-      <div className="w-full h-full">
+    <section className="w-full ">
+      <div className="w-full h-full flex flex-col">
         <Hero
           images={imagesData.filter((img) =>
             img.componentUsage.includes("hero")
@@ -38,6 +38,12 @@ const Dashboard = () => {
             img.componentUsage.includes("byroom")
           )}
         />
+        <NewArrivals
+          images={imagesData.filter((img) =>
+            img.componentUsage.includes("newarrivals")
+          )}
+        />
+        <Info />
       </div>
     </section>
   );
