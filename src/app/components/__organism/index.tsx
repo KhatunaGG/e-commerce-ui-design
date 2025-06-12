@@ -7,3 +7,5 @@ export { default as SignInForm } from "./signInFrom/SignInForm";
 export { default as Nav } from "./nav/Nav";
 export { default as Hero } from "./hero/Hero";
 export { default as ByRooms } from "./byRooms/ByRooms";
+export { default as NewArrivals } from "./newArrivals/NewArrivals";
+export { default as Info } from "./info/Info"

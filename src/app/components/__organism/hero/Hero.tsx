@@ -216,7 +216,7 @@ const Hero = ({ images }: { images: IImageData[] }) => {
     );
   }, [images]);
 
-  console.log(heroImages, "heroImages")
+
 
   useEffect(() => {
     setIsMounted(true);
