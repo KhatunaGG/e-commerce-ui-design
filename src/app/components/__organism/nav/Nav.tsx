@@ -34,7 +34,7 @@ const Nav = () => {
   return (
     <div className="w-full flex items-center justify-between py-[18px]">
       <Logo />
-      <div className="hidden md:flex items-center gap-10 text-sm font-medium text-[#6C7275]">
+      <div className="hidden md:flex items-center md:gap-6 lg:gap-10 text-sm font-medium text-[#6C7275]">
         <NavLink href="/">Home</NavLink>
         <NavLink href="/shop">Shop</NavLink>
         <NavLink href="/product">Product</NavLink>

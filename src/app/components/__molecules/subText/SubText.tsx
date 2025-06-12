@@ -1,7 +1,7 @@
 const SubText = () => {
   return (
     <section className="w-full flex flex-col gap-4 md:gap-6 lg:flex-row md:items-center justify-baseline lg:gap-0    mt-8">
-      <h1 className="lg:w-[57.41%] text-[48px] leading-[44px] tracking-[-0.4px] lg:text-[72px] text-[#141718] font-medium lg:leading-[76px] lg:tracking-[-2px]">
+      <h1 className="lg:w-[57.41%] text-[40px] leading-[44px] tracking-[-0.4px] lg:text-[72px] text-[#141718] font-medium lg:leading-[76px] lg:tracking-[-2px]">
         Simply Unique/ Simply Better.
       </h1>
       <div className="flex-1 flex items-center justify-center">

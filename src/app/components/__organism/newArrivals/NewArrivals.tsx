@@ -250,7 +250,6 @@
 
 // export default NewArrivals;
 
-
 //OK
 // "use client";
 // import { IImageData } from "@/app/store/manage-image.store";
@@ -280,7 +279,7 @@
 //       <div className="max-w-screen-xl mx-auto flex flex-col gap-6 ">
 //         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
 //             <Link href={""}>
-            
+
 //           <h2 className="w-[8ch] text-[34px] md:text-[40px] font-medium tracking-[-0.6px] leading-[38px] md:tracking-[-0.4px] md:leading-[44px]">
 //             New Arrivals
 //           </h2>
@@ -365,14 +364,10 @@
 
 // export default NewArrivals;
 
-
-
-
 //mt-[430px] md:mt-[485px]
 
 "use client";
 import { IImageData } from "@/app/store/manage-image.store";
-import { ArrowRight } from "../../__atoms";
 import { useMemo, useRef } from "react";
 import Image from "next/image";
 import React from "react";
@@ -381,9 +376,9 @@ import "swiper/css";
 import "swiper/css/scrollbar";
 import { Scrollbar } from "swiper/modules";
 import Link from "next/link";
+import { Label, MoreButton } from "../../__molecules";
 
 const NewArrivals = ({ images }: { images: IImageData[] }) => {
-  // const swiperRef = useRef<any>(null);
   const swiperRef = useRef<SwiperRef | null>(null);
 
   const newArrivalsPages = useMemo(() => {
@@ -404,24 +399,17 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
 
   return (
     <section className="w-full mt-8 lg:mt-[48px]">
-      <div className="max-w-screen-xl mx-auto flex flex-col gap-6 px-4 sm:px-6">
+      <div className="max-w-screen-xl mx-auto flex flex-col gap-6 ">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <Link href={""}>
             <h2 className="w-[8ch] text-[34px] md:text-[40px] font-medium tracking-[-0.6px] leading-[38px] md:tracking-[-0.4px] md:leading-[44px]">
               New Arrivals
             </h2>
           </Link>
-          <button 
-            onClick={handleMoreProducts}
-            className="flex items-center gap-2 hover:opacity-70 transition-opacity cursor-pointer"
-          >
-            <p className="text-[#141718] text-base font-medium leading-[28px] tracking-[-0.4px]">
-              More Products
-            </p>
-            <span className="w-[20px] h-[20px] mt-[2px]">
-              <ArrowRight />
-            </span>
-          </button>
+          <MoreButton
+            handleMoreProducts={handleMoreProducts}
+            styleClass="hidden md:flex"
+          />
         </div>
 
         <div className="relative">
@@ -447,7 +435,7 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
             >
               {newArrivalsPages.map(({ presignedUrl, imageName }, index) => (
                 <SwiperSlide key={index}>
-                  <div className="relative w-full h-[308px] md:h-[349px] min-w-[200px]">
+                  <div className="relative  h-[308px] md:h-[349px] min-w-[200px]">
                     <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
                       <div className="py-1 px-[14px] text-xs font-bold leading-4 uppercase text-[#141718] rounded-sm bg-white">
                         new
@@ -463,13 +451,6 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
                       className="object-cover rounded-lg"
                       sizes="(max-width: 375px) 60vw, (max-width: 640px) 45vw, (max-width: 768px) 35vw, (max-width: 1024px) 25vw, 20vw"
                       priority={index < 2}
-                      // onError={(e) => {
-                      //   console.error(
-                      //     "Image failed to load:",
-                      //     imageName,
-                      //     presignedUrl
-                      //   );
-                      // }}
                     />
                     <div className="w-full px-4 absolute bottom-4">
                       <button className="w-full bg-[#141718] text-white rounded-lg py-[6.29px] lg:py-[9px] text-base font-medium leading-[28px] tracking-[-0.4px] hover:bg-gray-800 transition-colors">
@@ -477,27 +458,22 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
                       </button>
                     </div>
                   </div>
-                  
-                  {/* Product details below the image */}
-                  <div className="text-[#141718] w-full mt-4 flex flex-col items-start ">
-                    <div className="text-xs text-yellow-500 mb-1">★★★★★</div>
-                    <p className="text-base font-semibold leading-[26px] mb-1">Loveseat</p>
-                    <div className="w-auto flex gap-2">
-                      <p className=" text-sm font-semibold leading-[22px]">$199.00</p>
-                      <p className="line-through text-[#6C7275] text-sm font-semibold leading-[22px]">$400.00</p>
-                    </div>
-                  </div>
+                  <Label />
                 </SwiperSlide>
               ))}
             </Swiper>
           </div>
-          
-          {/* Adjusted scrollbar positioning to account for product details */}
-          <div className="custom-scrollbar mt-[410px] md:mt-[475px] h-[4px] bg-gray-300 rounded-full relative z-10 max-w-full bg-blue-400">
+
+          <div className="custom-scrollbar mt-[410px] md:mt-[475px] h-[4px] bg-gray-300 rounded-full relative z-10 max-w-full">
             <div className="swiper-scrollbar-drag bg-black h-full rounded-full"></div>
           </div>
         </div>
       </div>
+
+      <MoreButton
+        handleMoreProducts={handleMoreProducts}
+        styleClass="flex md:hidden mt-6"
+      />
     </section>
   );
 };
