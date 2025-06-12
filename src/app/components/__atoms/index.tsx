@@ -6,3 +6,7 @@ export { default as Bag } from "./bag/Bag";
 export { default as SwipeLeft } from "./swipeLeft/SwipeLeft";
 export { default as SwipeRight } from "./swipeRight/SwipeRight";
 export { default as ArrowRight } from "./arrowRight/ArrowRight";
+export { default as Car } from "./car/Car";
+export { default as Lock } from "./lock/Lock";
+export { default as Money } from "./money/Money";
+export { default as Phone } from "./phone/Phone";
