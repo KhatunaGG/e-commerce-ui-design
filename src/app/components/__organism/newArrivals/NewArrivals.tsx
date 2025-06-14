@@ -398,7 +398,7 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
   }
 
   return (
-    <section className="w-full mt-8 lg:mt-[48px]">
+    <section className="w-full mt-8 lg:mt-[48px]      md:px-[11.11%] px-[8.53%]">
       <div className="max-w-screen-xl mx-auto flex flex-col gap-6 ">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <Link href={""}>
@@ -414,7 +414,7 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
 
         <div className="relative">
           <div
-            className="absolute left-0 h-[398px] md:h-[445px] overflow-hidden"
+            className="absolute left-0 h-[398px] md:h-[445px] overflow-hidden       bg-green-300"
             style={{ width: "100vw" }}
           >
             <Swiper
@@ -435,7 +435,7 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
             >
               {newArrivalsPages.map(({ presignedUrl, imageName }, index) => (
                 <SwiperSlide key={index}>
-                  <div className="relative  h-[308px] md:h-[349px] min-w-[200px]">
+                  <div className="relative  h-[308px] md:h-[349px] min-w-[200px] ">
                     <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
                       <div className="py-1 px-[14px] text-xs font-bold leading-4 uppercase text-[#141718] rounded-sm bg-white">
                         new

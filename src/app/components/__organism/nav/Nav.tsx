@@ -32,7 +32,7 @@ import { NavLink } from "../../__molecules";
 
 const Nav = () => {
   return (
-    <div className="w-full flex items-center justify-between py-[18px]">
+    <div className="w-full flex items-center justify-between py-[18px]              md:px-[11.11%] px-[8.53%] ">
       <Logo />
       <div className="hidden md:flex items-center md:gap-6 lg:gap-10 text-sm font-medium text-[#6C7275]">
         <NavLink href="/">Home</NavLink>

@@ -7,7 +7,8 @@ export default function MainLayout({
 }) {
   return (
     <section className="w-full min-h-screen">
-      <div className="w-full  md:px-[11.11%] px-[8.53%] ">
+      {/* <div className="w-full md:px-[11.11%] px-[8.53%]  "> */}
+      <div className="w-full  ">
         <Nav />
         {children}
       </div>
