@@ -216,12 +216,9 @@ const Hero = ({ images }: { images: IImageData[] }) => {
     );
   }, [images]);
 
-
-
   useEffect(() => {
     setIsMounted(true);
   }, []);
-
 
   if (!heroImages.length) return null;
 
@@ -233,51 +230,53 @@ const Hero = ({ images }: { images: IImageData[] }) => {
     );
 
   return (
-    <div className="relative h-[304px] lg:h-[536px] rounded-lg overflow-hidden shadow-2xl">
-      {isMounted && (
-        <Swiper
-          modules={[Navigation, Autoplay]}
-          slidesPerView={1}
-          loop={heroImages.length > 1}
-          // loop={true}
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
-          navigation={{
-            prevEl: ".custom-prev",
-            nextEl: ".custom-next",
-          }}
-          speed={900}
-          className="rounded-lg h-full"
+    <div className="w-full md:px-[11.11%] px-[8.53%] ">
+      <div className="relative h-[304px] lg:h-[536px] rounded-lg overflow-hidden        ">
+        {isMounted && (
+          <Swiper
+            modules={[Navigation, Autoplay]}
+            slidesPerView={1}
+            loop={heroImages.length > 1}
+            // loop={true}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+            }}
+            navigation={{
+              prevEl: ".custom-prev",
+              nextEl: ".custom-next",
+            }}
+            speed={900}
+            className="rounded-lg h-full"
+          >
+            {heroImages.map(({ presignedUrl, imageName }, index) => (
+              <SwiperSlide key={index} className="relative shadow-xl">
+                <Image
+                  src={presignedUrl}
+                  alt={imageName}
+                  fill
+                  style={{ objectFit: "cover" }}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority={index === 0}
+                />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
+        <button
+          className="custom-prev cursor-pointer absolute top-1/2 left-4 z-10 -translate-y-1/2 bg-white bg-opacity-50 w-[38px] h-[38px] md:w-[48px] md:h-[48px] flex items-center justify-center rounded-full p-2 hover:bg-opacity-80 transition      "
+          aria-label="Previous Slide"
         >
-          {heroImages.map(({ presignedUrl, imageName }, index) => (
-            <SwiperSlide key={index} className="relative">
-              <Image
-                src={presignedUrl}
-                alt={imageName}
-                fill
-                style={{ objectFit: "cover" }}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                priority={index === 0}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      )}
-      <button
-        className="custom-prev cursor-pointer absolute top-1/2 left-4 z-10 -translate-y-1/2 bg-white bg-opacity-50 w-[38px] h-[38px] md:w-[48px] md:h-[48px] flex items-center justify-center rounded-full p-2 hover:bg-opacity-80 transition"
-        aria-label="Previous Slide"
-      >
-        <SwipeLeft />
-      </button>
+          <SwipeLeft />
+        </button>
 
-      <button
-        className="custom-next cursor-pointer absolute top-1/2 right-4 z-10 -translate-y-1/2 bg-white bg-opacity-50 w-[38px] h-[38px] md:w-[48px] md:h-[48px] flex items-center justify-center rounded-full p-2 hover:bg-opacity-80 transition"
-        aria-label="Next Slide"
-      >
-        <SwipeRight />
-      </button>
+        <button
+          className="custom-next cursor-pointer absolute top-1/2 right-4 z-10 -translate-y-1/2 bg-white bg-opacity-50 w-[38px] h-[38px] md:w-[48px] md:h-[48px] flex items-center justify-center rounded-full p-2 hover:bg-opacity-80 transition"
+          aria-label="Next Slide"
+        >
+          <SwipeRight />
+        </button>
+      </div>
     </div>
   );
 };

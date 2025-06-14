@@ -78,7 +78,7 @@ const ByRooms = ({ images }: { images: IImageData[] }) => {
   }
 
   return (
-    <section className="w-full mt-10 ">
+    <section className="w-full mt-10           md:px-[11.11%] px-[8.53%] ">
       <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 lg:h-[600px]">
 
         <div className="w-full lg:w-1/2">

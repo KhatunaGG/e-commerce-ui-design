@@ -31,7 +31,7 @@ const iconMap: Record<string, React.FC> = {
 
 const Info = () => {
   return (
-    <section className="w-full grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 py-12">
+    <section className="w-full grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 py-12        md:px-[11.11%] px-[8.53%] ">
       {labels.map((label, i) => {
         const Icon = iconMap[label.iconName];
         return (

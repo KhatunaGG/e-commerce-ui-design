@@ -9,3 +9,4 @@ export { default as Hero } from "./hero/Hero";
 export { default as ByRooms } from "./byRooms/ByRooms";
 export { default as NewArrivals } from "./newArrivals/NewArrivals";
 export { default as Info } from "./info/Info"
+export { default as SaleOffer } from "./saleOffer/SaleOffer"
