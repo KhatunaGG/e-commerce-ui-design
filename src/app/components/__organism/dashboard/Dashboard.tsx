@@ -10,6 +10,8 @@ import useManageImageStore from "@/app/store/manage-image.store";
 import NewArrivals from "../newArrivals/NewArrivals";
 import Info from "../info/Info";
 import SaleOffer from "../saleOffer/SaleOffer";
+import Join from "../join/Join";
+// import Articles from "../articles/Articles";
 
 const Dashboard = () => {
   const { accessToken, initialize, isLoading } = useSignInStore();
@@ -25,6 +27,7 @@ const Dashboard = () => {
   }
   if (!accessToken) router.push("/sign-up");
 
+ console.log(imagesData, "imagesData")
   return (
     <section className="w-full        ">
       <div className="w-full h-full flex flex-col">
@@ -47,6 +50,10 @@ const Dashboard = () => {
         <Info />
         <SaleOffer images={imagesData.filter((img) => 
         img.componentUsage.includes("saleoffer"))} />
+        {/* <Articles images={imagesData.filter((img) => {
+          img.componentUsage.includes("article")
+        })} /> */}
+        <Join />
       </div>
     </section>
   );

@@ -15,6 +15,12 @@ const formSchema = z.object({
     .refine((val) => val === undefined || val.trim().length > 0, {
       message: "Components cannot be empty if provided",
     }),
+  title: z
+    .string()
+    .optional()
+    .refine((val) => val === undefined || val.trim().length > 0, {
+      message: "Title cannot be empty if provided",
+    }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -32,6 +38,7 @@ const Admin = () => {
       imageName: "",
       pages: "",
       components: "",
+      title: ""
     },
   });
 
@@ -77,6 +84,7 @@ const Admin = () => {
         filePath: filePath,
         pages: pagesArray,
         componentUsage: componentsArray || "",
+        title: formData.title || ""
       });
 
       if (res.status >= 200 && res.status <= 204) {
@@ -137,6 +145,16 @@ const Admin = () => {
             type="text"
             className="flex-1 py-2 px-4 rounded-lg border border-gray-400 outline-none"
             placeholder="e.g. Hero, ByRooms"
+          />
+        </div>
+
+        <div className="w-full flex items-center justify-center gap-6">
+          <label htmlFor="" className="w-[20%]"></label>
+          <input
+            {...register("title")}
+            type="text"
+            className="flex-1 py-2 px-4 rounded-lg border border-gray-400 outline-none"
+            placeholder="Title"
           />
         </div>
       </div>

@@ -20,3 +20,4 @@ export const labels = [
     subText: "Phone and Email support",
   },
 ];
+

@@ -10,3 +10,5 @@ export { default as ByRooms } from "./byRooms/ByRooms";
 export { default as NewArrivals } from "./newArrivals/NewArrivals";
 export { default as Info } from "./info/Info"
 export { default as SaleOffer } from "./saleOffer/SaleOffer"
+export { default as Join } from "./join/Join"
+export { default as Articles } from "./articles/Articles"

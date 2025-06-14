@@ -20,10 +20,12 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
 export interface IImageData {
   imageName: string;
   url: string;
-
   componentUsage: string[];
   page: string[];
   presignedUrl: string;
+
+
+  title?: string
 }
 
 export interface IUseManageImageStore {
