@@ -10,3 +10,4 @@ export { default as Car } from "./car/Car";
 export { default as Lock } from "./lock/Lock";
 export { default as Money } from "./money/Money";
 export { default as Phone } from "./phone/Phone";
+export { default as Email } from "./email/Email";

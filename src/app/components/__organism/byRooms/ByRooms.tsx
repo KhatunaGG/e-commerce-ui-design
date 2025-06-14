@@ -185,6 +185,3 @@ export default ByRooms;
 
 
 
-
-//new Arrivals
-//new-arrivals
