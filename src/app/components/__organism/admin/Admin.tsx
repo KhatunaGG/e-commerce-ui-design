@@ -50,6 +50,7 @@ const Admin = () => {
   };
 
   const onSubmit = async (formData: FormData) => {
+    console.log(formData, "formData")
     if (!file) {
       toast.error("Please select a file before submitting.");
       return;
