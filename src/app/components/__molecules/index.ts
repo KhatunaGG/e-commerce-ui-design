@@ -5,3 +5,4 @@ export { default as AnimateSpin } from "./animateSpin/AnimateSpin";
 export { default as SubText } from "./subText/SubText";
 export { default as MoreButton } from "./moreButton/MoreButton";
 export { default as Label } from "./label/Label";
+export { default as SearchInput } from "./searchInput/SearchInput";

@@ -9,7 +9,6 @@ import useManageImageStore from "@/app/store/manage-image.store";
 import NewArrivals from "../newArrivals/NewArrivals";
 import Info from "../info/Info";
 import SaleOffer from "../saleOffer/SaleOffer";
-import Join from "../join/Join";
 import Articles from "../articles/Articles";
 
 const Dashboard = () => {
@@ -51,7 +50,7 @@ const Dashboard = () => {
         <Articles images={imagesData.filter((img) => 
           img.componentUsage.includes("article")
         )} />
-        <Join />
+        {/* <Join /> */}
 
       </div>
     </section>

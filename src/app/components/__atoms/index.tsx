@@ -14,3 +14,6 @@ export { default as Email } from "./email/Email";
 export { default as Instagram } from "./instagram/Instagram";
 export { default as Youtube } from "./youtube/Youtube";
 export { default as Facebook } from "./facebook/Facebook";
+export { default as Burger } from "./burger/Burger";
+export { default as Close } from "./close/Close";
+export { default as Heart } from "./heart/Heart";
