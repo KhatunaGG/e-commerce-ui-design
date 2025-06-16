@@ -1,4 +1,4 @@
-import { Nav } from "../components/__organism";
+import { Footer, Nav } from "../components/__organism";
 
 export default function MainLayout({
   children,
@@ -12,7 +12,8 @@ export default function MainLayout({
         <Nav />
         {children}
       </div>
-      <div className="w-full h-10 bg-black"></div>
+      <Footer />
+      {/* <div className="w-full h-10 bg-black"></div> */}
     </section>
   );
 }

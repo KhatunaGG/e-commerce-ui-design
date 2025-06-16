@@ -11,3 +11,6 @@ export { default as Lock } from "./lock/Lock";
 export { default as Money } from "./money/Money";
 export { default as Phone } from "./phone/Phone";
 export { default as Email } from "./email/Email";
+export { default as Instagram } from "./instagram/Instagram";
+export { default as Youtube } from "./youtube/Youtube";
+export { default as Facebook } from "./facebook/Facebook";
