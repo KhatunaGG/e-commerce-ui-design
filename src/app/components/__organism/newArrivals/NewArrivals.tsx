@@ -144,8 +144,6 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
     return null;
   }
 
-  //
-
   return (
     <section className="w-full mt-8 lg:mt-[48px]">
       <div className="w-full flex flex-col gap-10 lg:gap-12 ">

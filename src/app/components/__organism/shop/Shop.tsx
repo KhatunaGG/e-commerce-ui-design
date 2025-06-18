@@ -1,11 +1,13 @@
 "use client";
-
-import useManageImageStore from "@/app/store/manage-image.store";
+import React from 'react'
+import Banner from '../banner/Banner';
 
 const Shop = () => {
-  const currentPath = useManageImageStore((state) => state.currentPath);
-  console.log(currentPath, "currentPath");
-  return <div>Shop</div>;
-};
+  return (
+    <section className='w-full min-h-screen '>
+      <Banner />
+    </section>
+  )
+}
 
-export default Shop;
+export default Shop

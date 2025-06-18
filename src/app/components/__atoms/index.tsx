@@ -17,3 +17,4 @@ export { default as Facebook } from "./facebook/Facebook";
 export { default as Burger } from "./burger/Burger";
 export { default as Close } from "./close/Close";
 export { default as Heart } from "./heart/Heart";
+export { default as ChevronRight } from "./chevronRight/ChevronRight";
