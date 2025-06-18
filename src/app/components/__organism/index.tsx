@@ -14,4 +14,4 @@ export { default as Join } from "./join/Join"
 export { default as Articles } from "./articles/Articles"
 export { default as Footer } from "./footer/Footer"
 export { default as Banner } from "./banner/Banner"
-export { default as MobileMenu } from "./mobileMenu/MobileMenu"
+
