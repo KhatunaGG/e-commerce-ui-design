@@ -46,3 +46,13 @@ export const priceFilter = [
 //   `${(300.0).toFixed(2)} - ${(399.99).toFixed(2)}`,
 //   `${(400.0).toFixed(2)}+`,
 // ];
+
+
+export const sortBy = [
+  "Latest",
+  "Oldest",
+  "A to Z",
+  "Z to A",
+  "Highest",
+  "Lowest",
+];

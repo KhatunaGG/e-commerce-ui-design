@@ -122,11 +122,12 @@ import "swiper/css";
 import "swiper/css/scrollbar";
 import { Scrollbar } from "swiper/modules";
 import Link from "next/link";
-import { Label, MoreButton } from "../../__molecules";
+import {  MoreButton } from "../../__molecules";
 import Product from "../product/Product";
 
 const NewArrivals = ({ images }: { images: IImageData[] }) => {
   const swiperRef = useRef<SwiperRef | null>(null);
+  console.log(images, "images from new Arrivles")
 
   // const newArrivalsPages = useMemo(() => {
   //   return images.filter((img) =>
@@ -201,7 +202,7 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
                       </button>
                     </div>
                   </div> */}
-                  <Label />
+                  {/* <Label /> */}
                 </SwiperSlide>
               );
             })}
