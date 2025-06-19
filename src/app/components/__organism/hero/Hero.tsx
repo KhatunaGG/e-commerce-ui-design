@@ -194,7 +194,7 @@
 // export default Hero;
 
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
 import Image from "next/image";
@@ -210,17 +210,13 @@ const Hero = ({ images }: { images: IImageData[] }) => {
   const [isMounted, setIsMounted] = useState(false);
   const { isLoading } = useManageImageStore();
 
-  const heroImages = useMemo(() => {
-    return images.filter((img) =>
-      img.componentUsage?.map((c) => c.toLowerCase()).includes("hero")
-    );
-  }, [images]);
+
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  if (!heroImages.length) return null;
+  if (!images.length) return null;
 
   if (isLoading)
     return (
@@ -236,7 +232,7 @@ const Hero = ({ images }: { images: IImageData[] }) => {
           <Swiper
             modules={[Navigation, Autoplay]}
             slidesPerView={1}
-            loop={heroImages.length > 1}
+            loop={images.length > 1}
             // loop={true}
             autoplay={{
               delay: 3000,
@@ -249,10 +245,11 @@ const Hero = ({ images }: { images: IImageData[] }) => {
             speed={900}
             className="rounded-lg h-full"
           >
-            {heroImages.map(({ presignedUrl, imageName }, index) => (
+            {images.map(({ presignedUrl, imageName }, index) => (
               <SwiperSlide key={index} className="relative shadow-xl">
                 <Image
                   src={presignedUrl}
+                  // src={"/assets/swipe_5.png"}
                   alt={imageName}
                   fill
                   style={{ objectFit: "cover" }}

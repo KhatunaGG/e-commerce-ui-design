@@ -5,8 +5,7 @@ export type SubmitPropsType = {
   isSubmitting: boolean;
 };
 const Submit = ({ isSubmitting }: SubmitPropsType) => {
-  console.log(isSubmitting, "isSubmitting")
-
+  console.log(isSubmitting, "isLoading")
   return (
     <button
       type="submit"

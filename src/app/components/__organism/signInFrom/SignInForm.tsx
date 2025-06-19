@@ -65,13 +65,11 @@ const SignInForm = () => {
   };
 
   const onsubmit = async (formData: SignInType) => {
-    console.log(formData, "formData");
     try {
       const isSuccess = await signIn(formData);
       if (isSuccess) {
         reset();
       }
-
       router.push("/");
     } catch (e) {
       console.log(e);

@@ -1,16 +1,15 @@
 import Image from "next/image";
 import { MoreButton } from "../../__molecules";
 import { IImageData } from "@/app/store/manage-image.store";
-import { useMemo } from "react";
 import Link from "next/link";
 
 const Articles = ({ images }: { images: IImageData[] }) => {
-  const articlePage = useMemo(
-    () => images.filter((img) => img.componentUsage.includes("article")),
-    [images]
-  );
+  // const articlePage = useMemo(
+  //   () => images.filter((img) => img.componentUsage.includes("article")),
+  //   [images]
+  // );
 
-  if (!articlePage.length) {
+  if (!images.length) {
     return null;
   }
 
@@ -26,7 +25,7 @@ const Articles = ({ images }: { images: IImageData[] }) => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 ">
-        {articlePage.map((item, i) => {
+        {images.map((item, i) => {
           return (
             <div key={i} className="flex flex-col gap-4 md:gap-6">
               <div className="relative aspect-[4/3]">

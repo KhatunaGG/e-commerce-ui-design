@@ -14,7 +14,7 @@ const Banner = () => {
           className="object-cover shadow-xl w-[311px] h-[308px] md:w-full md:h-auto"
         />
         <div className="w-full h-full absolute inset-0 flex flex-col items-center justify-center gap-4 lg:gap-6">
-          <div className="w-fill h-fit flex  items-center justify-center pap-4">
+          <div className="w-fill h-fit flex  items-center justify-center gap-4">
             <div className="flex items-center gap-1">
               <p className="text-sm text-[#605F5F] font-medium leading-[24px]">
                 Home

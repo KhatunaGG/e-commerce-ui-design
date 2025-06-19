@@ -18,3 +18,5 @@ export { default as Burger } from "./burger/Burger";
 export { default as Close } from "./close/Close";
 export { default as Heart } from "./heart/Heart";
 export { default as ChevronRight } from "./chevronRight/ChevronRight";
+export { default as Filter } from "./filter/Filter";
+export { default as Check } from "./check/Check";
