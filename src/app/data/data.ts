@@ -21,3 +21,28 @@ export const labels = [
   },
 ];
 
+export const categoriesFilter = [
+  "Living Room",
+  "Bedroom",
+  "Kitchen",
+  "Bathroom",
+  "Dinning",
+  "Outdoor",
+];
+
+
+export const priceFilter = [
+  "0.00 - 99.99",
+  "100.00 - 199.99",
+  "200.00 - 299.99",
+  "300.00 - 399.99",
+  "400.00+",
+];
+
+// export const priceFilter = [
+//   `${(0.0).toFixed(2)} - ${(99.99).toFixed(2)}`,
+//   `${(100.0).toFixed(2)} - ${(199.99).toFixed(2)}`,
+//   `${(200.0).toFixed(2)} - ${(299.99).toFixed(2)}`,
+//   `${(300.0).toFixed(2)} - ${(399.99).toFixed(2)}`,
+//   `${(400.0).toFixed(2)}+`,
+// ];

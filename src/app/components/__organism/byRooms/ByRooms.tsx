@@ -61,19 +61,18 @@
 
 "use client";
 import { IImageData } from "@/app/store/manage-image.store";
-import { useMemo } from "react";
 import Image from "next/image";
 import { ArrowRight } from "../../__atoms";
 import Link from "next/link";
 
 const ByRooms = ({ images }: { images: IImageData[] }) => {
-  const byRoomsPages = useMemo(() => {
-    return images.filter((img) =>
-      img.componentUsage?.some((c) => c.toLowerCase() === "byroom")
-    );
-  }, [images]);
+  // const byRoomsPages = useMemo(() => {
+  //   return images.filter((img) =>
+  //     img.componentUsage?.some((c) => c.toLowerCase() === "byroom")
+  //   );
+  // }, [images]);
 
-  if (!byRoomsPages.length) {
+  if (!images.length) {
     return null;
   }
 
@@ -84,7 +83,7 @@ const ByRooms = ({ images }: { images: IImageData[] }) => {
         <div className="w-full lg:w-1/2">
           <div className="relative w-full aspect-[4/5] lg:aspect-auto lg:h-full rounded-lg overflow-hidden">
             <Image
-              src={byRoomsPages[0]?.presignedUrl || "/assets/byRoom_1.png"}
+              src={images[0]?.presignedUrl || "/assets/byRoom_1.png"}
               alt="Main hero image"
               fill
               className="object-cover"
@@ -118,7 +117,7 @@ const ByRooms = ({ images }: { images: IImageData[] }) => {
         <div className="w-full lg:w-1/2 flex flex-col gap-4 lg:gap-6">
           <div className="relative w-full aspect-[16/10] lg:aspect-auto lg:flex-1 rounded-lg overflow-hidden">
             <Image
-              src={byRoomsPages[1]?.presignedUrl || "/assets/byRoom_2.png"}
+              src={images[1]?.presignedUrl || "/assets/byRoom_2.png"}
               alt="Secondary image 1"
               fill
               className="object-cover"
@@ -149,7 +148,7 @@ const ByRooms = ({ images }: { images: IImageData[] }) => {
 
           <div className="relative w-full aspect-[16/10] lg:aspect-auto lg:flex-1 rounded-lg overflow-hidden">
             <Image
-              src={byRoomsPages[2]?.presignedUrl || "/assets/byRoom_3.png"}
+              src={images[2]?.presignedUrl || "/assets/byRoom_3.png"}
               alt="Secondary image 2"
               fill
               className="object-cover"

@@ -115,8 +115,7 @@
 
 "use client";
 import { IImageData } from "@/app/store/manage-image.store";
-import { useMemo, useRef } from "react";
-import Image from "next/image";
+import { useRef } from "react";
 import React from "react";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -124,15 +123,16 @@ import "swiper/css/scrollbar";
 import { Scrollbar } from "swiper/modules";
 import Link from "next/link";
 import { Label, MoreButton } from "../../__molecules";
+import Product from "../product/Product";
 
 const NewArrivals = ({ images }: { images: IImageData[] }) => {
   const swiperRef = useRef<SwiperRef | null>(null);
 
-  const newArrivalsPages = useMemo(() => {
-    return images.filter((img) =>
-      img.componentUsage?.some((c) => c.toLowerCase() === "newarrivals")
-    );
-  }, [images]);
+  // const newArrivalsPages = useMemo(() => {
+  //   return images.filter((img) =>
+  //     img.componentUsage?.some((c) => c.toLowerCase() === "newarrivals")
+  //   );
+  // }, [images]);
 
   const handleMoreProducts = () => {
     if (swiperRef.current && swiperRef.current.swiper) {
@@ -140,7 +140,7 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
     }
   };
 
-  if (!newArrivalsPages.length) {
+  if (!images.length) {
     return null;
   }
 
@@ -175,10 +175,11 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
             loop={true}
             className="w-full h-full"
           >
-            {newArrivalsPages.map((item, i) => {
+            {images.map((item, i) => {
               return (
                 <SwiperSlide className="" key={i}>
-                  <div className="w-full h-full relative group">
+                  <Product presignedUrl={item.presignedUrl} imageName={item.imageName} />
+                  {/* <div className="w-full h-full relative group">
                     <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
                       <div className="py-1 px-[14px] text-xs font-bold leading-4 uppercase text-[#141718] rounded-sm bg-white">
                         new
@@ -199,7 +200,7 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
                         Add to cart
                       </button>
                     </div>
-                  </div>
+                  </div> */}
                   <Label />
                 </SwiperSlide>
               );

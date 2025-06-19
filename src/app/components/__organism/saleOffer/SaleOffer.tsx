@@ -56,20 +56,20 @@
 
 // export default SaleOffer;
 
-import React, { useMemo } from "react";
+import React from "react";
 import Image from "next/image";
 import { IImageData } from "@/app/store/manage-image.store";
 import { ArrowRight } from "../../__atoms";
 import Link from "next/link";
 
 const SaleOffer = ({ images }: { images: IImageData[] }) => {
-  const saleOfferPages = useMemo(() => {
-    return images.filter((img) =>
-      img.componentUsage?.some((c) => c.toLowerCase() === "saleoffer")
-    );
-  }, [images]);
+  // const saleOfferPages = useMemo(() => {
+  //   return images.filter((img) =>
+  //     img.componentUsage?.some((c) => c.toLowerCase() === "saleoffer")
+  //   );
+  // }, [images]);
 
-  if (!saleOfferPages.length) {
+  if (!images.length) {
     return null;
   }
 
@@ -78,7 +78,7 @@ const SaleOffer = ({ images }: { images: IImageData[] }) => {
     <section className="w-full bg-[#F3F5F7] flex flex-col lg:flex-row ">
       <div className="flex-1 relative min-h-[532px]">
         <Image
-          src={saleOfferPages[0].presignedUrl}
+          src={images[0].presignedUrl}
           alt="Sale offer image"
           className="object-cover"
           fill

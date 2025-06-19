@@ -90,7 +90,7 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
   initialize: async () => {
     const token = getCookie("accessToken");
     if (token && typeof token === "string") {
-      set({ accessToken: token });
+      set({ accessToken: token, isLoading: false });
         await useSignInStore.getState().getCurrentUser(token);
     } else {
       window.location.href = "/sign-up";
