@@ -78,11 +78,12 @@ import SaleOffer from "../saleOffer/SaleOffer";
 import Articles from "../articles/Articles";
 
 const Dashboard = () => {
-  const { accessToken, initialize, isLoading } = useSignInStore();
+  const { initialize, isLoading } = useSignInStore();
   const { imagesData, cleanup } = useManageImageStore();
   const pathname = usePathname();
   const initialized = useRef(false);
   const [mounted, setMounted] = useState(false);
+
 
   // useEffect(() => {
   //   setMounted(true);
@@ -146,7 +147,7 @@ const Dashboard = () => {
   );
 
   if (isLoading) return <AnimateSpin />;
-  if (!accessToken) return null;
+  // if (!accessToken) return null;
 
   return (
     <section className="w-full">

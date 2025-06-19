@@ -18,7 +18,7 @@
 
 // export default Info;
 
-import { labels } from "@/app/data/data";
+import { labels } from "@/app/commons/data";
 import React from "react";
 import { Car, Money, Phone, Lock } from "../../__atoms";
 

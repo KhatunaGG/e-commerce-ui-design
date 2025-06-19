@@ -7,3 +7,4 @@ export { default as MoreButton } from "./moreButton/MoreButton";
 export { default as Label } from "./label/Label";
 export { default as SearchInput } from "./searchInput/SearchInput";
 export { default as checkbox } from "./checkbox/Checkbox";
+export { default as SortBy } from "./sortBy/SortBy";

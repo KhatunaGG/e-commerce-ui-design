@@ -20,3 +20,7 @@ export { default as Heart } from "./heart/Heart";
 export { default as ChevronRight } from "./chevronRight/ChevronRight";
 export { default as Filter } from "./filter/Filter";
 export { default as Check } from "./check/Check";
+export { default as ChevronDown } from "./chevronDown/ChevronDown";
+export { default as FirstFilterIcon } from "./firstFilterIcon/FirstFilterIcon";
+export { default as FourthFilterIcon } from "./fourthFilterIcon/FourthFilterIcon"
+export { default as ThirdFilterIcon } from "./thirdFilterIcon/ThirdFilterIcon"

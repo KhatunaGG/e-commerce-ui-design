@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { create } from "zustand";
-import { ErrorResponse } from "./manage-image.store";
+import useManageImageStore, { ErrorResponse } from "./manage-image.store";
 import { SignInType } from "../components/__organism/signInFrom/SignInForm";
 import { axiosInstance } from "../libs/axiosInstance";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
@@ -113,9 +113,17 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
     }
   },
 
+  // logout: () => {
+  //   deleteCookie("accessToken");
+  //   set({ currentUser: null, accessToken: "" });
+  //   window.location.href = "/sign-up";
+  // },
   logout: () => {
-    deleteCookie("accessToken");
-    set({ currentUser: null, accessToken: "" });
-    window.location.href = "/sign-up";
-  },
+  deleteCookie("accessToken");
+  useManageImageStore.getState().cleanup(); 
+  set({ currentUser: null, accessToken: "" });
+  // window.location.href = "/sign-up";
+  window.location.href = "/";
+}
+
 }));
