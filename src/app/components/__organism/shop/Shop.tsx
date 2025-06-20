@@ -1,96 +1,65 @@
 // "use client";
-// import React, { useEffect } from "react";
-// import Banner from "../banner/Banner";
-// import Filter from "../filter/Filter";
-// import Products from "../products/Products";
+// import { usePathname } from "next/navigation";
+// import { useEffect, useMemo,  useState } from "react";
 // import { useSignInStore } from "@/app/store/sign-in.store";
 // import useManageImageStore from "@/app/store/manage-image.store";
 // import { AnimateSpin } from "../../__molecules";
-// import { useRouter } from "next/navigation";
+// import Banner from "../banner/Banner";
+// import FilterSection from "../filterSection/FilterSection";
+// import Products from "../products/Products";
 
 // const Shop = () => {
-//   const { accessToken, initialize, isLoading } = useSignInStore();
-//   const { fetchImagesByPage, clearImages, imagesData } = useManageImageStore();
-//   const router = useRouter();
+//   const {  isLoading } = useSignInStore();
+//   const {  imagesData, currentPage, fetchImagesByPage } =
+//     useManageImageStore();
+//   const pathname = usePathname();
+//   const [mounted, setMounted] = useState(false);
 
 //   useEffect(() => {
-//     initialize();
+//     setMounted(true);
 //   }, []);
 
+//   // useEffect(() => {
+//   //   setMounted(true);
+//   //   cleanup();
+//   //   initialized.current = false;
+
+//   //   return () => {
+//   //     cleanup();
+//   //     initialized.current = false;
+//   //   };
+//   // }, [pathname]);
+
 //   useEffect(() => {
-//     if (accessToken) {
-//       fetchImagesByPage("shop");
+//     if (mounted) {
+//       const page = pathname?.split("/").pop() || "default";
+//       if (page && page !== currentPage) {
+//         fetchImagesByPage(page);
+//       }
 //     }
-//     return () => {
-//       clearImages();
-//     };
-//   }, [accessToken]);
+//   }, [mounted, pathname, fetchImagesByPage, currentPage]);
 
-//   if (!accessToken) return <AnimateSpin />;
+//   // useEffect(() => {
+//   //   if (mounted) {
+//   //     initialize();
+//   //   }
+//   // }, [initialize, mounted]);
 
-//   return (
-//     <section className="w-full min-h-screen ">
-//       <Banner />
-//       <div className="w-full md:px-[11.11%] px-[8.53%] flex flex-col md:flex-row items-center justify-start bg-green-200 pt-[60px] pb-[100px]">
-//         <Filter />
-
-//       </div>
-//     </section>
+//   const bannerImages = useMemo(
+//     () =>
+//       imagesData.filter((img) => img.componentUsage?.includes("banner")) || [],
+//     [imagesData]
 //   );
-// };
 
-// export default Shop;
-
-// "use client";
-// import React, { useEffect, useCallback } from "react";
-// import Banner from "../banner/Banner";
-// import Filter from "../filter/Filter";
-// import Products from "../products/Products";
-// import { useSignInStore } from "@/app/store/sign-in.store";
-// import useManageImageStore from "@/app/store/manage-image.store";
-// import { AnimateSpin } from "../../__molecules";
-// import { useRouter } from "next/navigation";
-
-// const Shop = () => {
-//   const { accessToken, initialize, isLoading } = useSignInStore();
-//   const { fetchImagesByPage, clearImages, imagesData } = useManageImageStore();
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     initialize();
-//   }, [initialize]);
-
-//   // Memoize the fetch function
-//   const fetchShopImages = useCallback(() => {
-//     if (accessToken) {
-//       fetchImagesByPage("shop");
-//     }
-//   }, [accessToken, fetchImagesByPage]);
-
-//   useEffect(() => {
-//     fetchShopImages();
-
-//     // Cleanup function
-//     return () => {
-//       clearImages();
-//     };
-//   }, [fetchShopImages, clearImages]);
-
-//   if (isLoading) {
-//     return <AnimateSpin />;
-//   }
-
-//   if (!accessToken) {
-//     router.push("/sign-up");
-//     return <AnimateSpin />;
-//   }
+//   if (isLoading) return <AnimateSpin />;
+//   // if (!accessToken) return null;
 
 //   return (
 //     <section className="w-full min-h-screen">
-//       <Banner />
-//       <div className="w-full md:px-[11.11%] px-[8.53%] flex flex-col md:flex-row items-center justify-start bg-green-200 pt-[60px] pb-[100px]">
-//         <Filter />
-//         {/* {imagesData.length > 0 && <Products images={imagesData} />} */}
+//       <Banner images={bannerImages} />
+//       <div className="w-full md:px-[11.11%] px-[8.53%] flex flex-col md:flex-row items-start justify-start pt-[60px] pb-[100px] gap-6">
+//         <FilterSection />
+//         {imagesData.length > 0 && <Products />}
 //       </div>
 //     </section>
 //   );
@@ -100,50 +69,44 @@
 
 "use client";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo,  useState } from "react";
-import { useSignInStore } from "@/app/store/sign-in.store";
+import { useEffect, useMemo, useState } from "react";
 import useManageImageStore from "@/app/store/manage-image.store";
 import { AnimateSpin } from "../../__molecules";
 import Banner from "../banner/Banner";
 import FilterSection from "../filterSection/FilterSection";
 import Products from "../products/Products";
+import { useProductsFilterStore } from "@/app/store/products.filter.store";
 
 const Shop = () => {
-  const {  isLoading } = useSignInStore();
-  const {  imagesData, currentPage, fetchImagesByPage } =
-    useManageImageStore();
+  const { imagesData, currentPage, fetchImagesByPage, isLoading } = useManageImageStore();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
+  const { getAllProducts } = useProductsFilterStore();
+
+  const {
+    sortedByFour,
+    sortByTwoVertically,
+    sortByTwoHorizontally,
+    // setsSortedByFour,
+    // setSortByTwoVertically,
+    // setSortByTwoHorizontally,
+  } = useProductsFilterStore();
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  // useEffect(() => {
-  //   setMounted(true);
-  //   cleanup();
-  //   initialized.current = false;
-
-  //   return () => {
-  //     cleanup();
-  //     initialized.current = false;
-  //   };
-  // }, [pathname]);
+  const isResorted =
+    sortedByFour || sortByTwoVertically || sortByTwoHorizontally;
 
   useEffect(() => {
     if (mounted) {
-      const page = pathname?.split("/").pop() || "default"; // derive page from pathname
+      const page = pathname?.split("/").pop() || "default";
       if (page && page !== currentPage) {
         fetchImagesByPage(page);
+        getAllProducts();
       }
     }
   }, [mounted, pathname, fetchImagesByPage, currentPage]);
-
-  // useEffect(() => {
-  //   if (mounted) {
-  //     initialize();
-  //   }
-  // }, [initialize, mounted]);
 
   const bannerImages = useMemo(
     () =>
@@ -151,15 +114,14 @@ const Shop = () => {
     [imagesData]
   );
 
-
   if (isLoading) return <AnimateSpin />;
-  // if (!accessToken) return null;
 
   return (
     <section className="w-full min-h-screen">
       <Banner images={bannerImages} />
       <div className="w-full md:px-[11.11%] px-[8.53%] flex flex-col md:flex-row items-start justify-start pt-[60px] pb-[100px] gap-6">
-        <FilterSection />
+        {!isResorted && <FilterSection />}
+
         {imagesData.length > 0 && <Products />}
       </div>
     </section>

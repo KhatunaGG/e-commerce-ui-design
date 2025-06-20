@@ -24,3 +24,4 @@ export { default as ChevronDown } from "./chevronDown/ChevronDown";
 export { default as FirstFilterIcon } from "./firstFilterIcon/FirstFilterIcon";
 export { default as FourthFilterIcon } from "./fourthFilterIcon/FourthFilterIcon"
 export { default as ThirdFilterIcon } from "./thirdFilterIcon/ThirdFilterIcon"
+export { default as SecondFilterIcon } from "./secondFilterIcon/SecondFilterIcon"

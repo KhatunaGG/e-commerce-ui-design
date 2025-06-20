@@ -206,6 +206,7 @@ import useManageImageStore, {
 } from "@/app/store/manage-image.store";
 import { AnimateSpin } from "../../__molecules";
 
+
 const Hero = ({ images }: { images: IImageData[] }) => {
   const [isMounted, setIsMounted] = useState(false);
   const { isLoading } = useManageImageStore();
@@ -246,6 +247,7 @@ const Hero = ({ images }: { images: IImageData[] }) => {
             className="rounded-lg h-full"
           >
             {images.map(({ presignedUrl, imageName }, index) => (
+              
               <SwiperSlide key={index} className="relative shadow-xl">
                 <Image
                   src={presignedUrl}
