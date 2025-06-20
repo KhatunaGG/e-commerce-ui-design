@@ -65,8 +65,8 @@
 // export default Dashboard;
 
 "use client";
-import {  usePathname } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useMemo,  useState } from "react";
 import { useSignInStore } from "@/app/store/sign-in.store";
 import useManageImageStore from "@/app/store/manage-image.store";
 import { AnimateSpin, SubText } from "../../__molecules";
@@ -78,41 +78,22 @@ import SaleOffer from "../saleOffer/SaleOffer";
 import Articles from "../articles/Articles";
 
 const Dashboard = () => {
-  const { initialize, isLoading } = useSignInStore();
+  const { isLoading } = useSignInStore();
   const { imagesData, cleanup } = useManageImageStore();
   const pathname = usePathname();
-  const initialized = useRef(false);
+  // const initialized = useRef(false);
   const [mounted, setMounted] = useState(false);
+  // const { productsData } = useProductsFilterStore();
 
-
-  // useEffect(() => {
-  //   setMounted(true);
-  //   cleanup();
-  //   initialized.current = false;
-  // }, []);
+  console.log(mounted, "mounted");
 
   useEffect(() => {
     setMounted(true);
     cleanup();
-    initialized.current = false;
     return () => {
       cleanup();
-      initialized.current = false;
     };
   }, [pathname]);
-
-  useEffect(() => {
-    if (mounted) {
-      initialize();
-    }
-  }, [initialize, mounted]);
-
-  // useEffect(() => {
-  //   return () => {
-  //     cleanup();
-  //     initialized.current = false;
-  //   };
-  // }, [cleanup]);
 
   const heroImages = useMemo(
     () =>

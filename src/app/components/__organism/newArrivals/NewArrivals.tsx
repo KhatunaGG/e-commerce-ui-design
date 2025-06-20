@@ -122,12 +122,13 @@ import "swiper/css";
 import "swiper/css/scrollbar";
 import { Scrollbar } from "swiper/modules";
 import Link from "next/link";
-import {  MoreButton } from "../../__molecules";
-import Product from "../product/Product";
+import {  Label, MoreButton } from "../../__molecules";
+// import Product from "../product/Product";
+import Image from "next/image";
 
 const NewArrivals = ({ images }: { images: IImageData[] }) => {
   const swiperRef = useRef<SwiperRef | null>(null);
-  console.log(images, "images from new Arrivles")
+
 
   // const newArrivalsPages = useMemo(() => {
   //   return images.filter((img) =>
@@ -179,8 +180,8 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
             {images.map((item, i) => {
               return (
                 <SwiperSlide className="" key={i}>
-                  <Product presignedUrl={item.presignedUrl} imageName={item.imageName} />
-                  {/* <div className="w-full h-full relative group">
+                  {/* <Product presignedUrl={item.presignedUrl} imageName={item.imageName} /> */}
+                  <div className="w-full h-full relative group">
                     <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
                       <div className="py-1 px-[14px] text-xs font-bold leading-4 uppercase text-[#141718] rounded-sm bg-white">
                         new
@@ -201,8 +202,8 @@ const NewArrivals = ({ images }: { images: IImageData[] }) => {
                         Add to cart
                       </button>
                     </div>
-                  </div> */}
-                  {/* <Label /> */}
+                  </div>
+                  <Label />
                 </SwiperSlide>
               );
             })}

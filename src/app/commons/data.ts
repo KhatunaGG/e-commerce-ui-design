@@ -21,6 +21,8 @@ export const labels = [
   },
 ];
 
+export const sortIcons = ["FirstFilterIcon", "SecondFilterIcon", "ThirdFilterIcon", "FourthFilterIcon" ]
+
 export const categoriesFilter = [
   "Living Room",
   "Bedroom",
@@ -49,6 +51,7 @@ export const priceFilter = [
 
 
 export const sortBy = [
+  "Sort By",
   "Latest",
   "Oldest",
   "A to Z",

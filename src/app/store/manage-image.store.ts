@@ -95,10 +95,6 @@
 
 // export default useManageImageStore;
 
-
-
-
-
 import { create } from "zustand";
 import axios, { AxiosError } from "axios";
 import { axiosInstance } from "../libs/axiosInstance";
@@ -136,8 +132,8 @@ export interface IUseManageImageStore {
   setPath: (path: string) => void;
   clearImages: () => void;
   fetchImagesByPage: (page: string) => Promise<void>;
-  // clearAndFetchImages: (page: string) => Promise<void>; // New method
-  cleanup: () => void; // Complete cleanup method
+  // clearAndFetchImages: (page: string) => Promise<void>; 
+  cleanup: () => void; 
 }
 
 const useManageImageStore = create<IUseManageImageStore>((set, get) => ({
@@ -153,6 +149,7 @@ const useManageImageStore = create<IUseManageImageStore>((set, get) => ({
     // Clear images when path changes
     const currentState = get();
     if (currentState.currentPath !== path) {
+      
       set({
         currentPath: path,
         imagesData: [],
@@ -161,6 +158,7 @@ const useManageImageStore = create<IUseManageImageStore>((set, get) => ({
         axiosError: null,
         fetchingPages: new Set(),
       });
+      
     }
   },
 
@@ -168,6 +166,7 @@ const useManageImageStore = create<IUseManageImageStore>((set, get) => ({
     const state = get();
     // If we're already on this page and have data, don't fetch again
     if (state.currentPage === page && state.imagesData.length > 0) {
+      console.log(state.currentPage, "currentPage")
       return;
     }
     // Prevent duplicate requests

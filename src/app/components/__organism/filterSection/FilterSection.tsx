@@ -1,9 +1,9 @@
 import { categoriesFilter, priceFilter } from "../../../commons/data";
-import React from "react";
 import Checkbox from "../../__molecules/checkbox/Checkbox";
 import { Filter } from "../../__atoms";
 
 const FilterSection = () => {
+  
   return (
     <section className="w-full hidden  h-full md:w-[40%] lg:w-[22.67%] md:flex flex-col items-start justify-start md:gap-8">
       <div className="flex items-center  gap-2">
