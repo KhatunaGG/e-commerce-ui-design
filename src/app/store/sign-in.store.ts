@@ -1,10 +1,11 @@
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { create } from "zustand";
-import useManageImageStore, { ErrorResponse } from "./manage-image.store";
+import { ErrorResponse } from "./manage-image.store";
 import { SignInType } from "../components/__organism/signInFrom/SignInForm";
 import { axiosInstance } from "../libs/axiosInstance";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
+import { useHomePageStore } from "./useHomePage.store.";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -91,7 +92,7 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
     const token = getCookie("accessToken");
     if (token && typeof token === "string") {
       set({ accessToken: token, isLoading: false });
-        await useSignInStore.getState().getCurrentUser(token);
+      await useSignInStore.getState().getCurrentUser(token);
     } else {
       window.location.href = "/sign-up";
     }
@@ -119,11 +120,11 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
   //   window.location.href = "/sign-up";
   // },
   logout: () => {
-  deleteCookie("accessToken");
-  useManageImageStore.getState().cleanup(); 
-  set({ currentUser: null, accessToken: "" });
-  // window.location.href = "/sign-up";
-  window.location.href = "/";
-}
-
+    deleteCookie("accessToken");
+    useHomePageStore.getState().clearImagesData();
+    set({ currentUser: null, accessToken: "" });
+    useHomePageStore.getState().setCachedImagesByPage({});
+    // window.location.href = "/sign-up";
+    window.location.href = "/";
+  },
 }));

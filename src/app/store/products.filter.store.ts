@@ -84,6 +84,7 @@ export interface IUseProductsFilterStore {
   handleSelect: (value: string) => void;
   resetAllByIconsSort: () => void;
   getAllProducts: () => Promise<void>;
+  cleanupProducts: () => void;
 }
 
 export const useProductsFilterStore = create<IUseProductsFilterStore>(
@@ -138,16 +139,21 @@ export const useProductsFilterStore = create<IUseProductsFilterStore>(
         }
       } catch (e) {
         const errorMessage = handleApiError(e as AxiosError<ErrorResponse>);
-        set({ axiosError: errorMessage });
+        set({ axiosError: errorMessage, isLoading: false });
       }
     },
 
-    cleanup: () => {
+    cleanupProducts: () => {
       set({
         productsData: [],
         isLoading: false,
         axiosError: null,
-        // currentPage: "",
+        selected: "Sort By",
+        isDroppedDown: false,
+        sortedByFour: false,
+        sortByTwoVertically: false,
+        sortByTwoHorizontally: false,
+        // currentPage: ""
       });
     },
   })

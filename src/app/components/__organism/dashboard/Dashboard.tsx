@@ -64,11 +64,134 @@
 
 // export default Dashboard;
 
+// FIXED DASHBOARD COMPONENT
+
+// "use client";
+// import { usePathname } from "next/navigation";
+// import { useEffect, useMemo } from "react";
+// import { useSignInStore } from "@/app/store/sign-in.store";
+// import useManageImageStore from "@/app/store/manage-image.store";
+// import { AnimateSpin, SubText } from "../../__molecules";
+// import Hero from "../hero/Hero";
+// import ByRooms from "../byRooms/ByRooms";
+// import NewArrivals from "../newArrivals/NewArrivals";
+// import Info from "../info/Info";
+// import SaleOffer from "../saleOffer/SaleOffer";
+// import Articles from "../articles/Articles";
+
+// const Dashboard = () => {
+//   const { isLoading } = useSignInStore();
+//   const {
+//     imagesData,
+//     isLoading: storeIsLoading,
+//     currentPage,
+//     currentPath,
+//     axiosError
+//   } = useManageImageStore();
+
+//   const pathName = usePathname();
+
+//   const page = useMemo(
+//     () => pathName?.split("/").pop() || "",
+//     [pathName]
+//   );
+
+//   useEffect(() => {
+
+//     // Always fetch if we don't have the right page data
+//     if (page && (currentPage !== page || imagesData.length === 0)) {
+//       console.log(">>> Fetching data for page:", page);
+
+//       // First set the path if it's different
+//       if (pathName !== currentPath) {
+//         console.log(">>> Setting new path:", pathName);
+//         useManageImageStore.getState().setPath(pathName || "");
+//       }
+
+//       // Then fetch the images
+//       console.log(">>> Calling fetchImagesByPage for:", page);
+//       useManageImageStore.getState().fetchImagesByPage(page);
+//     } else {
+//       console.log(">>> No fetch needed. Current page matches or no page defined");
+//     }
+//   }, [pathName, page]); // Simplified dependencies
+
+//   useEffect(() => {
+//     return () => {
+//       console.log(">>> Dashboard unmounting, cleaning up");
+//       useManageImageStore.getState().cleanupImages();
+//     };
+//   }, []);
+
+//   const heroImages = useMemo(
+//     () => {
+//       const filtered = imagesData.filter((img) => img.componentUsage?.includes("hero")) || [];
+//       console.log("heroImages count:", filtered.length);
+//       return filtered;
+//     },
+//     [imagesData]
+//   );
+
+//   const byRoomImages = useMemo(
+//     () => {
+//       const filtered = imagesData.filter((img) => img.componentUsage?.includes("byroom")) || [];
+//       console.log("byRoomImages count:", filtered.length);
+//       return filtered;
+//     },
+//     [imagesData]
+//   );
+
+//   const newArrivalsImages = useMemo(
+//     () => {
+//       const filtered = imagesData.filter((img) => img.componentUsage?.includes("newarrivals")) || [];
+//       console.log("newArrivalsImages count:", filtered.length);
+//       return filtered;
+//     },
+//     [imagesData]
+//   );
+
+//   const saleOfferImages = useMemo(
+//     () => {
+//       const filtered = imagesData.filter((img) => img.componentUsage?.includes("saleoffer")) || [];
+//       console.log("saleOfferImages count:", filtered.length);
+//       return filtered;
+//     },
+//     [imagesData]
+//   );
+
+//   const articleImages = useMemo(
+//     () => {
+//       const filtered = imagesData.filter((img) => img.componentUsage?.includes("article")) || [];
+//       console.log("articleImages count:", filtered.length);
+//       return filtered;
+//     },
+//     [imagesData]
+//   );
+
+//   if (isLoading ) {
+//     return <AnimateSpin />;
+//   }
+
+//   return (
+//     <section className="w-full">
+//       <div className="w-full h-full flex flex-col">
+//         <Hero images={heroImages} />
+//         <SubText />
+//         <ByRooms images={byRoomImages} />
+//         <NewArrivals images={newArrivalsImages} />
+//         <Info />
+//         <SaleOffer images={saleOfferImages} />
+//         <Articles images={articleImages} />
+//       </div>
+//     </section>
+//   );
+// };
+
+// export default Dashboard;
+
 "use client";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo,  useState } from "react";
-import { useSignInStore } from "@/app/store/sign-in.store";
-import useManageImageStore from "@/app/store/manage-image.store";
+import { useEffect, useMemo } from "react";
 import { AnimateSpin, SubText } from "../../__molecules";
 import Hero from "../hero/Hero";
 import ByRooms from "../byRooms/ByRooms";
@@ -76,59 +199,62 @@ import NewArrivals from "../newArrivals/NewArrivals";
 import Info from "../info/Info";
 import SaleOffer from "../saleOffer/SaleOffer";
 import Articles from "../articles/Articles";
+import { useHomePageStore } from "@/app/store/useHomePage.store.";
 
 const Dashboard = () => {
-  const { isLoading } = useSignInStore();
-  const { imagesData, cleanup } = useManageImageStore();
-  const pathname = usePathname();
-  // const initialized = useRef(false);
-  const [mounted, setMounted] = useState(false);
-  // const { productsData } = useProductsFilterStore();
+  const { isLoading, getCurrentPage, imagesData  } =
+    useHomePageStore();
+  const path = usePathname();
 
-  console.log(mounted, "mounted");
+  const page = useMemo(
+    () => path?.split("/").filter(Boolean).pop() || "home",
+    [path]
+  );
 
   useEffect(() => {
-    setMounted(true);
-    cleanup();
-    return () => {
-      cleanup();
-    };
-  }, [pathname]);
+    getCurrentPage(page);
+      return () => {
 
-  const heroImages = useMemo(
-    () =>
-      imagesData.filter((img) => img.componentUsage?.includes("hero")) || [],
-    [imagesData]
-  );
+      useHomePageStore.getState().clearImagesData();
+  };
+  }, [page, getCurrentPage]);
 
-  const byRoomImages = useMemo(
-    () =>
-      imagesData.filter((img) => img.componentUsage?.includes("byroom")) || [],
-    [imagesData]
-  );
+  const heroImages = useMemo(() => {
+    const filtered =
+      imagesData.filter((img) => img.componentUsage?.includes("hero")) || [];
+    return filtered;
+  }, [imagesData]);
 
-  const newArrivalsImages = useMemo(
-    () =>
+  const byRoomImages = useMemo(() => {
+    const filtered =
+      imagesData.filter((img) => img.componentUsage?.includes("byroom")) || [];
+    return filtered;
+  }, [imagesData]);
+
+  const newArrivalsImages = useMemo(() => {
+    const filtered =
       imagesData.filter((img) => img.componentUsage?.includes("newarrivals")) ||
-      [],
-    [imagesData]
-  );
+      [];
+    return filtered;
+  }, [imagesData]);
 
-  const saleOfferImages = useMemo(
-    () =>
+  const saleOfferImages = useMemo(() => {
+    const filtered =
       imagesData.filter((img) => img.componentUsage?.includes("saleoffer")) ||
-      [],
-    [imagesData]
-  );
+      [];
+    return filtered;
+  }, [imagesData]);
 
-  const articleImages = useMemo(
-    () =>
-      imagesData.filter((img) => img.componentUsage?.includes("article")) || [],
-    [imagesData]
-  );
+  const articleImages = useMemo(() => {
+    const filtered =
+      imagesData.filter((img) => img.componentUsage?.includes("article")) || [];
+    return filtered;
+  }, [imagesData]);
 
-  if (isLoading) return <AnimateSpin />;
-  // if (!accessToken) return null;
+  if (isLoading) {
+    return <AnimateSpin />;
+  }
+
 
   return (
     <section className="w-full">
@@ -144,4 +270,5 @@ const Dashboard = () => {
     </section>
   );
 };
+
 export default Dashboard;
