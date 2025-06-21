@@ -61,7 +61,7 @@ const Product = ({
 }: ProductPropsType) => {
   return (
     <>
-      <div className="PRODUCT w-full h-[349px] relative group">
+      <div className="PRODUCT w-full h-[349px] relative group ">
         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
           {newProduct && (
             <div className="py-1 px-[14px] text-xs font-bold leading-4 uppercase text-[#141718] rounded-sm bg-white">
