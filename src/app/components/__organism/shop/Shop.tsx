@@ -76,7 +76,6 @@ import { AnimateSpin } from "../../__molecules";
 import Banner from "../banner/Banner";
 import FilterSection from "../filterSection/FilterSection";
 import Products from "../products/Products";
-import { useProductsFilterStore } from "@/app/store/products.filter.store";
 import { useHomePageStore } from "@/app/store/useHomePage.store.";
 import { useShopPageStore } from "@/app/store/useShopPage.store";
 
@@ -119,7 +118,7 @@ const Shop = () => {
   }, [handlePageChange, clearHomePageData, clearShopPageData]);
 
   const { sortedByFour, sortByTwoVertically, sortByTwoHorizontally } =
-    useProductsFilterStore();
+    useShopPageStore();
   const isResorted =
     sortedByFour || sortByTwoVertically || sortByTwoHorizontally;
 

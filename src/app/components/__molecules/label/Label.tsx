@@ -1,5 +1,5 @@
 "use client";
-import { useProductsFilterStore } from "@/app/store/products.filter.store";
+import { useShopPageStore } from "@/app/store/useShopPage.store";
 import { Heart } from "../../__atoms";
 
 export type LabelPropsType = {
@@ -27,7 +27,7 @@ const Label = ({ productName, rate, discount, price }: LabelPropsType) => {
 };
 
   const { sortByTwoVertically, sortByTwoHorizontally } =
-    useProductsFilterStore();
+    useShopPageStore();
 
   return (
     <div
