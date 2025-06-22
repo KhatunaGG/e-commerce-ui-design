@@ -105,23 +105,22 @@
 
 "use client";
 import FilterOptions from "../filterOptions/FilterOptions";
-import { useProductsFilterStore } from "@/app/store/products.filter.store";
 import Product from "../product/Product";
 import { AnimateSpin } from "../../__molecules";
+import { useShopPageStore } from "@/app/store/useShopPage.store";
 
 const Products = () => {
-  const { isLoading } = useProductsFilterStore();
-  const { sortedByFour, sortByTwoVertically, sortByTwoHorizontally } =
-    useProductsFilterStore();
-  const { productsData } = useProductsFilterStore();
+  const {
+    sortedByFour,
+    sortByTwoVertically,
+    sortByTwoHorizontally,
+    isLoading,
+    loadMoreProducts,
+    productsData,
+    productsDataLength,
+  } = useShopPageStore();
 
-  // const resortedStyles = sortedByFour
-  //   ? "grid-cols-2  lg:grid-cols-4"
-  //   : sortByTwoVertically
-  //   ? "grid-cols-1  lg:grid-cols-2"
-  //   : sortByTwoHorizontally
-  //   ? "grid-cols-1  lg:grid-cols-2"
-  //   : "grid-cols-1  lg:grid-cols-3";
+  const isAllLoaded = productsData.length >= productsDataLength;
 
   const resortedStyles = sortedByFour
     ? "grid-cols-2  lg:grid-cols-4"
@@ -132,6 +131,8 @@ const Products = () => {
     : "grid-cols-1  lg:grid-cols-3";
 
   if (isLoading) return <AnimateSpin />;
+
+  console.log(productsData, "productsData");
 
   return (
     <section className="w-full flex flex-col gap-10 lg:gap-20 ">
@@ -163,9 +164,18 @@ const Products = () => {
             ))}
         </section>
       </div>
+
       <div className="w-ful flex items-center justify-center">
-        <button className="text-base font-medium leading-[28px] tracking-[-0.4px] text-[#141718] py-[6px] px-10 rounded-[80px] border border-[#141718]">
-          Show more
+        <button
+          type="button"
+          onClick={loadMoreProducts}
+          disabled={isAllLoaded}
+          // className={` text-base font-medium leading-[28px] tracking-[-0.4px] text-[#141718] py-[6px] px-10 rounded-[80px] border border-[#141718]`}
+          className={`${
+            isAllLoaded ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+          } text-base font-medium leading-[28px] tracking-[-0.4px] text-[#141718] py-[6px] px-10 rounded-[80px] border border-[#141718]`}
+        >
+          {isAllLoaded ? "No more products" : "Show more"}
         </button>
       </div>
     </section>

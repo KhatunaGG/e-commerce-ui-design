@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { ChevronRight } from "../../__atoms";
-import { IImageData } from "@/app/store/manage-image.store";
+import { IImageData } from "@/app/store/useHomePage.store.";
+
 
 export type ImagesPropsTypes = {
   images: IImageData[];

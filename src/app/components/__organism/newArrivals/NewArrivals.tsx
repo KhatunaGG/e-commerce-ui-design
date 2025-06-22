@@ -114,7 +114,6 @@
 // export default NewArrivals;
 
 "use client";
-import { IImageData } from "@/app/store/manage-image.store";
 import { useRef } from "react";
 import React from "react";
 import { Swiper, SwiperRef, SwiperSlide } from "swiper/react";
@@ -125,6 +124,7 @@ import Link from "next/link";
 import {  Label, MoreButton } from "../../__molecules";
 // import Product from "../product/Product";
 import Image from "next/image";
+import { IImageData } from "@/app/store/useHomePage.store.";
 
 const NewArrivals = ({ images }: { images: IImageData[] }) => {
   const swiperRef = useRef<SwiperRef | null>(null);

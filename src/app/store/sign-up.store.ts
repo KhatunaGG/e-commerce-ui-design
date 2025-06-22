@@ -1,10 +1,13 @@
 import axios, { AxiosError } from "axios";
 import { create } from "zustand";
-import { ErrorResponse } from "./manage-image.store";
 import { toast } from "react-toastify";
 import { SignUpType } from "../components/__organism/signUpForm/SignUpForm";
 import { axiosInstance } from "../libs/axiosInstance";
 
+
+export interface ErrorResponse {
+  message: string;
+}
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
