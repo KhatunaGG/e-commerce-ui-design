@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { MoreButton } from "../../__molecules";
-import { IImageData } from "@/app/store/manage-image.store";
+
 import Link from "next/link";
+import { IImageData } from "@/app/store/useHomePage.store.";
 
 const Articles = ({ images }: { images: IImageData[] }) => {
   // const articlePage = useMemo(

@@ -58,9 +58,9 @@
 
 import React from "react";
 import Image from "next/image";
-import { IImageData } from "@/app/store/manage-image.store";
 import { ArrowRight } from "../../__atoms";
 import Link from "next/link";
+import { IImageData } from "@/app/store/useHomePage.store.";
 
 const SaleOffer = ({ images }: { images: IImageData[] }) => {
   // const saleOfferPages = useMemo(() => {

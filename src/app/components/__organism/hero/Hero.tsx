@@ -201,15 +201,16 @@ import Image from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 import { SwipeLeft, SwipeRight } from "../../__atoms";
-import useManageImageStore, {
-  IImageData,
-} from "@/app/store/manage-image.store";
+// import useHomePAgeStore, {
+//   IImageData,
+// } from "@/app/store/manage-image.store";
 import { AnimateSpin } from "../../__molecules";
+import { IImageData, useHomePageStore } from "@/app/store/useHomePage.store.";
 
 
 const Hero = ({ images }: { images: IImageData[] }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const { isLoading } = useManageImageStore();
+  const { isLoading } = useHomePageStore();
 
 
 
@@ -281,3 +282,4 @@ const Hero = ({ images }: { images: IImageData[] }) => {
 };
 
 export default Hero;
+

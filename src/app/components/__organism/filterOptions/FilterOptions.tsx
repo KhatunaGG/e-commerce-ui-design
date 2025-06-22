@@ -135,7 +135,8 @@
 
 "use client";
 
-import { useProductsFilterStore } from "@/app/store/products.filter.store";
+
+import { useShopPageStore } from "@/app/store/useShopPage.store";
 import {
   Filter,
   FirstFilterIcon,
@@ -162,7 +163,7 @@ const FilterOptions = () => {
     setSortByTwoVertically,
     setSortByTwoHorizontally,
     resetAllByIconsSort
-  } = useProductsFilterStore();
+  } = useShopPageStore();
   // console.log(sortedByFour, "sortedByFour");
   // console.log(sortByTwoVertically, "sortByTwoVertically");
   // console.log(sortByTwoHorizontally, "sortByTwoHorizontally");

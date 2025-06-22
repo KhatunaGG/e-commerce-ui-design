@@ -1,11 +1,11 @@
 "use client";
-import { useProductsFilterStore } from "@/app/store/products.filter.store";
+import { useShopPageStore } from "@/app/store/useShopPage.store";
 import { ChevronDown } from "../../__atoms";
 import { sortBy } from "@/app/commons/data";
 
 const SortBy = () => {
   const { selected, setIsDroppedDown, isDroppedDown, handleSelect } =
-    useProductsFilterStore();
+    useShopPageStore();
   return (
     // <>
     //   <p className="font-semibold md:text-sm lg:text-base leading-[26px] text-[#121212]"> Sort By</p>

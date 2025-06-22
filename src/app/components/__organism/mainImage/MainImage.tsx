@@ -45,10 +45,11 @@
 "use client";
 import Image from "next/image";
 import { Logo } from "../../__atoms";
-import useManageImageStore from "@/app/store/manage-image.store";
+import { useHomePageStore } from "@/app/store/useHomePage.store.";
+
 
 const MainImage = () => {
-  const { imagesData } = useManageImageStore();
+  const { imagesData } = useHomePageStore();
 
   // useEffect(() => {
   //   fetchImagesByPage(currentPath, "mainImage");

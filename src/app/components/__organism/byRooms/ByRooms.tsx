@@ -60,10 +60,10 @@
 // export default ByRooms;
 
 "use client";
-import { IImageData } from "@/app/store/manage-image.store";
 import Image from "next/image";
 import { ArrowRight } from "../../__atoms";
 import Link from "next/link";
+import { IImageData } from "@/app/store/useHomePage.store.";
 
 const ByRooms = ({ images }: { images: IImageData[] }) => {
   // const byRoomsPages = useMemo(() => {
