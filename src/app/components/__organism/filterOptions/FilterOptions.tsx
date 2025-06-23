@@ -134,8 +134,6 @@
 // export default FilterOptions;
 
 "use client";
-
-
 import { useShopPageStore } from "@/app/store/useShopPage.store";
 import {
   Filter,
@@ -146,6 +144,7 @@ import {
 } from "../../__atoms";
 import { SortBy } from "../../__molecules";
 import { sortIcons } from "@/app/commons/data";
+import { useState } from "react";
 
 const iconMap: Record<string, React.FC> = {
   FirstFilterIcon,
@@ -162,8 +161,9 @@ const FilterOptions = () => {
     setsSortedByFour,
     setSortByTwoVertically,
     setSortByTwoHorizontally,
-    resetAllByIconsSort
+    resetAllByIconsSort,
   } = useShopPageStore();
+  const [activeIcon, setActiveIcon] = useState<string | null>(null);
   // console.log(sortedByFour, "sortedByFour");
   // console.log(sortByTwoVertically, "sortByTwoVertically");
   // console.log(sortByTwoHorizontally, "sortByTwoHorizontally");
@@ -191,8 +191,8 @@ const FilterOptions = () => {
           <div className="flex items-center">
             {sortIcons.map((item, i) => {
               const Icon = iconMap[item];
-
-              const handleClick = () => {
+              const handleClick = (iconName: string) => {
+                setActiveIcon(iconName);
                 if (item === "SecondFilterIcon") {
                   setsSortedByFour(true);
                 } else if (item === "ThirdFilterIcon") {
@@ -200,10 +200,9 @@ const FilterOptions = () => {
                 } else if (item === "FourthFilterIcon") {
                   setSortByTwoHorizontally(true);
                 } else {
-                    resetAllByIconsSort()
+                  resetAllByIconsSort();
                 }
               };
-
               const hiddenOnSm =
                 item === "FirstFilterIcon" || item === "SecondFilterIcon"
                   ? "hidden md:flex"
@@ -212,8 +211,10 @@ const FilterOptions = () => {
               return (
                 <div
                   key={i}
-                  onClick={handleClick}
-                  className={`w-[46px] h-[46px] ${hiddenOnSm} items-center justify-center cursor-pointer`}
+                  onClick={() => handleClick(item)}
+                  className={`w-[46px] h-[46px] ${hiddenOnSm} items-center justify-center cursor-pointer rounded-md ${
+                    activeIcon === item ? "bg-gray-200" : ""
+                  }`}
                 >
                   {Icon && <Icon />}
                 </div>

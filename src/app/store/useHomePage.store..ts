@@ -89,8 +89,6 @@
 //   clearImagesData: () => set({ imagesData: [], isLoading: false }),
 // }));
 
-
-
 import axios, { AxiosError } from "axios";
 import { create } from "zustand";
 import { axiosInstance } from "../libs/axiosInstance";
@@ -122,7 +120,7 @@ export interface IUseHomePageStore {
   isLoading: boolean;
   axiosError: string | null;
   currentPage: string;
-  
+
   // Actions
   setCurrentPage: (page: string) => void;
   getAllImages: (page: string) => Promise<void>;
@@ -171,9 +169,9 @@ export const useHomePageStore = create<IUseHomePageStore>((set, get) => ({
     try {
       const res = await axiosInstance.get(`/utilities/by-page?page=${page}`);
       if (res.status >= 200 && res.status <= 204) {
-        const newCachedData = { 
-          ...state.cachedImagesByPage, 
-          [page]: res.data 
+        const newCachedData = {
+          ...state.cachedImagesByPage,
+          [page]: res.data,
         };
         set({
           cachedImagesByPage: newCachedData,
@@ -181,29 +179,30 @@ export const useHomePageStore = create<IUseHomePageStore>((set, get) => ({
           isLoading: false,
         });
       }
+      // console.log(get().cachedImagesByPage, "cachedImagesByPage form HOME");
     } catch (e) {
       const errorMessage = handleApiError(e as AxiosError<ErrorResponse>);
-      set({ 
-        axiosError: errorMessage, 
+      set({
+        axiosError: errorMessage,
         isLoading: false,
-        imagesData: [] 
+        imagesData: [],
       });
     }
   },
 
   setCachedImagesByPage: (cachedImages: Record<string, IImageData[]>) =>
     set({ cachedImagesByPage: cachedImages }),
-
-  // Clear all cache and current data
-  clearCache: () => set({ 
-    cachedImagesByPage: {}, 
-    imagesData: [], 
-    isLoading: false,
-    axiosError: null 
-  }),
-  clearCurrentPageData: () => set({ 
-    imagesData: [], 
-    isLoading: false,
-    axiosError: null 
-  }),
+  clearCache: () =>
+    set({
+      cachedImagesByPage: {},
+      imagesData: [],
+      isLoading: false,
+      axiosError: null,
+    }),
+  clearCurrentPageData: () =>
+    set({
+      imagesData: [],
+      isLoading: false,
+      axiosError: null,
+    }),
 }));

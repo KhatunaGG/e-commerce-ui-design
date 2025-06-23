@@ -46,7 +46,7 @@ const ProductForm = () => {
       // filePath: '',
       pages: "",
       components: "",
-      new: true,
+      new: false,
       discount: 0,
       rate: 0,
       category: "",
@@ -58,7 +58,7 @@ const ProductForm = () => {
       wishlist: false,
       measurements: "",
       details: "",
-      discountTill: new Date().toISOString().split("T")[0],
+      discountTill: new Date().toISOString().split("T")[0] || "",
     },
   });
 
