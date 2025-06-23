@@ -9,10 +9,10 @@ const ThirdFilterIcon = () => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <mask id="path-1-inside-1_31_2976" fill="white">
+      <mask id="path-1-inside-1_31_2976" fill="none">
         <path d="M0 0H46V40H0V0Z" />
       </mask>
-      <path d="M0 0H46V40H0V0Z" fill="white" />
+      <path d="M0 0H46V40H0V0Z" fill="none" />
       <path
         d="M45 0V40H47V0H45Z"
         fill="#E8ECEF"

@@ -39,11 +39,12 @@ import { Label } from "../../__molecules";
 export type ProductPropsType = {
   sortByTwoHorizontally?: boolean;
   newProduct?: boolean;
-  discount?: number;
+  discount: number;
   image?: string;
-  productName?: string;
-  price?: number;
-  rate?: number;
+  productName: string;
+  price: number;
+  rate: number;
+  details: string;
   // presignedUrl?: string
   // imageName?: string
 };
@@ -56,9 +57,10 @@ const Product = ({
   productName,
   price,
   rate,
-  // presignedUrl,
-  // imageName
-}: ProductPropsType) => {
+  details,
+}: // presignedUrl,
+// imageName
+ProductPropsType) => {
   return (
     <>
       <div className="PRODUCT w-full h-[349px] relative group ">
@@ -68,10 +70,12 @@ const Product = ({
               New
             </div>
           )}
-          {discount && discount > 0 && (
+          {discount && discount > 0 ? (
             <div className="py-1 px-[14px] text-xs font-bold leading-4 uppercase text-white rounded-sm bg-[#38CB89]">
               -{discount}%
             </div>
+          ) : (
+            ""
           )}
         </div>
         <Image
@@ -96,6 +100,7 @@ const Product = ({
         price={price}
         rate={rate}
         discount={discount}
+        details={details}
       />
     </>
   );

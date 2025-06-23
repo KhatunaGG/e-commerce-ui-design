@@ -132,8 +132,6 @@ const Products = () => {
 
   if (isLoading) return <AnimateSpin />;
 
-  console.log(productsData, "productsData");
-
   return (
     <section className="w-full flex flex-col gap-10 lg:gap-20 ">
       <div className="w-full lg:flex-1 flex flex-col gap-8 md:gap-10">
@@ -159,6 +157,7 @@ const Products = () => {
                   sortByTwoHorizontally={sortByTwoHorizontally}
                   price={product.price}
                   rate={product.rate}
+                  details={product.details}
                 />
               </div>
             ))}

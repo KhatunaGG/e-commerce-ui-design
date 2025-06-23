@@ -68,6 +68,12 @@ export interface IUseShopPageStore {
   clearCurrentPageData: () => void;
   clearCache: () => void;
   loadMoreProducts: () => Promise<void>;
+  newArrivalProducts: [];
+  getNewArrivalProductsFromApi: () => Promise<void>;
+
+  cachedNewArrivalsByPage: Record<string, ProductsDataType[]>;
+  setCachedNewArrivalsByPage: (page: string, data: ProductsDataType[]) => void;
+  newArrivalsLoading: boolean;
 }
 
 export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
@@ -84,6 +90,18 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
   pageNumber: 1,
   take: 12,
   productsDataLength: 0,
+  newArrivalProducts: [],
+
+  cachedNewArrivalsByPage: {},
+
+  setCachedNewArrivalsByPage: (page, data) =>
+    set((state) => ({
+      cachedNewArrivalsByPage: {
+        ...state.cachedNewArrivalsByPage,
+        [page]: data,
+      },
+    })),
+  newArrivalsLoading: false,
 
   setCurrentPage: async (page: string) => {
     const state = get();
@@ -151,6 +169,7 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
         `product?page=${pageNumber}&take=${take}`
       );
       if (res.status >= 200 && res.status <= 204) {
+        console.log("getting data from SERVER")
         const newProducts = res.data.data;
         const dataLength = res.data.productsDataLength;
         const updatedProducts = [...state.productsData, ...newProducts];
@@ -165,6 +184,7 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
           },
         }));
       }
+      console.log(get().cachedImagesByPage, "cachedImagesByPage form SHOP");
     } catch (e) {
       const errorMessage = handleApiError(e as AxiosError<ErrorResponse>);
       set({
@@ -175,12 +195,6 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
     }
   },
 
-  //   loadMoreProducts: async () => {
-  //     const state = get();
-  //     const nextPage = state.pageNumber + 1;
-  //     set({ pageNumber: nextPage });
-  //     await get().getAllProducts(state.currentPage);
-  //   },
   loadMoreProducts: async () => {
     const state = get();
     const { pageNumber, productsData, productsDataLength } = state;
@@ -189,6 +203,41 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
     const nextPage = pageNumber + 1;
     set({ pageNumber: nextPage });
     await get().getAllProducts(state.currentPage);
+  },
+
+  getNewArrivalProductsFromApi: async () => {
+    const state = get();
+    const pageKey = "home";
+
+    if (state.cachedNewArrivalsByPage[pageKey]?.length > 0) {
+      console.log("✅ Using cached new arrivals for home");
+      return;
+    }
+
+    set({ newArrivalsLoading: true, axiosError: null });
+
+    try {
+      const res = await axiosInstance.get("/product/new-arrivals");
+      if (res.status >= 200 && res.status <= 204) {
+        const newProducts = res.data;
+        console.log("📦 Caching new arrival products:", newProducts);
+        set((prev) => ({
+          cachedNewArrivalsByPage: {
+            ...prev.cachedNewArrivalsByPage,
+            [pageKey]: newProducts,
+          },
+          newArrivalsLoading: false,
+          axiosError: null,
+        }));
+      }
+      console.log(
+        get().cachedNewArrivalsByPage,
+        "cachedImagesByPage form SHOP"
+      );
+    } catch (e) {
+      const errorMessage = handleApiError(e as AxiosError<ErrorResponse>);
+      set({ axiosError: errorMessage, newArrivalsLoading: false });
+    }
   },
 
   clearCache: () => {
