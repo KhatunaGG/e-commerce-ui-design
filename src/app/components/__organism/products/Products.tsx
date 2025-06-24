@@ -108,6 +108,7 @@ import FilterOptions from "../filterOptions/FilterOptions";
 import Product from "../product/Product";
 import { AnimateSpin } from "../../__molecules";
 import { useShopPageStore } from "@/app/store/useShopPage.store";
+import Link from "next/link";
 
 const Products = () => {
   const {
@@ -132,6 +133,8 @@ const Products = () => {
 
   if (isLoading) return <AnimateSpin />;
 
+
+
   return (
     <section className="w-full flex flex-col gap-10 lg:gap-20 ">
       <div className="w-full lg:flex-1 flex flex-col gap-8 md:gap-10">
@@ -142,24 +145,44 @@ const Products = () => {
         w-full  grid  h-full gap-y-4 gap-x-2 md:gap-y-6 md:gap-x-6`}
         >
           {productsData.length > 0 &&
-            productsData.map((product, i) => (
-              <div
-                key={i}
-                className={`${
-                  sortByTwoHorizontally ? "flex-row" : "flex-col"
-                } flex  w-full h-auto `}
-              >
-                <Product
-                  newProduct={product.new}
-                  discount={product.discount}
-                  image={product.presignedUrl}
-                  productName={product.productName}
-                  sortByTwoHorizontally={sortByTwoHorizontally}
-                  price={product.price}
-                  rate={product.rate}
-                  details={product.details}
-                />
-              </div>
+            productsData.map((product) => (
+              // <div
+              //   key={i}
+              //   className={`${
+              //     sortByTwoHorizontally ? "flex-row" : "flex-col"
+              //   } flex  w-full h-auto `}
+              // >
+              //   <Product
+              //     newProduct={product.new}
+              //     discount={product.discount}
+              //     image={product.presignedUrl}
+              //     productName={product.productName}
+              //     sortByTwoHorizontally={sortByTwoHorizontally}
+              //     price={product.price}
+              //     rate={product.rate}
+              //     details={product.details}
+              //     _id={product._id}
+              //   />
+              // </div>
+              <Link key={product._id} href={`/shop/${product._id}`}>
+                <div
+                  className={`${
+                    sortByTwoHorizontally ? "flex-row" : "flex-col"
+                  } flex w-full h-auto cursor-pointer`}
+                >
+                  <Product
+                    newProduct={product.new}
+                    discount={product.discount}
+                    image={product.presignedUrl}
+                    productName={product.productName}
+                    sortByTwoHorizontally={sortByTwoHorizontally}
+                    price={product.price}
+                    rate={product.rate}
+                    details={product.details}
+                    _id={product._id}
+                  />
+                </div>
+              </Link>
             ))}
         </section>
       </div>

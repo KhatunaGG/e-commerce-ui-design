@@ -51,11 +51,14 @@ export interface IUseShopPageStore {
   pageNumber: number;
   take: number;
   productsDataLength: number;
-  // setPageNumber: (pageNumber: string) => void;
-  // setTake: (take: number) => string;
+  newArrivalProducts: [];
+  rating: number;
+  setRating: (rating: number) => void;
+
   setCachedImagesByPage: (
     cachedImages: Record<string, ProductsDataType[]>
   ) => void;
+
   setCurrentPage: (currentPage: string) => void;
   setsSortedByFour: (v: boolean) => void;
   setSortByTwoVertically: (v: boolean) => void;
@@ -68,12 +71,16 @@ export interface IUseShopPageStore {
   clearCurrentPageData: () => void;
   clearCache: () => void;
   loadMoreProducts: () => Promise<void>;
-  newArrivalProducts: [];
   getNewArrivalProductsFromApi: () => Promise<void>;
 
   cachedNewArrivalsByPage: Record<string, ProductsDataType[]>;
   setCachedNewArrivalsByPage: (page: string, data: ProductsDataType[]) => void;
   newArrivalsLoading: boolean;
+  onRate: (rating: number) => void;
+
+
+  // handleRate: (rate: number, id: string) => void;
+  normalizeFirstChar: (str: string) => string | undefined;
 }
 
 export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
@@ -91,8 +98,16 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
   take: 12,
   productsDataLength: 0,
   newArrivalProducts: [],
-
   cachedNewArrivalsByPage: {},
+
+
+  rating: 0,
+  setRating: (rating: number) => set({ rating }),
+
+
+  // handleRate: (rate, id) => {}, // !!!!!!!!!!!!!!
+
+
 
   setCachedNewArrivalsByPage: (page, data) =>
     set((state) => ({
@@ -169,7 +184,6 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
         `product?page=${pageNumber}&take=${take}`
       );
       if (res.status >= 200 && res.status <= 204) {
-        console.log("getting data from SERVER")
         const newProducts = res.data.data;
         const dataLength = res.data.productsDataLength;
         const updatedProducts = [...state.productsData, ...newProducts];
@@ -210,7 +224,6 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
     const pageKey = "home";
 
     if (state.cachedNewArrivalsByPage[pageKey]?.length > 0) {
-      console.log("✅ Using cached new arrivals for home");
       return;
     }
 
@@ -239,6 +252,12 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
       set({ axiosError: errorMessage, newArrivalsLoading: false });
     }
   },
+   normalizeFirstChar: (str?: string): string => {
+    if (!str) return "";
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  },
+
+  onRate: () => {},
 
   clearCache: () => {
     set({

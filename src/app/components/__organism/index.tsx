@@ -19,5 +19,9 @@ export { default as Products } from "./products/Products"
 export { default as Menu } from "./menu/Menu"
 export { default as Product } from "./product/Product"
 export { default as FilterOptions } from "./filterOptions/FilterOptions"
+export { default as StarRating } from "./starRating/StarRating"
+export { default as ProductDetails } from "./productDetails/ProductDetails"
+export { default as DetailsSection } from "./detailsSection/DetailsSection"
+
 
 
