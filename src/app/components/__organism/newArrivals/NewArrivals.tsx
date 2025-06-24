@@ -195,6 +195,7 @@ const NewArrivals = ({ images }: { images: ProductsDataType[] }) => {
                     rate={item.rate}
                     discount={item.discount}
                     details={item.details}
+                    _id={item._id}
                   />
                 </SwiperSlide>
               );

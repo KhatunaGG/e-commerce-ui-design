@@ -45,6 +45,7 @@ export type ProductPropsType = {
   price: number;
   rate: number;
   details: string;
+  _id: string
   // presignedUrl?: string
   // imageName?: string
 };
@@ -58,6 +59,7 @@ const Product = ({
   price,
   rate,
   details,
+  _id
 }: // presignedUrl,
 // imageName
 ProductPropsType) => {
@@ -101,6 +103,7 @@ ProductPropsType) => {
         rate={rate}
         discount={discount}
         details={details}
+        _id={_id}
       />
     </>
   );
