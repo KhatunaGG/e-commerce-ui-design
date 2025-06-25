@@ -59,7 +59,7 @@ const Nav = () => {
         <div className="hidden md:flex items-center md:gap-6 lg:gap-10 text-sm font-medium text-[#6C7275]">
           <NavLink href="/" isActive={path === "/"}>Home</NavLink>
           <NavLink href="/shop" isActive={path === "/shop"}>Shop</NavLink>
-          <NavLink href="/product" isActive={path === "/product"}>Product</NavLink>
+          <NavLink href="/wishlist" isActive={path === "/wishlist"}>Wishlist</NavLink>
           <NavLink href="/contact" isActive={path === "/contact"}>Contact Us</NavLink>
         </div>
 

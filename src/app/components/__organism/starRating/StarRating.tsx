@@ -2,7 +2,6 @@ import { useShopPageStore } from "@/app/store/useShopPage.store";
 import React from "react";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
-
 export type StarRatingPropsType = {
   _id: string;
   rate: number;
@@ -10,9 +9,7 @@ export type StarRatingPropsType = {
 
 const StarRating = ({ _id, rate }: StarRatingPropsType) => {
   const { rating } = useShopPageStore();
-console.log(_id, rate)
-
-  
+  console.log(_id, rate)
 
   const getStarIcon = (index: number) => {
     if (rating >= index + 1) return <FaStar className="text-gray-400" />;

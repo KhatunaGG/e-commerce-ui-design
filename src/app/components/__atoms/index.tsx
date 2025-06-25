@@ -25,3 +25,5 @@ export { default as FirstFilterIcon } from "./firstFilterIcon/FirstFilterIcon";
 export { default as FourthFilterIcon } from "./fourthFilterIcon/FourthFilterIcon"
 export { default as ThirdFilterIcon } from "./thirdFilterIcon/ThirdFilterIcon"
 export { default as SecondFilterIcon } from "./secondFilterIcon/SecondFilterIcon"
+export { default as Minus } from "./minus/Minus"
+export { default as Add } from "./add/Add"

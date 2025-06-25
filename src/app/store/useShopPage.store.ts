@@ -78,9 +78,9 @@ export interface IUseShopPageStore {
   newArrivalsLoading: boolean;
   onRate: (rating: number) => void;
 
-
   // handleRate: (rate: number, id: string) => void;
   normalizeFirstChar: (str: string) => string | undefined;
+  calculateDiscount: (price?: number, discount?: number) => string;
 }
 
 export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
@@ -100,14 +100,16 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
   newArrivalProducts: [],
   cachedNewArrivalsByPage: {},
 
-
   rating: 0,
   setRating: (rating: number) => set({ rating }),
 
-
   // handleRate: (rate, id) => {}, // !!!!!!!!!!!!!!
-
-
+  calculateDiscount: (price?: number, discount?: number): string => {
+    if (typeof price !== "number") return "-";
+    if (!discount || discount <= 0) return `$${price.toFixed(2)}`;
+    const discountedPrice = price - (price * discount) / 100;
+    return `$${discountedPrice.toFixed(2)}`;
+  },
 
   setCachedNewArrivalsByPage: (page, data) =>
     set((state) => ({
@@ -252,7 +254,7 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
       set({ axiosError: errorMessage, newArrivalsLoading: false });
     }
   },
-   normalizeFirstChar: (str?: string): string => {
+  normalizeFirstChar: (str?: string): string => {
     if (!str) return "";
     return str.charAt(0).toUpperCase() + str.slice(1);
   },
@@ -271,6 +273,7 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
       productsData: [],
       isLoading: false,
       axiosError: null,
+      sortByTwoVertically: false,
     }),
 
   setCachedImagesByPage: (cachedImages: Record<string, ProductsDataType[]>) =>
