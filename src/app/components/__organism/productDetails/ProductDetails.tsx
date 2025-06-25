@@ -1,5 +1,4 @@
 "use client";
-
 import { useProductStore } from "@/app/store/product.store";
 import { useEffect } from "react";
 import { AnimateSpin } from "../../__molecules";
@@ -29,7 +28,7 @@ const ProductDetails = ({ params }: ProductDetailsPropsType) => {
   if (!productById) return <AnimateSpin />;
 
   return (
-    <div className="w-full min-h-screen md:px-[11.11%] px-[8.53%] bg-green-200 flex flex-col">
+    <section className="w-full min-h-screen md:px-[11.11%] px-[8.53%]  flex flex-col pb-10 lg:pb-[67px]">
       <div className="w-full flex flex-col">
         <div className="w-fill h-fit flex  items-center justify-start gap-4 py-4">
           <div className="flex items-center gap-1">
@@ -61,9 +60,9 @@ const ProductDetails = ({ params }: ProductDetailsPropsType) => {
           </p>
         </div>
 
-        <DetailsSection productById={productById} />
+        <DetailsSection productById={productById} params={params} />
       </div>
-    </div>
+    </section>
   );
 };
 

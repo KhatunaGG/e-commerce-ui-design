@@ -20,16 +20,20 @@ export interface IUseProductStore {
   productById: ProductsDataType | null;
   isLoading: boolean;
   axiosError: string | null;
-  // setProductById: (productById: ProductsDataType | null) => void
+  selectedColor: string;
+  setSelectedColor: (selectedColor: string) => void;
   getProductById: (id: string) => Promise<void>;
   clearProduct: () => void;
+  getProductColor: (color: string) => void;
 }
 
 export const useProductStore = create<IUseProductStore>((set) => ({
   productById: null,
   isLoading: false,
   axiosError: null,
+  selectedColor: "",
 
+  setSelectedColor: (selectedColor) => set({selectedColor}),
   getProductById: async (id) => {
     set({ isLoading: true, axiosError: null });
     const shopCash = useShopPageStore.getState();
@@ -55,6 +59,9 @@ export const useProductStore = create<IUseProductStore>((set) => ({
         axiosError: handleApiError(e as AxiosError<ErrorResponse>),
       });
     }
+  },
+  getProductColor: (color: string) => {
+    set({ selectedColor: color });
   },
   clearProduct: () => set({ productById: null }),
 }));

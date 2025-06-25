@@ -22,6 +22,8 @@ export { default as FilterOptions } from "./filterOptions/FilterOptions"
 export { default as StarRating } from "./starRating/StarRating"
 export { default as ProductDetails } from "./productDetails/ProductDetails"
 export { default as DetailsSection } from "./detailsSection/DetailsSection"
+export { default as OfferTill } from "./offerTill/OfferTill"
+export { default as ColorSection } from "./colorSection/ColorSection"
 
 
 
