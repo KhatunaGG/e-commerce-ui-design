@@ -24,6 +24,9 @@ export { default as ProductDetails } from "./productDetails/ProductDetails"
 export { default as DetailsSection } from "./detailsSection/DetailsSection"
 export { default as OfferTill } from "./offerTill/OfferTill"
 export { default as ColorSection } from "./colorSection/ColorSection"
+export { default as Tabs } from "./tabs/Tabs"
+export { default as Reviews } from "./reviews/Reviews"
+export { default as ReviewsForm } from "./reviewsForm/ReviewsForm"
 
 
 

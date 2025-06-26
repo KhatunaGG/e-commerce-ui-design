@@ -25,6 +25,8 @@ export interface IUseProductStore {
   getProductById: (id: string) => Promise<void>;
   clearProduct: () => void;
   getProductColor: (color: string) => void;
+  activeTab: string;
+  setActiveTab: (activeTab: string) => void;
 }
 
 export const useProductStore = create<IUseProductStore>((set) => ({
@@ -32,8 +34,10 @@ export const useProductStore = create<IUseProductStore>((set) => ({
   isLoading: false,
   axiosError: null,
   selectedColor: "",
+  activeTab: "Additional Info",
 
-  setSelectedColor: (selectedColor) => set({selectedColor}),
+  setActiveTab: (activeTab) => set({ activeTab }),
+  setSelectedColor: (selectedColor) => set({ selectedColor }),
   getProductById: async (id) => {
     set({ isLoading: true, axiosError: null });
     const shopCash = useShopPageStore.getState();

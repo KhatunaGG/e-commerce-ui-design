@@ -1,6 +1,7 @@
 import React from "react";
 
-function ArrowRight() {
+function ArrowRight({ params }: { params?: string }) {
+  const bgColor = params ? "white" : "#141718";
   return (
     <svg
       width="20"
@@ -12,7 +13,8 @@ function ArrowRight() {
       <path
         d="M3.75 9H14.25"
         // stroke="#377DFF"
-        stroke="#141718"
+        // stroke="#141718"
+        stroke={bgColor}
         strokeWidth="1.125"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -20,7 +22,8 @@ function ArrowRight() {
       <path
         d="M9.75 13.5L14.25 9"
         // stroke="#377DFF"
-        stroke="#141718"
+        // stroke="#141718"
+        stroke={bgColor}
         strokeWidth="1.125"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -28,7 +31,8 @@ function ArrowRight() {
       <path
         d="M9.75 4.5L14.25 9"
         // stroke="#377DFF"
-        stroke="#141718"
+        // stroke="#141718"
+        stroke={bgColor}
         strokeWidth="1.125"
         strokeLinecap="round"
         strokeLinejoin="round"
