@@ -6,6 +6,7 @@ import { ChevronRight } from "../../__atoms";
 import { usePathname } from "next/navigation";
 import { useShopPageStore } from "@/app/store/useShopPage.store";
 import DetailsSection from "../detailsSection/DetailsSection";
+import Tabs from "../tabs/Tabs";
 
 export type ProductDetailsPropsType = {
   params: string;
@@ -62,6 +63,7 @@ const ProductDetails = ({ params }: ProductDetailsPropsType) => {
 
         <DetailsSection productById={productById} params={params} />
       </div>
+      <Tabs productName={productById.productName} params={params} />
     </section>
   );
 };

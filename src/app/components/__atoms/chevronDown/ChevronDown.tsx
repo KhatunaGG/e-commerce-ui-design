@@ -1,7 +1,6 @@
-import React from "react";
 
 export type ChevronDownPropsType = {
-  styles: string;
+  styles?: string;
 };
 
 const ChevronDown = ({ styles }: ChevronDownPropsType) => {

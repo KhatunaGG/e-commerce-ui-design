@@ -15,7 +15,7 @@ const MoreButton = ({ handleMoreProducts, styleClass }: MoreButtonPropsType) => 
         More Products
       </p>
       <span className="w-[20px] h-[20px] mt-[2px]">
-        <ArrowRight  />
+        <ArrowRight   />
       </span>
     </button>
   );

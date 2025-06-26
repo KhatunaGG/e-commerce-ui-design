@@ -10,6 +10,7 @@ import ColorSection from "../colorSection/ColorSection";
 import { Add, Minus } from "../../__atoms";
 import { AddToCartButton, WishlistButton } from "../../__molecules";
 
+
 export type DetailsSectionPropsType = {
   productById: ProductsDataType;
   params: string;
@@ -122,6 +123,8 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
           >
             Add to cart
           </button> */}
+
+          
         </div>
       </div>
     </div>
