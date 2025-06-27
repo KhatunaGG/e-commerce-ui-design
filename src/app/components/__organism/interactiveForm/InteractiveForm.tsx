@@ -2,7 +2,7 @@ import React from "react";
 import { ArrowRight } from "../../__atoms";
 import EmojiSection from "../emojiSection/EmojiSection";
 
-const ReviewsForm = ({ params }: { params: string }) => {
+const InteractiveForm = ({ params }: { params: string }) => {
   return (
     <form className="w-full flex items-center  py-2 px-4 md:py-4 md:px-6 border border-[#E8ECEF] rounded-2xl mb-10 ">
       <div className="flex-1 resize-none outline-none  relative  group           ">
@@ -27,4 +27,4 @@ const ReviewsForm = ({ params }: { params: string }) => {
   );
 };
 
-export default ReviewsForm;
+export default InteractiveForm;

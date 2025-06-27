@@ -59,3 +59,6 @@ export const sortBy = [
   "Highest",
   "Lowest",
 ];
+
+
+export const emojis = ['😀', '😂', '😍', '😢', '😠', '👍', '🙏', '💯'];

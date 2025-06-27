@@ -53,7 +53,7 @@ const ColorSection = ({ colors }: ColorSectionPropsType) => {
                   cursor: "pointer",
                 }}
                 onClick={() => getProductColor(c)}
-                className={`${selectedColor === c && "border-3 border-[#6C7275]"} w-10 h-10 border `}
+                className={`${selectedColor === c && "border-4 border-[#6C7275]"} w-10 h-10 border `}
               />
             ))}
           </div>

@@ -3,20 +3,20 @@ import { useProductStore } from "@/app/store/product.store";
 import { ChevronDown } from "../../__atoms";
 import { useShopPageStore } from "@/app/store/useShopPage.store";
 import Reviews from "../reviews/Reviews";
-
+import ClientReviews from "../clientReviews/ClientReviews";
 
 export type TapsPropsType = {
   params: string;
-  productName: string
-}
+  productName: string;
+};
 
-export default function Tabs({productName, params}: TapsPropsType) {
+export default function Tabs({ productName, params }: TapsPropsType) {
   const { activeTab, setActiveTab } = useProductStore();
   const { normalizeFirstChar } = useShopPageStore();
-  console.log(activeTab, "activeTab");
+
   return (
-    <section className="w-full  py-10 flex flex-col gap-10 md:gap-12 ">
-      <div className="hidden w-full md:flex gap-20">
+    <section className="w-full  py-10 flex flex-col gap-10  ">
+      <div className="hidden w-full md:flex gap-20         mb-2">
         {["additional info", "questions", "reviews"].map((item, i) => {
           const count = item === "questions" || item === "reviews";
           return (
@@ -39,7 +39,7 @@ export default function Tabs({productName, params}: TapsPropsType) {
         })}
       </div>
 
-      <div className="w-full flex flex-col ga-2 md:hidden">
+      <div className="w-full flex flex-col gap-2 md:hidden    ">
         {["additional info", "questions", "reviews"].map((item, i) => {
           const count = item === "questions" || item === "reviews";
           return (
@@ -68,7 +68,7 @@ export default function Tabs({productName, params}: TapsPropsType) {
         })}
       </div>
 
-      <div style={{ marginTop: "1rem" }} className="w-ful ">
+      <div style={{ marginTop: "1rem" }} className="w-ful        ">
         {activeTab === "additional info" && (
           <div className="w-full h-full">Additional Info.</div>
         )}
@@ -81,6 +81,9 @@ export default function Tabs({productName, params}: TapsPropsType) {
           </div>
         )}
       </div>
+
+      <ClientReviews />
+      {/* <div className="w-full h-10 bg-violet-400"></div> */}
     </section>
   );
 }
