@@ -27,6 +27,8 @@ export interface IUseProductStore {
   getProductColor: (color: string) => void;
   activeTab: string;
   setActiveTab: (activeTab: string) => void;
+  emojiVisible: boolean;
+  setEmojiVisible: (emojiVisible: boolean) => void;
 }
 
 export const useProductStore = create<IUseProductStore>((set) => ({
@@ -35,6 +37,8 @@ export const useProductStore = create<IUseProductStore>((set) => ({
   axiosError: null,
   selectedColor: "",
   activeTab: "Additional Info",
+  emojiVisible: false,
+  setEmojiVisible: () =>   set((state) => ({ emojiVisible: !state.emojiVisible })),
 
   setActiveTab: (activeTab) => set({ activeTab }),
   setSelectedColor: (selectedColor) => set({ selectedColor }),

@@ -27,6 +27,10 @@ export { default as ColorSection } from "./colorSection/ColorSection"
 export { default as Tabs } from "./tabs/Tabs"
 export { default as Reviews } from "./reviews/Reviews"
 export { default as ReviewsForm } from "./reviewsForm/ReviewsForm"
+export { default as EmojiSection } from "./emojiSection/EmojiSection"
+export { default as ClientReviews } from "./clientReviews/ClientReviews"
+export { default as InteractiveForm } from "./interactiveForm/InteractiveForm"
+export { default as ClientReviewsItem } from "./clientReviewsItem/ClientReviewsItem"
 
 
 

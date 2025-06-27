@@ -10,7 +10,6 @@ import ColorSection from "../colorSection/ColorSection";
 import { Add, Minus } from "../../__atoms";
 import { AddToCartButton, WishlistButton } from "../../__molecules";
 
-
 export type DetailsSectionPropsType = {
   productById: ProductsDataType;
   params: string;
@@ -18,7 +17,7 @@ export type DetailsSectionPropsType = {
 
 const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
   const { calculateDiscount } = useShopPageStore();
-  console.log(productById, "productById")
+  console.log(productById, "productById");
   return (
     <div className="w-full h-full flex flex-col gap-4 lg:flex-row lg:gap-[64px]">
       <div className="w-full lg:flex-1">
@@ -106,25 +105,9 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
                 <Add />
               </button>
             </div>
-
             <WishlistButton params={params} />
-
-            {/* <button className="w-[64.72%] border border-[#141718] rounded-[8px] bg-transparent flex items-center justify-center py-[14px]">
-              <div className="flex items-center gap-4">
-                <Heart />
-                <p className="font-medium text-sm leading-[24px]">Wishlist</p>
-              </div>
-            </button> */}
           </div>
-
           <AddToCartButton />
-          {/* <button
-            className={`w-full bg-[#141718] text-white rounded-lg py-[6.29px] lg:py-[9px] text-base font-medium leading-[28px] tracking-[-0.4px] hover:bg-gray-800 transition-colors text-[18px] `}
-          >
-            Add to cart
-          </button> */}
-
-          
         </div>
       </div>
     </div>
