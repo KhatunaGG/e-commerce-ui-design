@@ -10,5 +10,6 @@ export { default as checkbox } from "./checkbox/Checkbox";
 export { default as SortBy } from "./sortBy/SortBy";
 export { default as AddToCartButton } from "./addToCartButton/AddToCartButton";
 export { default as WishlistButton } from "./wishlistButton/WishlistButton";
+export { default as ShowMoreButton } from "./showMoreButton/ShowMoreButton";
 
 

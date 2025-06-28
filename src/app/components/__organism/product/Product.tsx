@@ -89,7 +89,7 @@ import { AddToCartButton, Label } from "../../__molecules";
 
 export type ProductPropsType = {
   sortByTwoHorizontally?: boolean;
-  newProduct?: boolean;
+  newProduct: boolean;
   discount: number;
   image?: string;
   productName: string;
@@ -97,6 +97,7 @@ export type ProductPropsType = {
   rate: number;
   details: string;
   _id: string;
+  wishlist: boolean;
   // presignedUrl?: string
   // imageName?: string
 
@@ -114,10 +115,12 @@ const Product = ({
   details,
   _id,
   params,
+  wishlist
+
 }: // presignedUrl,
 // imageName
 ProductPropsType) => {
-  console.log(params, "params from product");
+
   return (
     <>
       <div
@@ -139,13 +142,6 @@ ProductPropsType) => {
             ""
           )}
         </div>
-        {/* <Image
-          src={image || "/assets/new_1.png"}
-          alt={productName || "Product image"}
-          width={params ? 548 : 262}
-          height={params ? 729 : 349}
-          className="w-full h-full object-cover"
-        /> */}
         <Image
           src={image || "/assets/new_1.png"}
           alt={productName}
@@ -153,15 +149,8 @@ ProductPropsType) => {
           className="object-cover"
         />
         {(!params && !sortByTwoHorizontally) && (
-          <div className="w-full px-4 absolute bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-400         bg-blue-200">
+          <div className="w-full px-4 absolute bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-400">
             <AddToCartButton  sortByTwoHorizontally={sortByTwoHorizontally} />
-            {/* <button
-              className={`${
-                sortByTwoHorizontally ? "opacity-0" : "opacity-100"
-              } w-full bg-[#141718] text-white rounded-lg py-[6.29px] lg:py-[9px] text-base font-medium leading-[28px] tracking-[-0.4px] hover:bg-gray-800 transition-colors`}
-            >
-              Add to cart
-            </button> */}
           </div>
         )}
       </div>
@@ -173,6 +162,8 @@ ProductPropsType) => {
           discount={discount}
           details={details}
           _id={_id}
+          newProduct={newProduct}
+          wishlist={wishlist}
         />
       )}
     </>

@@ -141,12 +141,9 @@ const OfferTill = ({ till }: OfferTillPropsType) => {
 
   useEffect(() => {
     if (timeLeft.expired) return;
-
     const timer = setInterval(() => {
       const updatedTime = getTimeLeft();
       setTimeLeft(updatedTime);
-
-      // Stop timer once expired
       if (updatedTime.expired) {
         clearInterval(timer);
       }

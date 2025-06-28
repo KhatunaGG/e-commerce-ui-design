@@ -31,6 +31,7 @@ export { default as EmojiSection } from "./emojiSection/EmojiSection"
 export { default as ClientReviews } from "./clientReviews/ClientReviews"
 export { default as InteractiveForm } from "./interactiveForm/InteractiveForm"
 export { default as ClientReviewsItem } from "./clientReviewsItem/ClientReviewsItem"
+export { default as Wishlist } from "./wishlist/Wishlist"
 
 
 
