@@ -140,9 +140,20 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
         axiosError: null,
         isLoading: true,
       });
-      await get().getAllProducts(page);
     }
+
+    // if (state.currentPage === "wishlist") {
+    //   const dataCopy = state.cachedImagesByPage["shop"] || [];
+    //   const newData = dataCopy.filter((item) => item.wishlist === true);
+    //   console.log("wishlist items count:", newData.length);
+    //   set({
+    //     productsData: newData,
+    //     isLoading: false,
+    //     axiosError: null,
+    //   });
+    // }
   },
+
   setsSortedByFour: (v) =>
     set({
       sortedByFour: v,
@@ -173,6 +184,7 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
       sortByTwoHorizontally: false,
     });
   },
+
   getAllProducts: async (page: string) => {
     const state = get();
     if (state.cachedImagesByPage[page]?.length > 0) {
@@ -200,7 +212,11 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
           },
         }));
       }
-      console.log(get().cachedImagesByPage, "cachedImagesByPage form SHOP");
+      console.log(get().cachedImagesByPage, "cachedImagesByPage form HOME");
+      // console.log(
+      //   get().cachedImagesByPage.shop.filter((item) => item.wishlist === true),
+      //   "cachedImagesByPage form SHOP STORE"
+      // );
     } catch (e) {
       const errorMessage = handleApiError(e as AxiosError<ErrorResponse>);
       set({
@@ -211,19 +227,110 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
     }
   },
 
-  loadMoreProducts: async () => {
-    const state = get();
-    const { pageNumber, productsData, productsDataLength } = state;
-    const alreadyLoaded = productsData.length;
-    if (alreadyLoaded >= productsDataLength) return;
-    const nextPage = pageNumber + 1;
-    set({ pageNumber: nextPage });
-    await get().getAllProducts(state.currentPage);
-  },
+  // loadMoreProducts: async () => {
+  //   const state = get();
+  //   const { pageNumber, productsData, productsDataLength } = state;
+  //   const alreadyLoaded = productsData.length;
+  //   if (alreadyLoaded >= productsDataLength) return;
+  //   const nextPage = pageNumber + 1;
+  //   set({ pageNumber: nextPage });
+  //   await get().getAllProducts(state.currentPage);
+  // },
+
+  // getNewArrivalProductsFromApi: async () => {
+  //   const state = get();
+  //   const pageKey = "home";
+
+  //   if (state.cachedNewArrivalsByPage[pageKey]?.length > 0) {
+  //     return;
+  //   }
+
+  //   set({ newArrivalsLoading: true, axiosError: null });
+
+  //   try {
+  //     const res = await axiosInstance.get("/product/new-arrivals");
+  //     if (res.status >= 200 && res.status <= 204) {
+  //       const newProducts = res.data;
+  //       set((prev) => ({
+  //         cachedNewArrivalsByPage: {
+  //           ...prev.cachedNewArrivalsByPage,
+  //           [pageKey]: newProducts,
+  //         },
+  //         newArrivalsLoading: false,
+  //         axiosError: null,
+  //       }));
+  //     }
+  //     console.log(
+  //       get().cachedNewArrivalsByPage,
+  //       "cachedImagesByPage form SHOP"
+  //     );
+  //   } catch (e) {
+  //     const errorMessage = handleApiError(e as AxiosError<ErrorResponse>);
+  //     set({ axiosError: errorMessage, newArrivalsLoading: false });
+  //   }
+  // },
+
+
+
+
+
+
+
+loadMoreProducts: async () => {
+  const state = get();
+  const { pageNumber, productsData, productsDataLength, take, currentPage } = state;
+  const alreadyLoaded = productsData.length;
+
+  if (alreadyLoaded >= productsDataLength) return;
+
+  const nextPage = pageNumber + 1;
+
+  try {
+    const res = await axiosInstance.get(
+      `product?page=${nextPage}&take=${take}`
+    );
+
+    if (res.status >= 200 && res.status <= 204) {
+      const newProducts = res.data.data;
+      const dataLength = res.data.productsDataLength;
+
+      const updatedProducts = [...productsData, ...newProducts];
+
+      set((prev) => ({
+        pageNumber: nextPage,
+        productsData: updatedProducts,
+        productsDataLength: dataLength,
+        cachedImagesByPage: {
+          ...prev.cachedImagesByPage,
+          [currentPage]: updatedProducts,
+        },
+        isLoading: false,
+        axiosError: null,
+      }));
+    }
+  } catch (e) {
+    set({
+      axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+      isLoading: false,
+    });
+  }
+},
+
+
+
+
+
+
+
+
+
+
+
 
   getNewArrivalProductsFromApi: async () => {
     const state = get();
     const pageKey = "home";
+    const shopKey = "shop";
 
     if (state.cachedNewArrivalsByPage[pageKey]?.length > 0) {
       return;
@@ -235,25 +342,28 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
       const res = await axiosInstance.get("/product/new-arrivals");
       if (res.status >= 200 && res.status <= 204) {
         const newProducts = res.data;
-        console.log("📦 Caching new arrival products:", newProducts);
+
         set((prev) => ({
           cachedNewArrivalsByPage: {
             ...prev.cachedNewArrivalsByPage,
             [pageKey]: newProducts,
           },
+
+          cachedImagesByPage: {
+            ...prev.cachedImagesByPage,
+            [shopKey]: newProducts,
+          },
+
           newArrivalsLoading: false,
           axiosError: null,
         }));
       }
-      console.log(
-        get().cachedNewArrivalsByPage,
-        "cachedImagesByPage form SHOP"
-      );
     } catch (e) {
       const errorMessage = handleApiError(e as AxiosError<ErrorResponse>);
       set({ axiosError: errorMessage, newArrivalsLoading: false });
     }
   },
+
   normalizeFirstChar: (str?: string): string => {
     if (!str) return "";
     return str.charAt(0).toUpperCase() + str.slice(1);

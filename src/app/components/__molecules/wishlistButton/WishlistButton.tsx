@@ -1,20 +1,74 @@
-import React from "react";
+// "use client";
+// import { useProductStore } from "@/app/store/product.store";
+// import { Heart } from "../../__atoms";
+
+// export type WishlistButtonPropsType = {
+//   params?: string;
+//   wishlist?: boolean;
+// };
+
+// const WishlistButton = ({ params, wishlist }: WishlistButtonPropsType) => {
+//   const { updateProduct } = useProductStore();
+
+
+
+//   return (
+//     <button
+//       onClick={() => updateProduct(params ?? "", !wishlist)}
+
+//       className={`${
+//         params &&
+//         "w-[64.72%] border border-[#141718] rounded-[8px] bg-transparent py-[14px]"
+//       } w-full flex items-center justify-center gap-1`}
+//     >
+//       <Heart wishlist={wishlist || false} />
+//       <p
+//         className={`${
+//           wishlist && "text-red-500"
+//         } font-medium text-sm leading-[24px]`}
+//       >
+//         Wishlist
+//       </p>
+//     </button>
+//   );
+// };
+
+// export default WishlistButton;
+
+// WishlistButton.tsx
+
+
+
+
+
+
+
+
+"use client";
+import { useProductStore } from "@/app/store/product.store";
 import { Heart } from "../../__atoms";
 
-export type WishlistButtonPropsType = {
-  params?: string;
-};
+const WishlistButton = ({ params }: { params?: string }) => {
+  const { updateProduct, productById } = useProductStore();
 
-const WishlistButton = ({ params }: WishlistButtonPropsType) => {
+  const wishlist = productById?.wishlist ?? false;
+
   return (
     <button
+      onClick={() => updateProduct(params ?? "", !wishlist)}
       className={`${
         params &&
         "w-[64.72%] border border-[#141718] rounded-[8px] bg-transparent py-[14px]"
       } w-full flex items-center justify-center gap-1`}
     >
-      <Heart />
-      <p className="font-medium text-sm leading-[24px]">Wishlist</p>
+      <Heart wishlist={wishlist} />
+      <p
+        className={`${
+          wishlist && "text-red-500"
+        } font-medium text-sm leading-[24px]`}
+      >
+        Wishlist
+      </p>
     </button>
   );
 };

@@ -17,12 +17,12 @@ export type DetailsSectionPropsType = {
 
 const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
   const { calculateDiscount } = useShopPageStore();
-  console.log(productById, "productById");
+
   return (
     <div className="w-full h-full flex flex-col gap-4 lg:flex-row lg:gap-[64px]">
       <div className="w-full lg:flex-1">
         <div className="flex flex-col  gap-[23px]">
-          <div className="DIV1 w-full lg:flex-1">
+          <div className="w-full lg:flex-1">
             <Product
               newProduct={productById.new}
               discount={productById.discount}
@@ -33,6 +33,7 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
               details={productById.details}
               _id={productById._id}
               params={params}
+              wishlist={productById.wishlist}
             />
           </div>
 
@@ -105,7 +106,9 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
                 <Add />
               </button>
             </div>
-            <WishlistButton params={params} />
+            <WishlistButton params={params}
+            //  wishlist={productById.wishlist}
+              />
           </div>
           <AddToCartButton />
         </div>

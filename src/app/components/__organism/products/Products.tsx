@@ -106,7 +106,7 @@
 "use client";
 import FilterOptions from "../filterOptions/FilterOptions";
 import Product from "../product/Product";
-import { AnimateSpin } from "../../__molecules";
+import { AnimateSpin, ShowMoreButton } from "../../__molecules";
 import { useShopPageStore } from "@/app/store/useShopPage.store";
 import Link from "next/link";
 
@@ -116,12 +116,8 @@ const Products = () => {
     sortByTwoVertically,
     sortByTwoHorizontally,
     isLoading,
-    loadMoreProducts,
     productsData,
-    productsDataLength,
   } = useShopPageStore();
-
-  const isAllLoaded = productsData.length >= productsDataLength;
 
   const resortedStyles = sortedByFour
     ? "grid-cols-2  lg:grid-cols-4"
@@ -132,8 +128,6 @@ const Products = () => {
     : "grid-cols-1  lg:grid-cols-3";
 
   if (isLoading) return <AnimateSpin />;
-
-
 
   return (
     <section className="w-full flex flex-col gap-10 lg:gap-20 ">
@@ -146,24 +140,6 @@ const Products = () => {
         >
           {productsData.length > 0 &&
             productsData.map((product) => (
-              // <div
-              //   key={i}
-              //   className={`${
-              //     sortByTwoHorizontally ? "flex-row" : "flex-col"
-              //   } flex  w-full h-auto `}
-              // >
-              //   <Product
-              //     newProduct={product.new}
-              //     discount={product.discount}
-              //     image={product.presignedUrl}
-              //     productName={product.productName}
-              //     sortByTwoHorizontally={sortByTwoHorizontally}
-              //     price={product.price}
-              //     rate={product.rate}
-              //     details={product.details}
-              //     _id={product._id}
-              //   />
-              // </div>
               <Link key={product._id} href={`/shop/${product._id}`}>
                 <div
                   className={`${
@@ -180,6 +156,7 @@ const Products = () => {
                     rate={product.rate}
                     details={product.details}
                     _id={product._id}
+                    wishlist={product.wishlist}
                   />
                 </div>
               </Link>
@@ -188,7 +165,8 @@ const Products = () => {
       </div>
 
       <div className="w-ful flex items-center justify-center">
-        <button
+        <ShowMoreButton />
+        {/* <button
           type="button"
           onClick={loadMoreProducts}
           disabled={isAllLoaded}
@@ -198,7 +176,7 @@ const Products = () => {
           } text-base font-medium leading-[28px] tracking-[-0.4px] text-[#141718] py-[6px] px-10 rounded-[80px] border border-[#141718]`}
         >
           {isAllLoaded ? "No more products" : "Show more"}
-        </button>
+        </button> */}
       </div>
     </section>
   );
