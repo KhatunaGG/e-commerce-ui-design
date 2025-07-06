@@ -7,6 +7,7 @@ import { axiosInstance } from "../libs/axiosInstance";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { ErrorResponse, useHomePageStore } from "./useHomePage.store.";
 import { useShopPageStore } from "./useShopPage.store";
+import { useProductStore } from "./product.store";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -117,17 +118,19 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
 
   // logout: () => {
   //   deleteCookie("accessToken");
-  //   useHomePageStore.getState().clearImagesData();
+  //   useHomePageStore.getState().clearCache();
+  //   useShopPageStore.getState().clearCache();
   //   set({ currentUser: null, accessToken: "" });
-  //   useHomePageStore.getState().setCachedImagesByPage({});
-  //   // window.location.href = "/sign-up";
   //   window.location.href = "/";
   // },
-
   logout: () => {
     deleteCookie("accessToken");
     useHomePageStore.getState().clearCache();
     useShopPageStore.getState().clearCache();
+    useProductStore.getState().clearWishlist();
+    useProductStore.setState({
+      cashedWishList: {},
+    });
     set({ currentUser: null, accessToken: "" });
     window.location.href = "/";
   },

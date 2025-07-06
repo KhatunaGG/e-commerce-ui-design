@@ -81,6 +81,7 @@ export interface IUseShopPageStore {
   // handleRate: (rate: number, id: string) => void;
   normalizeFirstChar: (str: string) => string | undefined;
   calculateDiscount: (price?: number, discount?: number) => string;
+  getProductsFromCacheOrApi: (page: string) => Promise<void>
 }
 
 export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
@@ -141,17 +142,6 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
         isLoading: true,
       });
     }
-
-    // if (state.currentPage === "wishlist") {
-    //   const dataCopy = state.cachedImagesByPage["shop"] || [];
-    //   const newData = dataCopy.filter((item) => item.wishlist === true);
-    //   console.log("wishlist items count:", newData.length);
-    //   set({
-    //     productsData: newData,
-    //     isLoading: false,
-    //     axiosError: null,
-    //   });
-    // }
   },
 
   setsSortedByFour: (v) =>
@@ -185,14 +175,52 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
     });
   },
 
+  // getAllProducts: async (page: string) => {
+  //   const state = get();
+  //   if (state.cachedImagesByPage[page]?.length > 0) {
+  //     return;
+  //   }
+  //   set({ isLoading: true, axiosError: null });
+  //   const { pageNumber, take } = state;
+
+  //   try {
+  //     const res = await axiosInstance.get(
+  //       `product?page=${pageNumber}&take=${take}`
+  //     );
+  //     if (res.status >= 200 && res.status <= 204) {
+  //       const newProducts = res.data.data;
+  //       const dataLength = res.data.productsDataLength;
+  //       const updatedProducts = [...state.productsData, ...newProducts];
+  //       set((prev) => ({
+  //         productsData: updatedProducts,
+  //         productsDataLength: dataLength,
+  //         isLoading: false,
+  //         axiosError: null,
+  //         cachedImagesByPage: {
+  //           ...prev.cachedImagesByPage,
+  //           [page]: updatedProducts,
+  //         },
+  //       }));
+  //     }
+  //     console.log(get().cachedImagesByPage, "cachedImagesByPage form HOME");
+  //   } catch (e) {
+  //     const errorMessage = handleApiError(e as AxiosError<ErrorResponse>);
+  //     set({
+  //       axiosError: errorMessage,
+  //       isLoading: false,
+  //       productsData: [],
+  //     });
+  //   }
+  // },
+
   getAllProducts: async (page: string) => {
     const state = get();
-    if (state.cachedImagesByPage[page]?.length > 0) {
+    const cached = state.cachedImagesByPage[page];
+    if (cached && cached.length > 0) {
       return;
     }
     set({ isLoading: true, axiosError: null });
     const { pageNumber, take } = state;
-
     try {
       const res = await axiosInstance.get(
         `product?page=${pageNumber}&take=${take}`
@@ -200,132 +228,84 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
       if (res.status >= 200 && res.status <= 204) {
         const newProducts = res.data.data;
         const dataLength = res.data.productsDataLength;
-        const updatedProducts = [...state.productsData, ...newProducts];
         set((prev) => ({
-          productsData: updatedProducts,
+          productsData: newProducts,
           productsDataLength: dataLength,
           isLoading: false,
           axiosError: null,
           cachedImagesByPage: {
             ...prev.cachedImagesByPage,
-            [page]: updatedProducts,
+            [page]: newProducts,
           },
         }));
       }
-      console.log(get().cachedImagesByPage, "cachedImagesByPage form HOME");
-      // console.log(
-      //   get().cachedImagesByPage.shop.filter((item) => item.wishlist === true),
-      //   "cachedImagesByPage form SHOP STORE"
-      // );
     } catch (e) {
-      const errorMessage = handleApiError(e as AxiosError<ErrorResponse>);
       set({
-        axiosError: errorMessage,
+        axiosError: handleApiError(e as AxiosError<ErrorResponse>),
         isLoading: false,
         productsData: [],
       });
     }
   },
 
-  // loadMoreProducts: async () => {
-  //   const state = get();
-  //   const { pageNumber, productsData, productsDataLength } = state;
-  //   const alreadyLoaded = productsData.length;
-  //   if (alreadyLoaded >= productsDataLength) return;
-  //   const nextPage = pageNumber + 1;
-  //   set({ pageNumber: nextPage });
-  //   await get().getAllProducts(state.currentPage);
-  // },
-
-  // getNewArrivalProductsFromApi: async () => {
-  //   const state = get();
-  //   const pageKey = "home";
-
-  //   if (state.cachedNewArrivalsByPage[pageKey]?.length > 0) {
-  //     return;
-  //   }
-
-  //   set({ newArrivalsLoading: true, axiosError: null });
-
-  //   try {
-  //     const res = await axiosInstance.get("/product/new-arrivals");
-  //     if (res.status >= 200 && res.status <= 204) {
-  //       const newProducts = res.data;
-  //       set((prev) => ({
-  //         cachedNewArrivalsByPage: {
-  //           ...prev.cachedNewArrivalsByPage,
-  //           [pageKey]: newProducts,
-  //         },
-  //         newArrivalsLoading: false,
-  //         axiosError: null,
-  //       }));
-  //     }
-  //     console.log(
-  //       get().cachedNewArrivalsByPage,
-  //       "cachedImagesByPage form SHOP"
-  //     );
-  //   } catch (e) {
-  //     const errorMessage = handleApiError(e as AxiosError<ErrorResponse>);
-  //     set({ axiosError: errorMessage, newArrivalsLoading: false });
-  //   }
-  // },
-
-
-
-
-
-
-
-loadMoreProducts: async () => {
-  const state = get();
-  const { pageNumber, productsData, productsDataLength, take, currentPage } = state;
-  const alreadyLoaded = productsData.length;
-
-  if (alreadyLoaded >= productsDataLength) return;
-
-  const nextPage = pageNumber + 1;
-
-  try {
-    const res = await axiosInstance.get(
-      `product?page=${nextPage}&take=${take}`
-    );
-
-    if (res.status >= 200 && res.status <= 204) {
-      const newProducts = res.data.data;
-      const dataLength = res.data.productsDataLength;
-
-      const updatedProducts = [...productsData, ...newProducts];
-
-      set((prev) => ({
-        pageNumber: nextPage,
-        productsData: updatedProducts,
-        productsDataLength: dataLength,
-        cachedImagesByPage: {
-          ...prev.cachedImagesByPage,
-          [currentPage]: updatedProducts,
-        },
+  getProductsFromCacheOrApi: async (page: string) => {
+    const state = get();
+    const cached = state.cachedImagesByPage[page];
+    if (cached && cached.length > 0) {
+      set({
+        currentPage: page,
+        productsData: cached,
         isLoading: false,
         axiosError: null,
-      }));
+      });
+    } else {
+      set({
+        currentPage: page,
+        productsData: [],
+        isLoading: true,
+        axiosError: null,
+      });
+      await get().getAllProducts(page);
     }
-  } catch (e) {
-    set({
-      axiosError: handleApiError(e as AxiosError<ErrorResponse>),
-      isLoading: false,
-    });
-  }
-},
+  },
 
+  loadMoreProducts: async () => {
+    const state = get();
+    const { pageNumber, productsData, productsDataLength, take, currentPage } =
+      state;
+    const alreadyLoaded = productsData.length;
+    if (alreadyLoaded >= productsDataLength) return;
+    const nextPage = pageNumber + 1;
+    try {
+      const res = await axiosInstance.get(
+        `product?page=${nextPage}&take=${take}`
+      );
 
+      if (res.status >= 200 && res.status <= 204) {
+        const newProducts = res.data.data;
+        const dataLength = res.data.productsDataLength;
 
+        const updatedProducts = [...productsData, ...newProducts];
 
-
-
-
-
-
-
-
+        set((prev) => ({
+          pageNumber: nextPage,
+          productsData: updatedProducts,
+          productsDataLength: dataLength,
+          cachedImagesByPage: {
+            ...prev.cachedImagesByPage,
+            [currentPage]: updatedProducts,
+          },
+          isLoading: false,
+          axiosError: null,
+        }));
+      }
+    } catch (e) {
+      set({
+        axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+        isLoading: false,
+      });
+    }
+  },
 
   getNewArrivalProductsFromApi: async () => {
     const state = get();
