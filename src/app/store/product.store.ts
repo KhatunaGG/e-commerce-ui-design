@@ -3,6 +3,7 @@ import { ProductsDataType, useShopPageStore } from "./useShopPage.store";
 import axios, { AxiosError } from "axios";
 import { axiosInstance } from "../libs/axiosInstance";
 
+
 export interface ErrorResponse {
   message: string;
 }
@@ -17,6 +18,7 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
 };
 
 export interface IUseProductStore {
+  cashedWishList: Record<string, ProductsDataType[]>;
   productById: ProductsDataType | null;
   isLoading: boolean;
   axiosError: string | null;
@@ -36,15 +38,14 @@ export interface IUseProductStore {
   emojiVisible: boolean;
   setEmojiVisible: (emojiVisible: boolean) => void;
   updateProduct: (id: string, val: boolean) => Promise<void>;
-  // initWishlistData: () => void;
-
-  // updateWishList: (id: string) => Promise<void>
-  getAllWishlist: () => Promise<void>;
+  getAllWishlist: (page: string) => Promise<void>;
   loadMoreWishList: () => void;
   clearWishlist: () => void;
+  setWishlistDataFromCache: (page: string) => void;
 }
 
 export const useProductStore = create<IUseProductStore>((set, get) => ({
+  cashedWishList: {},
   productById: null,
   isLoading: false,
   axiosError: null,
@@ -62,6 +63,7 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
 
   setActiveTab: (activeTab) => set({ activeTab }),
   setSelectedColor: (selectedColor) => set({ selectedColor }),
+
   getProductById: async (id) => {
     set({ isLoading: true, axiosError: null });
     const shopCash = useShopPageStore.getState();
@@ -92,62 +94,6 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
     set({ selectedColor: color });
   },
 
-  // updateProduct: async (id: string, val: boolean) => {
-  //   set({ isLoading: true, axiosError: null });
-  //   const wishlistStatus = val;
-
-  //   try {
-  //     const res = await axiosInstance.patch(`/product/${id}`, {
-  //       wishlist: wishlistStatus,
-  //     });
-  //     if (res.status >= 200 && res.status <= 204) {
-  //       set({wishListStatus: res.data.wishlist})
-  //       const shopStore = useShopPageStore.getState();
-  //       const updatedCachedData = { ...shopStore.cachedImagesByPage };
-  //       Object.keys(updatedCachedData).forEach((page) => {
-  //         updatedCachedData[page] = updatedCachedData[page].map((product) =>
-  //           product._id === id
-  //             ? { ...product, wishlist: wishlistStatus }
-  //             : product
-  //         );
-  //       });
-  //       const updatedProductsData = shopStore.productsData.map((product) =>
-  //         product._id === id
-  //           ? { ...product, wishlist: wishlistStatus }
-  //           : product
-  //       );
-  //       useShopPageStore.setState({
-  //         cachedImagesByPage: updatedCachedData,
-  //         productsData: updatedProductsData,
-  //       });
-  //       // set({
-  //       //   isLoading: false,
-  //       //   axiosError: null,
-  //       // });
-
-  //       console.log(
-  //         shopStore.cachedImagesByPage,
-  //         "cachedImagesByPage form PRODUCT STORE"
-  //       );
-  //       const allProducts = Object.values(shopStore.cachedImagesByPage).flat();
-
-  //       const newWishlist = allProducts.filter(
-  //         (item) => item.wishlist === true
-  //       );
-  //       set({
-  //         isLoading: false,
-  //         axiosError: null,
-  //         wishlistData: newWishlist,
-  //       });
-  //     }
-  //   } catch (e) {
-  //     set({
-  //       isLoading: false,
-  //       axiosError: handleApiError(e as AxiosError<ErrorResponse>),
-  //     });
-  //   }
-  // },
-
   updateProduct: async (id: string, val: boolean) => {
     set({ isLoading: true, axiosError: null });
 
@@ -158,8 +104,6 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
 
       if (res.status >= 200 && res.status <= 204) {
         const wishlistStatus = res.data.wishlist;
-
-        // Update productById if it matches
         const currentProduct = get().productById;
         if (currentProduct && currentProduct._id === id) {
           set({
@@ -169,8 +113,6 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
             },
           });
         }
-
-        // Update cached data and productsData in shop store
         const shopStore = useShopPageStore.getState();
         const updatedCachedData = { ...shopStore.cachedImagesByPage };
 
@@ -187,25 +129,15 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
             ? { ...product, wishlist: wishlistStatus }
             : product
         );
-
         useShopPageStore.setState({
           cachedImagesByPage: updatedCachedData,
           productsData: updatedProductsData,
         });
-
-        // Rebuild wishlistData
-        // const allProducts = Object.values(updatedCachedData).flat();
-        // const newWishlist = allProducts.filter(
-        //   (item) => item.wishlist === true
-        // );
-
         set({
-          // wishlistData: newWishlist,
           wishListStatus: wishlistStatus,
           isLoading: false,
           axiosError: null,
         });
-
       }
     } catch (e) {
       set({
@@ -215,12 +147,13 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
     }
   },
 
-  getAllWishlist: async () => {
+  getAllWishlist: async (wishlistPage: string) => {
     const state = get();
-    const page = state.pageNumber || 1;
-    const take = state.take || 6;
+    if (state.cashedWishList[wishlistPage]?.length > 0) return;
 
     set({ isLoading: true, axiosError: null });
+    const page = state.pageNumber || 1;
+    const take = state.take || 6;
 
     try {
       const res = await axiosInstance.get(
@@ -228,14 +161,23 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
       );
 
       if (res.status >= 200 && res.status <= 204) {
-        console.log(res.data);
-        set({
+        const newWishlist = res.data.data;
+        const wishListLength = res.data.productsDataLength;
+        const updatedWishlistData = [...state.wishlistData, ...newWishlist];
+
+        set((prev) => ({
+          wishlistData: updatedWishlistData,
+          wishlistDataLength: wishListLength,
           isLoading: false,
-          axiosError: "",
-          wishlistData: res.data.data,
-          wishlistDataLength: res.data.productsDataLength,
-        });
+          axiosError: null,
+          cashedWishList: {
+            ...prev.cashedWishList,
+            // [wishlistPage]: updatedWishlistData,
+            [wishlistPage]: newWishlist,
+          },
+        }));
       }
+      console.log(get().cashedWishList, "cashedWishList form WISHLIST");
     } catch (e) {
       set({
         isLoading: false,
@@ -243,6 +185,23 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
       });
     }
   },
+
+  // setWishlistDataFromCache: (page: string) => {
+  //   const cachedData = get().cashedWishList[page];
+  //   if (cachedData) {
+  //     set({ wishlistData: cachedData });
+  //   }
+  // },
+
+setWishlistDataFromCache: async (page: string) => {
+  const cached = get().cashedWishList[page];
+  if (cached) {
+    set({ wishlistData: cached });
+  } else {
+    await get().getAllWishlist(page);
+  }
+},
+
 
   loadMoreWishList: async () => {
     const state = get();
@@ -262,9 +221,9 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
 
       if (res.status >= 200 && res.status <= 204) {
         set({
-          wishlistData: [...wishlistData, ...res.data.data], // Append new data
-          wishlistDataLength: res.data.productsDataLength, // In case total changes
-          pageNumber: nextPage, // ⬅️ Increment page
+          wishlistData: [...wishlistData, ...res.data.data],
+          wishlistDataLength: res.data.productsDataLength,
+          pageNumber: nextPage,
           isLoading: false,
         });
       }
@@ -275,23 +234,6 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
       });
     }
   },
-
-  // loadMoreWishList: async () => {
-  //   const state = get();
-  //   const { pageNumber, wishlistData, wishlistDataLength } = state;
-  //   const alreadyLoaded = wishlistData.length;
-  //   if (alreadyLoaded >= wishlistDataLength) return;
-
-  //   await get().getAllWishlist();
-  // },
-
-  // initWishlistData: () => {
-  //   const shopStore = useShopPageStore.getState();
-  //   const allProducts = Object.values(shopStore.cachedImagesByPage).flat();
-  //   const newWishlist = allProducts.filter((item) => item.wishlist === true);
-  //   set({ wishlistData: newWishlist });
-  // },
-
   clearProduct: () => set({ productById: null }),
   clearWishlist: () => set({ wishlistData: [], pageNumber: 1, take: 6 }),
 }));
