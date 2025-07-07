@@ -7,13 +7,21 @@ export type ShowMoreButtonPropsType = {
 };
 
 const ShowMoreButton = ({ isWishlistPage }: ShowMoreButtonPropsType) => {
-  const { loadMoreProducts, productsData, productsDataLength } =
+  const { loadMoreProducts, productsData, productsDataLength, isLoading } =
     useShopPageStore();
   const { wishlistData, loadMoreWishList, wishlistDataLength } =
     useProductStore();
-const isAllLoaded = isWishlistPage
-  ? wishlistData.length >= wishlistDataLength
-  : productsData.length >= productsDataLength;
+
+  const safeProductsData = productsData || [];
+  const isAllLoaded = isWishlistPage
+    ? wishlistData.length >= wishlistDataLength
+    : safeProductsData.length >= productsDataLength;
+
+
+    console.log(safeProductsData.length, "safeProductsData.length from button")
+    console.log(productsDataLength, "productsDataLength from button")
+
+
   return (
     <button
       onClick={() => {
@@ -23,12 +31,19 @@ const isAllLoaded = isWishlistPage
           loadMoreProducts();
         }
       }}
-      disabled={isAllLoaded}
+      disabled={isAllLoaded || isLoading}
       className={`${
-        isAllLoaded ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
+        isAllLoaded || isLoading
+          ? "opacity-50 cursor-not-allowed"
+          : "hover:opacity-90"
       } text-base font-medium leading-[28px] tracking-[-0.4px] text-[#141718] py-[6px] px-10 rounded-[80px] border border-[#141718]`}
     >
-      {isAllLoaded ? "No more products" : "Show more"}
+      {/* {isAllLoaded ? "No more products" : "Show more"} */}
+      {isAllLoaded
+        ? "No more products"
+        : isLoading
+        ? "Loading..."
+        : "Show more"}
     </button>
   );
 };
