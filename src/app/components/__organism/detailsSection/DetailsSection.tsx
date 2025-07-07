@@ -44,6 +44,7 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
                   src={productById.presignedUrl || "/assets/new_1.png"}
                   alt={`Product thumbnail ${idx + 1}`}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover"
                 />
               </div>
@@ -106,9 +107,10 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
                 <Add />
               </button>
             </div>
-            <WishlistButton params={params}
-            //  wishlist={productById.wishlist}
-              />
+            <WishlistButton
+              params={params}
+              //  wishlist={productById.wishlist}
+            />
           </div>
           <AddToCartButton />
         </div>

@@ -117,8 +117,7 @@ const Product = ({
   params,
   wishlist
 
-}: // presignedUrl,
-// imageName
+}:
 ProductPropsType) => {
 
   return (
@@ -147,6 +146,12 @@ ProductPropsType) => {
           alt={productName}
           fill
           className="object-cover"
+
+          
+            sizes="
+    (min-width: 768px) 729px,
+    100vw
+  "
         />
         {(!params && !sortByTwoHorizontally) && (
           <div className="w-full px-4 absolute bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-400">

@@ -15,6 +15,39 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   return unexpectedError;
 };
 
+export type CategoryFilter =
+  | "All Rooms"
+  | "Living Room"
+  | "Bedroom"
+  | "Kitchen"
+  | "Bathroom"
+  | "Dinning"
+  | "Outdoor"
+  | null;
+
+export type PriceFilter =
+  | "All Price"
+  | "0.00 - 99.99"
+  | "100.00 - 199.99"
+  | "200.00 - 299.99"
+  | "300.00 - 399.99"
+  | "400.00+"
+  | null;
+
+export type SortByType =
+  | "Sort By"
+  | "Latest"
+  | "Oldest"
+  | "A to Z"
+  | "Z to A"
+  | "Highest"
+  | "Lowest";
+
+export interface FiltersType {
+  category: CategoryFilter;
+  priceRange: PriceFilter;
+}
+
 export type ProductsDataType = {
   productName: string;
   filePath?: string;
@@ -53,12 +86,17 @@ export interface IUseShopPageStore {
   productsDataLength: number;
   newArrivalProducts: [];
   rating: number;
-  setRating: (rating: number) => void;
+  sortBy: string;
+  filters: FiltersType;
 
+  cachedDataLengthByKey: Record<string, number>;
+
+  setSortBy: (sortBy: string) => void;
+  setFilters: (filters: FiltersType) => void;
+  setRating: (rating: number) => void;
   setCachedImagesByPage: (
     cachedImages: Record<string, ProductsDataType[]>
   ) => void;
-
   setCurrentPage: (currentPage: string) => void;
   setsSortedByFour: (v: boolean) => void;
   setSortByTwoVertically: (v: boolean) => void;
@@ -81,7 +119,15 @@ export interface IUseShopPageStore {
   // handleRate: (rate: number, id: string) => void;
   normalizeFirstChar: (str: string) => string | undefined;
   calculateDiscount: (price?: number, discount?: number) => string;
-  getProductsFromCacheOrApi: (page: string) => Promise<void>
+  getProductsFromCacheOrApi: (page: string) => Promise<void>;
+
+  applyFilters: (filters: FiltersType, sortBy: string) => Promise<void>;
+  createCacheKey: (
+    page: number,
+    category: string | null,
+    priceRange: string | null,
+    sortBy: string
+  ) => string;
 }
 
 export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
@@ -102,6 +148,23 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
   cachedNewArrivalsByPage: {},
 
   rating: 0,
+
+  cachedDataLengthByKey: {},
+
+  sortBy: "Sort By",
+  setSortBy: (sortBy: string) => set({ sortBy }),
+  filters: {
+    category: null,
+    priceRange: null,
+  },
+
+  setFilters: (filters: FiltersType) => {
+    set({
+      filters,
+      pageNumber: 1,
+    });
+  },
+
   setRating: (rating: number) => set({ rating }),
 
   // handleRate: (rate, id) => {}, // !!!!!!!!!!!!!!
@@ -175,56 +238,93 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
     });
   },
 
-  // getAllProducts: async (page: string) => {
-  //   const state = get();
-  //   if (state.cachedImagesByPage[page]?.length > 0) {
-  //     return;
-  //   }
-  //   set({ isLoading: true, axiosError: null });
-  //   const { pageNumber, take } = state;
-
-  //   try {
-  //     const res = await axiosInstance.get(
-  //       `product?page=${pageNumber}&take=${take}`
-  //     );
-  //     if (res.status >= 200 && res.status <= 204) {
-  //       const newProducts = res.data.data;
-  //       const dataLength = res.data.productsDataLength;
-  //       const updatedProducts = [...state.productsData, ...newProducts];
-  //       set((prev) => ({
-  //         productsData: updatedProducts,
-  //         productsDataLength: dataLength,
-  //         isLoading: false,
-  //         axiosError: null,
-  //         cachedImagesByPage: {
-  //           ...prev.cachedImagesByPage,
-  //           [page]: updatedProducts,
-  //         },
-  //       }));
-  //     }
-  //     console.log(get().cachedImagesByPage, "cachedImagesByPage form HOME");
-  //   } catch (e) {
-  //     const errorMessage = handleApiError(e as AxiosError<ErrorResponse>);
-  //     set({
-  //       axiosError: errorMessage,
-  //       isLoading: false,
-  //       productsData: [],
-  //     });
-  //   }
-  // },
-
-  getAllProducts: async (page: string) => {
+  applyFilters: async (filters: FiltersType) => {
     const state = get();
-    const cached = state.cachedImagesByPage[page];
-    if (cached && cached.length > 0) {
+    const currentFilters = state.filters;
+    const areFiltersEqual =
+      currentFilters.category === filters.category &&
+      currentFilters.priceRange === filters.priceRange;
+
+    if (areFiltersEqual) {
       return;
     }
-    set({ isLoading: true, axiosError: null });
-    const { pageNumber, take } = state;
+    const normalizedSortBy = state.sortBy === "Sort By" ? "" : state.sortBy;
+    const newCacheKey = state.createCacheKey(
+      1,
+      filters.category,
+      filters.priceRange,
+      normalizedSortBy
+    );
+    const cachedData = state.cachedImagesByPage[newCacheKey];
+    const cachedDataLength = state.cachedDataLengthByKey?.[newCacheKey];
+    if (cachedData && cachedData.length > 0) {
+      set({
+        filters,
+        pageNumber: 1,
+        productsData: cachedData,
+        productsDataLength: cachedDataLength || cachedData.length,
+        isLoading: false,
+        axiosError: null,
+      });
+      return;
+    }
+    set({
+      filters,
+      pageNumber: 1,
+      productsData: [],
+      isLoading: true,
+      axiosError: null,
+    });
+
+    await get().getAllProducts("1");
+  },
+
+  createCacheKey: (
+    page: number,
+    category: string | null,
+    priceRange: string | null,
+    sortBy: string
+  ): string => {
+    return `page=${page}&category=${category ?? ""}&priceRange=${
+      priceRange ?? ""
+    }&sortBy=${sortBy ?? ""}`;
+  },
+
+  getAllProducts: async () => {
+    const state = get();
+    const { pageNumber, take, filters, createCacheKey, sortBy } = state;
+    const normalizedSortBy = sortBy === "Sort By" ? "" : sortBy;
+    const cacheKey = createCacheKey(
+      pageNumber,
+      filters.category,
+      filters.priceRange,
+      normalizedSortBy
+    );
+    const cached = state.cachedImagesByPage[cacheKey];
+    const cachedDataLength = state.cachedDataLengthByKey?.[cacheKey];
+
+    if (cached && cached.length > 0) {
+      set({
+        productsData: cached,
+        isLoading: false,
+        axiosError: null,
+        productsDataLength: cachedDataLength || cached.length,
+      });
+
+      return;
+    } else {
+      set({ isLoading: true, axiosError: null });
+    }
+
+    let query = `product?page=${pageNumber}&take=${take}`;
+    if (filters.category) query += `&category=${filters.category}`;
+    if (filters.priceRange) query += `&priceRange=${filters.priceRange}`;
+    if (typeof sortBy === "string" && sortBy !== "Sort By") {
+      query += `&sortBy=${sortBy.toLowerCase()}`;
+    }
+
     try {
-      const res = await axiosInstance.get(
-        `product?page=${pageNumber}&take=${take}`
-      );
+      const res = await axiosInstance.get(query);
       if (res.status >= 200 && res.status <= 204) {
         const newProducts = res.data.data;
         const dataLength = res.data.productsDataLength;
@@ -233,12 +333,18 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
           productsDataLength: dataLength,
           isLoading: false,
           axiosError: null,
+          pageNumber: 1,
           cachedImagesByPage: {
             ...prev.cachedImagesByPage,
-            [page]: newProducts,
+            [cacheKey]: newProducts,
+          },
+          cachedDataLengthByKey: {
+            ...prev.cachedDataLengthByKey,
+            [cacheKey]: dataLength,
           },
         }));
       }
+      // console.log(get().productsDataLength, "productsDataLength from getAllProducts")
     } catch (e) {
       set({
         axiosError: handleApiError(e as AxiosError<ErrorResponse>),
@@ -271,21 +377,41 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
 
   loadMoreProducts: async () => {
     const state = get();
-    const { pageNumber, productsData, productsDataLength, take, currentPage } =
-      state;
+    const {
+      pageNumber,
+      productsData,
+      productsDataLength,
+      take,
+      filters,
+      sortBy,
+      createCacheKey,
+    } = state;
+
     const alreadyLoaded = productsData.length;
     if (alreadyLoaded >= productsDataLength) return;
-    const nextPage = pageNumber + 1;
+    const nextPage = (pageNumber || 1) + 1;
+
+    let query = `product?page=${nextPage}&take=${take}`;
+    if (filters.category) query += `&category=${filters.category}`;
+    if (filters.priceRange) query += `&priceRange=${filters.priceRange}`;
+    if (typeof sortBy === "string" && sortBy !== "Sort By") {
+      query += `&sortBy=${sortBy.toLowerCase()}`;
+    }
     try {
-      const res = await axiosInstance.get(
-        `product?page=${nextPage}&take=${take}`
-      );
+      const res = await axiosInstance.get(query);
 
       if (res.status >= 200 && res.status <= 204) {
         const newProducts = res.data.data;
         const dataLength = res.data.productsDataLength;
 
         const updatedProducts = [...productsData, ...newProducts];
+        const normalizedSortBy = sortBy === "Sort By" ? "" : sortBy;
+        const cacheKey = createCacheKey(
+          1,
+          filters.category,
+          filters.priceRange,
+          normalizedSortBy
+        );
 
         set((prev) => ({
           pageNumber: nextPage,
@@ -293,7 +419,11 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
           productsDataLength: dataLength,
           cachedImagesByPage: {
             ...prev.cachedImagesByPage,
-            [currentPage]: updatedProducts,
+            [cacheKey]: updatedProducts,
+          },
+          cachedDataLengthByKey: {
+            ...prev.cachedDataLengthByKey,
+            [cacheKey]: dataLength,
           },
           isLoading: false,
           axiosError: null,
@@ -311,13 +441,10 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
     const state = get();
     const pageKey = "home";
     const shopKey = "shop";
-
     if (state.cachedNewArrivalsByPage[pageKey]?.length > 0) {
       return;
     }
-
     set({ newArrivalsLoading: true, axiosError: null });
-
     try {
       const res = await axiosInstance.get("/product/new-arrivals");
       if (res.status >= 200 && res.status <= 204) {
@@ -328,12 +455,10 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
             ...prev.cachedNewArrivalsByPage,
             [pageKey]: newProducts,
           },
-
           cachedImagesByPage: {
             ...prev.cachedImagesByPage,
             [shopKey]: newProducts,
           },
-
           newArrivalsLoading: false,
           axiosError: null,
         }));
@@ -356,6 +481,8 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
       productsData: [],
       isLoading: false,
       axiosError: null,
+      cachedImagesByPage: {},
+      cachedDataLengthByKey: {},
     });
   },
   clearCurrentPageData: () =>

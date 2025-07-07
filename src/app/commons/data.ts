@@ -24,6 +24,7 @@ export const labels = [
 export const sortIcons = ["FirstFilterIcon", "SecondFilterIcon", "ThirdFilterIcon", "FourthFilterIcon" ]
 
 export const categoriesFilter = [
+  "All Rooms",
   "Living Room",
   "Bedroom",
   "Kitchen",
@@ -34,6 +35,7 @@ export const categoriesFilter = [
 
 
 export const priceFilter = [
+  "All Price",
   "0.00 - 99.99",
   "100.00 - 199.99",
   "200.00 - 299.99",
@@ -59,6 +61,17 @@ export const sortBy = [
   "Highest",
   "Lowest",
 ];
+
+
+// export const sortByOptions = {
+//   "Latest": "latest",
+//   "Oldest": "oldest",
+//   "A to Z": "a-z",
+//   "Z to A": "z-a",
+//   "Highest": "highest",
+//   "Lowest": "lowest",
+// };
+
 
 
 export const emojis = ['😀', '😂', '😍', '😢', '😠', '👍', '🙏', '💯'];

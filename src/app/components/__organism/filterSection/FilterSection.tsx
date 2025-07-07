@@ -1,9 +1,39 @@
+"use client";
 import { categoriesFilter, priceFilter } from "../../../commons/data";
 import Checkbox from "../../__molecules/checkbox/Checkbox";
 import { Filter } from "../../__atoms";
+import {
+  CategoryFilter,
+  PriceFilter,
+  useShopPageStore,
+} from "@/app/store/useShopPage.store";
 
 const FilterSection = () => {
-  
+  const currentCategory = useShopPageStore.getState().filters.category;
+  const currentPriceRange = useShopPageStore.getState().filters.priceRange;
+
+  const handleCategoryChange = (category: CategoryFilter) => {
+    const normalizedCategory = category === "All Rooms" ? null : category;
+    useShopPageStore.getState().applyFilters(
+      {
+        category: normalizedCategory,
+        priceRange: currentPriceRange,
+      },
+      useShopPageStore.getState().sortBy
+    );
+  };
+
+  const handlePriceChange = (priceRange: PriceFilter) => {
+    const normalizePriceRange = priceRange === "All Price" ? null : priceRange;
+    useShopPageStore.getState().applyFilters(
+      {
+        category: currentCategory,
+        priceRange: normalizePriceRange,
+      },
+      useShopPageStore.getState().sortBy
+    );
+  };
+
   return (
     <section className="w-full hidden  h-full md:w-[40%] lg:w-[22.67%] md:flex flex-col items-start justify-start md:gap-8">
       <div className="flex items-center  gap-2">
@@ -12,21 +42,21 @@ const FilterSection = () => {
           Filter
         </p>
       </div>
-
-      {/* <div className="DIV_1 flex flex-col items-start gap-4 max-h-[200px] overflow-y-auto "> */}
       <div className="w-full flex flex-col gap-4 max-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-400">
         <h2 className="font-semibold text-base leading-[26px] text-[#121212] uppercase">
           categories
         </h2>
-        <p className="font-semibold text-sm leading-[22px] text-[#807E7E]">
-          All Rooms
-        </p>
         {Array.isArray(categoriesFilter) && categoriesFilter.length > 0 ? (
           categoriesFilter.map((category, i) => (
             <button
-            type="button"
+              onClick={() => handleCategoryChange(category as CategoryFilter)}
+              type="button"
               key={i}
-              className="font-semibold text-sm leading-[22px] text-[#807E7E] flex items-start"
+              className={`${
+                currentCategory === category
+                  ? "font-bold underline"
+                  : "font-semibold "
+              } text-sm leading-[22px] text-[#807E7E] flex items-start cursor-pointer`}
             >
               {category}
             </button>
@@ -40,11 +70,7 @@ const FilterSection = () => {
         <h2 className="font-semibold md:text-sm lg:text-base leading-[26px] text-[#121212] uppercase">
           Price
         </h2>
-        <p className="font-semibold text-sm leading-[22px] text-[#807E7E]">
-          All Price
-        </p>
-
-        {priceFilter.map((price) => {
+        {/* {priceFilter.map((price) => {
           const id = `price-${price}`;
           return (
             <div
@@ -53,13 +79,49 @@ const FilterSection = () => {
             >
               <label
                 htmlFor={id}
-                className="font-semibold md:text-sm lg:text-base leading-[26px] cursor-pointer"
+                className={`${
+                  currentPriceRange === price
+                    ? "font-bold underline"
+                    : " font-semibold"
+                } md:text-sm lg:text-base leading-[26px] cursor-pointer`}
               >
                 {price}
               </label>
-              <Checkbox 
-              // id={id}
-               />
+
+              <Checkbox
+                id={id}
+                checked={currentPriceRange === price}
+                onChange={() => handlePriceChange(price as PriceFilter)}
+              />
+            </div>
+          );
+        })} */}
+        {priceFilter.map((price) => {
+          const id = `price-${price}`;
+          return (
+            <div
+              key={id}
+              className="w-full flex items-center justify-between text-[#807E7E]"
+            >
+              <label
+                htmlFor={id}
+                className={`${
+                  currentPriceRange === price
+                    ? "font-bold underline"
+                    : "font-semibold"
+                } md:text-sm lg:text-base leading-[26px] cursor-pointer`}
+                onClick={() => handlePriceChange(price as PriceFilter)}
+              >
+                {price}
+              </label>
+
+              {price !== "All Price" && (
+                <Checkbox
+                  id={id}
+                  checked={currentPriceRange === price}
+                  onChange={() => handlePriceChange(price as PriceFilter)}
+                />
+              )}
             </div>
           );
         })}

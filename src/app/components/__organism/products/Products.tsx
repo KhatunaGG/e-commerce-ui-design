@@ -138,7 +138,7 @@ const Products = () => {
           ${resortedStyles} 
         w-full  grid  h-full gap-y-4 gap-x-2 md:gap-y-6 md:gap-x-6`}
         >
-          {productsData.length > 0 &&
+          {Array.isArray(productsData) && productsData.length > 0 &&
             productsData.map((product) => (
               <Link key={product._id} href={`/shop/${product._id}`}>
                 <div
@@ -166,17 +166,6 @@ const Products = () => {
 
       <div className="w-ful flex items-center justify-center">
         <ShowMoreButton />
-        {/* <button
-          type="button"
-          onClick={loadMoreProducts}
-          disabled={isAllLoaded}
-          // className={` text-base font-medium leading-[28px] tracking-[-0.4px] text-[#141718] py-[6px] px-10 rounded-[80px] border border-[#141718]`}
-          className={`${
-            isAllLoaded ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"
-          } text-base font-medium leading-[28px] tracking-[-0.4px] text-[#141718] py-[6px] px-10 rounded-[80px] border border-[#141718]`}
-        >
-          {isAllLoaded ? "No more products" : "Show more"}
-        </button> */}
       </div>
     </section>
   );
