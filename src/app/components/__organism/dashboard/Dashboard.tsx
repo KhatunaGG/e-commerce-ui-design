@@ -1,85 +1,3 @@
-// "use client";
-// import { usePathname } from "next/navigation";
-// import { useEffect, useMemo } from "react";
-// import { AnimateSpin, SubText } from "../../__molecules";
-// import Hero from "../hero/Hero";
-// import ByRooms from "../byRooms/ByRooms";
-// import NewArrivals from "../newArrivals/NewArrivals";
-// import Info from "../info/Info";
-// import SaleOffer from "../saleOffer/SaleOffer";
-// import Articles from "../articles/Articles";
-// import { useHomePageStore } from "@/app/store/useHomePage.store.";
-
-// const Dashboard = () => {
-//   const { isLoading, getCurrentPage, imagesData  } =
-//     useHomePageStore();
-//   const path = usePathname();
-
-//   const page = useMemo(
-//     () => path?.split("/").filter(Boolean).pop() || "home",
-//     [path]
-//   );
-
-//   useEffect(() => {
-//     getCurrentPage(page);
-//       return () => {
-//       useHomePageStore.getState().clearImagesData();
-//   };
-//   }, [page, getCurrentPage]);
-
-//   const heroImages = useMemo(() => {
-//     const filtered =
-//       imagesData.filter((img) => img.componentUsage?.includes("hero")) || [];
-//     return filtered;
-//   }, [imagesData]);
-
-//   const byRoomImages = useMemo(() => {
-//     const filtered =
-//       imagesData.filter((img) => img.componentUsage?.includes("byroom")) || [];
-//     return filtered;
-//   }, [imagesData]);
-
-//   const newArrivalsImages = useMemo(() => {
-//     const filtered =
-//       imagesData.filter((img) => img.componentUsage?.includes("newarrivals")) ||
-//       [];
-//     return filtered;
-//   }, [imagesData]);
-
-//   const saleOfferImages = useMemo(() => {
-//     const filtered =
-//       imagesData.filter((img) => img.componentUsage?.includes("saleoffer")) ||
-//       [];
-//     return filtered;
-//   }, [imagesData]);
-
-//   const articleImages = useMemo(() => {
-//     const filtered =
-//       imagesData.filter((img) => img.componentUsage?.includes("article")) || [];
-//     return filtered;
-//   }, [imagesData]);
-
-//   if (isLoading) {
-//     return <AnimateSpin />;
-//   }
-
-//   return (
-//     <section className="w-full">
-//       <div className="w-full h-full flex flex-col">
-//         <Hero images={heroImages} />
-//         <SubText />
-//         <ByRooms images={byRoomImages} />
-//         <NewArrivals images={newArrivalsImages} />
-//         <Info />
-//         <SaleOffer images={saleOfferImages} />
-//         <Articles images={articleImages} />
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default Dashboard;
-
 "use client";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useCallback } from "react";
@@ -102,12 +20,9 @@ const Dashboard = () => {
     clearCurrentPageData,
     axiosError,
   } = useHomePageStore();
-  // const { newArrivalProducts, getNewArrivalProductsFromApi } = useShopPageStore();
-    const {
-    cachedNewArrivalsByPage,
-    getNewArrivalProductsFromApi,
 
-  } = useShopPageStore();
+  const { cachedNewArrivalsByPage, getNewArrivalProductsFromApi } =
+    useShopPageStore();
 
   const page = useMemo(
     () => path?.split("/").filter(Boolean).pop() || "home",
@@ -125,20 +40,11 @@ const Dashboard = () => {
     };
   }, [handlePageChange, clearCurrentPageData]);
 
-
-
-
-
   useEffect(() => {
     getNewArrivalProductsFromApi();
   }, [getNewArrivalProductsFromApi]);
 
   const newArrivalProducts = cachedNewArrivalsByPage?.["home"] ?? [];
-
-
-
-
-
 
   const heroImages = useMemo(() => {
     if (!imagesData || !Array.isArray(imagesData)) return [];
@@ -149,17 +55,6 @@ const Dashboard = () => {
     if (!imagesData || !Array.isArray(imagesData)) return [];
     return imagesData.filter((img) => img.componentUsage?.includes("byroom"));
   }, [imagesData]);
-
-  // const newArrivalsImages = useMemo(() => {
-  //   if (!imagesData || !Array.isArray(imagesData)) return [];
-  //   return imagesData.filter((img) =>
-  //     img.componentUsage?.includes("newarrivals")
-  //   );
-  // }, [imagesData]);
-
-  // useEffect(() => {
-  //   console.log("New Arrival Products:", newArrivalProducts);
-  // }, [newArrivalProducts]);
 
   const saleOfferImages = useMemo(() => {
     if (!imagesData || !Array.isArray(imagesData)) return [];
@@ -187,12 +82,13 @@ const Dashboard = () => {
 
   return (
     <section className="w-full">
+     
+      {/* {showNavbar && <Navbar />} */}
       <div className="w-full h-full flex flex-col">
         <Hero images={heroImages} />
         <SubText />
         <ByRooms images={byRoomImages} />
         <NewArrivals images={newArrivalProducts} />
-        {/* <NewArrivals products={newArrivalProducts} /> */}
         <Info />
         <SaleOffer images={saleOfferImages} />
         <Articles images={articleImages} />

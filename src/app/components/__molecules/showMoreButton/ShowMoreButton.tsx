@@ -17,11 +17,6 @@ const ShowMoreButton = ({ isWishlistPage }: ShowMoreButtonPropsType) => {
     ? wishlistData.length >= wishlistDataLength
     : safeProductsData.length >= productsDataLength;
 
-
-    console.log(safeProductsData.length, "safeProductsData.length from button")
-    console.log(productsDataLength, "productsDataLength from button")
-
-
   return (
     <button
       onClick={() => {

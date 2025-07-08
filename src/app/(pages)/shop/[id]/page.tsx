@@ -1,7 +1,4 @@
-// app/shop/[id]/page.tsx
-
 import { ProductDetails } from "@/app/components/__organism";
-
 interface PageProps {
   params: Promise<{ id: string }>;
 }
@@ -9,9 +6,9 @@ interface PageProps {
 export default async function ProductPage({ params }: PageProps) {
   const { id } = await params;
 
-  return (<>
-  <ProductDetails params={id} />
-  {/* <Tabs /> */}
-  
-  </>);
+  return (
+    <>
+      <ProductDetails params={id} />
+    </>
+  );
 }

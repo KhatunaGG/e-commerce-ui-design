@@ -1,9 +1,10 @@
 // import Image from "next/image";
-// import { Label } from "../../__molecules";
+// import { AddToCartButton, Label } from "../../__molecules";
+// import { useCartStore } from "@/app/store/cart.store";
 
 // export type ProductPropsType = {
 //   sortByTwoHorizontally?: boolean;
-//   newProduct?: boolean;
+//   newProduct: boolean;
 //   discount: number;
 //   image?: string;
 //   productName: string;
@@ -11,6 +12,7 @@
 //   rate: number;
 //   details: string;
 //   _id: string;
+//   wishlist: boolean;
 //   // presignedUrl?: string
 //   // imageName?: string
 
@@ -28,12 +30,21 @@
 //   details,
 //   _id,
 //   params,
-// }: // presignedUrl,
-// // imageName
+//   wishlist
+
+// }:
 // ProductPropsType) => {
+//   // const currentPriceRange = useShopPageStore.getState().filters.priceRange;
+//     // const handleShowNavbar = useCartStore((state) => state.handleShowNavbar);
+//   const addProductToCart = useCartStore((state) => state.addProductToCart)
+
 //   return (
 //     <>
-//       <div className="PRODUCT w-full h-[349px] relative group ">
+//       <div
+//         className={`PRODUCT w-full relative group ${
+//           params ? "h-[414px] md:h-[729px]" : "h-[203px] md:h-[349px]"
+//         }`}
+//       >
 //         <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
 //           {newProduct && (
 //             <div className="py-1 px-[14px] text-xs font-bold leading-4 uppercase text-[#141718] rounded-sm bg-white">
@@ -50,22 +61,19 @@
 //         </div>
 //         <Image
 //           src={image || "/assets/new_1.png"}
-//           alt={productName || "Product image"}
-//           width={262}
-//           height={349}
-//           className="w-full h-full object-cover"
-//         />
-//         {!params && (
+//           alt={productName}
+//           fill
+//           className="object-cover"
 
-//         <div className="w-full px-4 absolute bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-400">
-//           <button
-//             className={`${
-//               sortByTwoHorizontally ? "opacity-0" : "opacity-100"
-//             } w-full bg-[#141718] text-white rounded-lg py-[6.29px] lg:py-[9px] text-base font-medium leading-[28px] tracking-[-0.4px] hover:bg-gray-800 transition-colors`}
-//           >
-//             Add to cart
-//           </button>
-//         </div>
+//             sizes="
+//     (min-width: 768px) 729px,
+//     100vw
+//   "
+//         />
+//         {(!params && !sortByTwoHorizontally) && (
+//           <div className="w-full px-4 absolute bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-400">
+//             <AddToCartButton  sortByTwoHorizontally={sortByTwoHorizontally} />
+//           </div>
 //         )}
 //       </div>
 //       {!params && (
@@ -76,6 +84,9 @@
 //           discount={discount}
 //           details={details}
 //           _id={_id}
+//           newProduct={newProduct}
+//           wishlist={wishlist}
+//           // addProductToCart{}
 //         />
 //       )}
 //     </>
@@ -86,6 +97,7 @@
 
 import Image from "next/image";
 import { AddToCartButton, Label } from "../../__molecules";
+import { useCartStore } from "@/app/store/cart.store";
 
 export type ProductPropsType = {
   sortByTwoHorizontally?: boolean;
@@ -115,10 +127,14 @@ const Product = ({
   details,
   _id,
   params,
-  wishlist
+  wishlist,
+}: ProductPropsType) => {
+  // const currentPriceRange = useShopPageStore.getState().filters.priceRange;
+  // const handleShowNavbar = useCartStore((state) => state.handleShowNavbar);
+  const addProductToCart = useCartStore((state) => state.addProductToCart);
 
-}:
-ProductPropsType) => {
+
+
 
   return (
     <>
@@ -146,16 +162,18 @@ ProductPropsType) => {
           alt={productName}
           fill
           className="object-cover"
-
-          
-            sizes="
+          sizes="
     (min-width: 768px) 729px,
     100vw
   "
         />
-        {(!params && !sortByTwoHorizontally) && (
+        {!params && !sortByTwoHorizontally && (
           <div className="w-full px-4 absolute bottom-4 opacity-0 group-hover:opacity-100 transition-opacity duration-400">
-            <AddToCartButton  sortByTwoHorizontally={sortByTwoHorizontally} />
+            <AddToCartButton
+              // sortByTwoHorizontally={sortByTwoHorizontally}
+
+              onClick={() => addProductToCart(_id)}
+            />
           </div>
         )}
       </div>
@@ -169,6 +187,7 @@ ProductPropsType) => {
           _id={_id}
           newProduct={newProduct}
           wishlist={wishlist}
+          // addProductToCart{}
         />
       )}
     </>
