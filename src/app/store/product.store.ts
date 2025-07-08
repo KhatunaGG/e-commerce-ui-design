@@ -90,6 +90,7 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
       });
     }
   },
+  
   getProductColor: (color: string) => {
     set({ selectedColor: color });
   },

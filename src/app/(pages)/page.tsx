@@ -1,4 +1,3 @@
-// import Image from "next/image";
 import Dashboard from "../components/__organism/dashboard/Dashboard";
 export default function Home() {
   return (
@@ -7,6 +6,3 @@ export default function Home() {
     </section>
   );
 }
-
-
-//bg-green-300

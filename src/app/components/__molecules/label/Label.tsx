@@ -71,7 +71,10 @@ const Label = ({
             path === "/" && "hidden"
           } w-full flex flex-col gap-2 md:gap-4`}
         >
-          <AddToCartButton sortByTwoHorizontally={sortByTwoHorizontally} />
+          <AddToCartButton 
+          // sortByTwoHorizontally={sortByTwoHorizontally} 
+          
+          />
           <WishlistButton 
           // wishlist={wishlist}
           

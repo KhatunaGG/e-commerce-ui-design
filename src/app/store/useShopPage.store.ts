@@ -128,6 +128,7 @@ export interface IUseShopPageStore {
     priceRange: string | null,
     sortBy: string
   ) => string;
+    mapSortValueToBackend: (sortValue: string) => string;
 }
 
 export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
@@ -279,6 +280,20 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
     await get().getAllProducts("1");
   },
 
+    mapSortValueToBackend: (sortValue: string): string => {
+    const mapping: Record<string, string> = {
+      "Sort By": "",
+      "Latest": "latest",
+      "Oldest": "oldest",
+      "A to Z": "a-z",
+      "Z to A": "z-a", 
+      "Highest": "highest",
+      "Lowest": "lowest",
+    };
+    return mapping[sortValue] || "";
+  },
+
+
   createCacheKey: (
     page: number,
     category: string | null,
@@ -292,13 +307,14 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
 
   getAllProducts: async () => {
     const state = get();
-    const { pageNumber, take, filters, createCacheKey, sortBy } = state;
-    const normalizedSortBy = sortBy === "Sort By" ? "" : sortBy;
+    const { pageNumber, take, filters, createCacheKey, sortBy, mapSortValueToBackend } = state;
+    const backendSortValue = mapSortValueToBackend(sortBy);
     const cacheKey = createCacheKey(
       pageNumber,
       filters.category,
       filters.priceRange,
-      normalizedSortBy
+      // normalizedSortBy
+      backendSortValue
     );
     const cached = state.cachedImagesByPage[cacheKey];
     const cachedDataLength = state.cachedDataLengthByKey?.[cacheKey];
@@ -319,9 +335,9 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
     let query = `product?page=${pageNumber}&take=${take}`;
     if (filters.category) query += `&category=${filters.category}`;
     if (filters.priceRange) query += `&priceRange=${filters.priceRange}`;
-    if (typeof sortBy === "string" && sortBy !== "Sort By") {
-      query += `&sortBy=${sortBy.toLowerCase()}`;
-    }
+    if (backendSortValue) {
+    query += `&sortBy=${backendSortValue}`;
+  }
 
     try {
       const res = await axiosInstance.get(query);
@@ -344,7 +360,9 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
           },
         }));
       }
-      // console.log(get().productsDataLength, "productsDataLength from getAllProducts")
+      console.log(get().cachedImagesByPage, "cachedImagesByPage from getAllProducts STORE")
+      // console.log(get().productsData, "productsData from getAllProducts Store")
+
     } catch (e) {
       set({
         axiosError: handleApiError(e as AxiosError<ErrorResponse>),
@@ -389,14 +407,19 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
 
     const alreadyLoaded = productsData.length;
     if (alreadyLoaded >= productsDataLength) return;
+
     const nextPage = (pageNumber || 1) + 1;
+    const {mapSortValueToBackend} = state
+    const backendSortValue = mapSortValueToBackend(sortBy);
 
     let query = `product?page=${nextPage}&take=${take}`;
     if (filters.category) query += `&category=${filters.category}`;
     if (filters.priceRange) query += `&priceRange=${filters.priceRange}`;
-    if (typeof sortBy === "string" && sortBy !== "Sort By") {
-      query += `&sortBy=${sortBy.toLowerCase()}`;
-    }
+ if (backendSortValue) {
+    query += `&sortBy=${backendSortValue}`;
+  }
+
+  console.log(get().cachedImagesByPage, "cachedImagesByPage from LOAD MORE PRODUCTS")
     try {
       const res = await axiosInstance.get(query);
 
@@ -405,12 +428,13 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
         const dataLength = res.data.productsDataLength;
 
         const updatedProducts = [...productsData, ...newProducts];
-        const normalizedSortBy = sortBy === "Sort By" ? "" : sortBy;
         const cacheKey = createCacheKey(
           1,
           filters.category,
           filters.priceRange,
-          normalizedSortBy
+          // normalizedSortBy
+          backendSortValue
+
         );
 
         set((prev) => ({

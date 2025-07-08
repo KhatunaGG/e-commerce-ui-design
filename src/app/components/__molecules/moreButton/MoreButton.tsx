@@ -9,7 +9,7 @@ const MoreButton = ({ handleMoreProducts, styleClass }: MoreButtonPropsType) => 
   return (
     <button
       onClick={handleMoreProducts}
-      className={`flex items-center gap-2 hover:opacity-70 transition-opacity cursor-pointer ${styleClass}`}
+      className={`flex items-center gap-2 hover:opacity-70 transition-opacity cursor-pointer  pl-[8.53%]  ${styleClass}`}
     >
       <p className="text-[#141718] text-base font-medium leading-[28px] tracking-[-0.4px]">
         More Products
