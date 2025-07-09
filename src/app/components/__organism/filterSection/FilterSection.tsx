@@ -5,34 +5,38 @@ import { Filter } from "../../__atoms";
 import {
   CategoryFilter,
   PriceFilter,
-  useShopPageStore,
 } from "@/app/store/useShopPage.store";
+import { useShopStore } from "@/app/store/shop-page.store";
 
 const FilterSection = () => {
-  const currentCategory = useShopPageStore.getState().filters.category;
-  const currentPriceRange = useShopPageStore.getState().filters.priceRange;
+  // const currentCategory = useShopStore.getState().filters.category;
+  // const currentPriceRange = useShopStore.getState().filters.priceRange;
+  const currentCategory = useShopStore((state) => state.filters.category);
+const currentPriceRange = useShopStore((state) => state.filters.priceRange);
 
   const handleCategoryChange = (category: CategoryFilter) => {
     const normalizedCategory = category === "All Rooms" ? null : category;
-    useShopPageStore.getState().applyFilters(
+    useShopStore.getState().applyFilters(
       {
         category: normalizedCategory,
         priceRange: currentPriceRange,
       },
-      useShopPageStore.getState().sortBy
+      useShopStore.getState().sortBy
     );
   };
 
   const handlePriceChange = (priceRange: PriceFilter) => {
     const normalizePriceRange = priceRange === "All Price" ? null : priceRange;
-    useShopPageStore.getState().applyFilters(
+    useShopStore.getState().applyFilters(
       {
         category: currentCategory,
         priceRange: normalizePriceRange,
       },
-      useShopPageStore.getState().sortBy
+      useShopStore.getState().sortBy
     );
   };
+
+
 
   return (
     <section className="w-full hidden  h-full md:w-[40%] lg:w-[22.67%] md:flex flex-col items-start justify-start md:gap-8">

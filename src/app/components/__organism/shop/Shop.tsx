@@ -85,6 +85,7 @@ import FilterSection from "../filterSection/FilterSection";
 import Products from "../products/Products";
 import { useShopPageStore } from "@/app/store/useShopPage.store";
 import { useHomePageStore } from "@/app/store/useHomePage.store.";
+import { useShopStore } from "@/app/store/shop-page.store";
 
 const Shop = () => {
   const pathName = usePathname();
@@ -101,12 +102,14 @@ const Shop = () => {
   } = useHomePageStore();
   const {
     isLoading: shopLoading,
-    getProductsFromCacheOrApi,
+    // getProductsFromCacheOrApi,
     clearCurrentPageData: clearShopPageData,
     sortedByFour,
     sortByTwoVertically,
     sortByTwoHorizontally,
   } = useShopPageStore();
+
+  const {getProductsFromCacheOrApi} = useShopStore()
 
   useEffect(() => {
     if (!page) return;
@@ -115,7 +118,7 @@ const Shop = () => {
     clearShopPageData();
 
     getAllImages(page);
-    getProductsFromCacheOrApi(page);
+    getProductsFromCacheOrApi();
   }, [page,              clearHomePageData, clearShopPageData, getAllImages, getProductsFromCacheOrApi]);
 
   if (homeLoading || shopLoading) return <AnimateSpin />;
