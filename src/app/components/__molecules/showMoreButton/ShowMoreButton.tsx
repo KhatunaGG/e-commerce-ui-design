@@ -8,14 +8,18 @@ export type ShowMoreButtonPropsType = {
 };
 
 const ShowMoreButton = ({ isWishlistPage }: ShowMoreButtonPropsType) => {
-  const { loadMoreProducts, productsData, 
+  const { loadMoreProducts,
+    //  productsData, 
     // productsDataLengthByKey, isLoading, 
-    productsDataTotalLength } =
+    // productsDataTotalLength 
+  } =
     useShopStore();
-  const { wishlistData, loadMoreWishList, wishlistDataLength } =
+  const { 
+    // wishlistData, 
+    loadMoreWishList} =
     useProductStore();
 
-  const safeProductsData = productsData || [];
+  // const safeProductsData = productsData || [];
   // const isAllLoaded = isWishlistPage
   //   ? wishlistData.length >= wishlistDataLength
   //   : safeProductsData.length >= productsDataTotalLength;

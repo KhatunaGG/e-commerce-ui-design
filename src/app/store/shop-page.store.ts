@@ -819,7 +819,7 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
   },
 
   applyFilters: async (filters: FiltersType) => {
-    const state = get();
+    // const state = get();
 
     set({
       filters,

@@ -905,7 +905,7 @@ export const useShopPageStore = create<IUseShopPageStore>((set, get) => ({
 // Modified getAllProducts function - simple approach
 getAllProducts: async () => {
   const state = get();
-  const { pageNumber, take, filters, createCacheKey, sortBy, mapSortValueToBackend } = state;
+  const { take, filters, createCacheKey, sortBy, mapSortValueToBackend } = state;
   const backendSortValue = mapSortValueToBackend(sortBy);
   
   // Use page=1 as base cache key for accumulated data
