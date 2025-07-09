@@ -109,6 +109,7 @@ import Product from "../product/Product";
 import { AnimateSpin, ShowMoreButton } from "../../__molecules";
 import { useShopPageStore } from "@/app/store/useShopPage.store";
 import Link from "next/link";
+import { useShopStore } from "@/app/store/shop-page.store";
 
 const Products = () => {
   const {
@@ -116,8 +117,10 @@ const Products = () => {
     sortByTwoVertically,
     sortByTwoHorizontally,
     isLoading,
-    productsData,
+    // productsData,
   } = useShopPageStore();
+
+  const { productsData } = useShopStore();
 
   const resortedStyles = sortedByFour
     ? "grid-cols-2  lg:grid-cols-4"
@@ -138,7 +141,8 @@ const Products = () => {
           ${resortedStyles} 
         w-full  grid  h-full gap-y-4 gap-x-2 md:gap-y-6 md:gap-x-6`}
         >
-          {Array.isArray(productsData) && productsData.length > 0 &&
+          {Array.isArray(productsData) &&
+            productsData.length > 0 &&
             productsData.map((product) => (
               <Link key={product._id} href={`/shop/${product._id}`}>
                 <div
