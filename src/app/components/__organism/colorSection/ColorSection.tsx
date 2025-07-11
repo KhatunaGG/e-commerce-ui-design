@@ -1,17 +1,20 @@
 "use client";
-import { useShopPageStore } from "@/app/store/useShopPage.store";
 import { ChevronRight } from "../../__atoms";
-import { useProductStore } from "@/app/store/product.store";
+import { useShopStore } from "@/app/store/shop-page.store";
 import { useState } from "react";
 
 export type ColorSectionPropsType = {
   colors: string[];
+  setSelectedColor: (color: string | null) => void;
+  selectedColor: string | null;
 };
 
-const ColorSection = ({ colors }: ColorSectionPropsType) => {
-  const { getProductColor, selectedColor, setSelectedColor } =
-    useProductStore();
-  const { normalizeFirstChar } = useShopPageStore();
+const ColorSection = ({
+  colors,
+  setSelectedColor,
+  selectedColor,
+}: ColorSectionPropsType) => {
+  const { normalizeFirstChar } = useShopStore();
   const [show, setShow] = useState(false);
 
   return (
@@ -20,7 +23,6 @@ const ColorSection = ({ colors }: ColorSectionPropsType) => {
         <div
           onClick={() => {
             setShow(!show);
-            setSelectedColor("");
           }}
           className="w-full flex items-center gap-4"
         >
@@ -52,8 +54,10 @@ const ColorSection = ({ colors }: ColorSectionPropsType) => {
                   backgroundColor: c.replace(/\s+/g, ""),
                   cursor: "pointer",
                 }}
-                onClick={() => getProductColor(c)}
-                className={`${selectedColor === c && "border-4 border-[#6C7275]"} w-10 h-10 border `}
+                onClick={() => setSelectedColor(c)}
+                className={`${
+                  selectedColor === c && "border-4 border-[#6C7275]"
+                } w-10 h-10 border `}
               />
             ))}
           </div>

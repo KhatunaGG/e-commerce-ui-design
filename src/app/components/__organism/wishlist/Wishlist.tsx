@@ -10,6 +10,7 @@ const Wishlist = () => {
   const path = usePathname();
   const isWishlistPage = path.includes("wishlist");
   const { wishlistData, clearWishlist, setWishlistDataFromCache } = useProductStore();
+  console.log(wishlistData, "wishlistData")
 
   const page = useMemo(
     () => path?.split("/").filter(Boolean).pop() || "home",

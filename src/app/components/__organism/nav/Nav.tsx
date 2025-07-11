@@ -7,7 +7,8 @@ import { useCartStore } from "@/app/store/cart.store";
 const Nav = () => {
   const path = usePathname();
   const handleShowNavbar = useCartStore((state) => state.handleShowNavbar);
-  // const { showNavbar } = useCartStore();
+  // const cartDataLength = useCartStore((state) => state.cartData.length);
+   const cartDataLength = useCartStore((state) => state.cartDataLength)
 
   return (
     <>
@@ -46,7 +47,7 @@ const Nav = () => {
             onClick={handleShowNavbar}
             className="relative w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold cursor-pointer"
           >
-            1
+            {cartDataLength}
           </div>
         </div>
       </section>

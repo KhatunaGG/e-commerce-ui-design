@@ -1,5 +1,6 @@
 "use client";
-import { useShopPageStore } from "@/app/store/useShopPage.store";
+import { useShopStore } from "@/app/store/shop-page.store";
+// import { useShopPageStore } from "@/app/store/useShopPage.store";
 import {
   Filter,
   FirstFilterIcon,
@@ -27,9 +28,9 @@ const FilterOptions = () => {
     setSortByTwoVertically,
     setSortByTwoHorizontally,
     resetAllByIconsSort,
-  } = useShopPageStore();
+  } = useShopStore();
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
-  const currentCategory = useShopPageStore.getState().filters.category;
+  const currentCategory = useShopStore.getState().filters.category;
   // console.log(sortedByFour, "sortedByFour");
   // console.log(sortByTwoVertically, "sortByTwoVertically");
   // console.log(sortByTwoHorizontally, "sortByTwoHorizontally");

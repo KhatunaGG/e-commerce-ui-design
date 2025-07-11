@@ -1,9 +1,11 @@
 "use client";
-import { useShopPageStore } from "@/app/store/useShopPage.store";
+import { useShopStore } from "@/app/store/shop-page.store";
+// import { useShopPageStore } from "@/app/store/useShopPage.store";
 import { StarRating } from "../../__organism";
 import AddToCartButton from "../addToCartButton/AddToCartButton";
 import WishlistButton from "../wishlistButton/WishlistButton";
 import { usePathname } from "next/navigation";
+import { useCartStore } from "@/app/store/cart.store";
 
 export type LabelPropsType = {
   productName: string;
@@ -30,9 +32,9 @@ const Label = ({
     sortByTwoHorizontally,
     normalizeFirstChar,
     calculateDiscount,
-  } = useShopPageStore();
+  } = useShopStore();
+  const addProductToCart = useCartStore((state) => state.addProductToCart);
 
- 
   return (
     <div
       className={`${
@@ -71,13 +73,12 @@ const Label = ({
             path === "/" && "hidden"
           } w-full flex flex-col gap-2 md:gap-4`}
         >
-          <AddToCartButton 
-          // sortByTwoHorizontally={sortByTwoHorizontally} 
-          
+          <AddToCartButton
+            onClick={() => addProductToCart(_id)}
+            // sortByTwoHorizontally={sortByTwoHorizontally}
           />
-          <WishlistButton 
+          <WishlistButton
           // wishlist={wishlist}
-          
           />
         </div>
       )}

@@ -6,8 +6,9 @@ import { SignInType } from "../components/__organism/signInFrom/SignInForm";
 import { axiosInstance } from "../libs/axiosInstance";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { ErrorResponse, useHomePageStore } from "./useHomePage.store.";
-import { useShopPageStore } from "./useShopPage.store";
+// import { useShopPageStore } from "./useShopPage.store";
 import { useProductStore } from "./product.store";
+import { useShopStore } from "./shop-page.store";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -126,7 +127,7 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
   logout: () => {
     deleteCookie("accessToken");
     useHomePageStore.getState().clearCache();
-    useShopPageStore.getState().clearCache();
+    useShopStore.getState().clearCache();
     useProductStore.getState().clearWishlist();
     useProductStore.setState({
       cashedWishList: {},

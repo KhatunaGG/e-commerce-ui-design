@@ -9,7 +9,8 @@ import Info from "../info/Info";
 import SaleOffer from "../saleOffer/SaleOffer";
 import Articles from "../articles/Articles";
 import { useHomePageStore } from "@/app/store/useHomePage.store.";
-import { useShopPageStore } from "@/app/store/useShopPage.store";
+import { useShopStore } from "@/app/store/shop-page.store";
+// import { useShopPageStore } from "@/app/store/useShopPage.store";
 
 const Dashboard = () => {
   const path = usePathname();
@@ -22,7 +23,7 @@ const Dashboard = () => {
   } = useHomePageStore();
 
   const { cachedNewArrivalsByPage, getNewArrivalProductsFromApi } =
-    useShopPageStore();
+    useShopStore();
 
   const page = useMemo(
     () => path?.split("/").filter(Boolean).pop() || "home",

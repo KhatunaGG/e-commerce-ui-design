@@ -1,9 +1,10 @@
 "use client";
 import { useProductStore } from "@/app/store/product.store";
 import { ChevronDown } from "../../__atoms";
-import { useShopPageStore } from "@/app/store/useShopPage.store";
+// import { useShopPageStore } from "@/app/store/useShopPage.store";
 import Reviews from "../reviews/Reviews";
 import ClientReviews from "../clientReviews/ClientReviews";
+import { useShopStore } from "@/app/store/shop-page.store";
 
 export type TapsPropsType = {
   params: string;
@@ -12,7 +13,7 @@ export type TapsPropsType = {
 
 export default function Tabs({ productName, params }: TapsPropsType) {
   const { activeTab, setActiveTab } = useProductStore();
-  const { normalizeFirstChar } = useShopPageStore();
+  const { normalizeFirstChar } = useShopStore();
 
   return (
     <section className="w-full  py-10 flex flex-col gap-10  ">
