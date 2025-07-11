@@ -4,9 +4,10 @@ import { useEffect } from "react";
 import { AnimateSpin } from "../../__molecules";
 import { ChevronRight } from "../../__atoms";
 import { usePathname } from "next/navigation";
-import { useShopPageStore } from "@/app/store/useShopPage.store";
+// import { useShopPageStore } from "@/app/store/useShopPage.store";
 import DetailsSection from "../detailsSection/DetailsSection";
 import Tabs from "../tabs/Tabs";
+import { useShopStore } from "@/app/store/shop-page.store";
 
 export type ProductDetailsPropsType = {
   params: string;
@@ -14,7 +15,8 @@ export type ProductDetailsPropsType = {
 
 const ProductDetails = ({ params }: ProductDetailsPropsType) => {
   const { getProductById, clearProduct, productById } = useProductStore();
-  const { normalizeFirstChar } = useShopPageStore();
+  const { normalizeFirstChar } = useShopStore();
+  // const { normalizeFirstChar } = useShopPageStore();
   const path = usePathname();
   const segments = path?.split("/").filter(Boolean) || [];
   const pageSegment = segments[0] || "";
@@ -41,8 +43,8 @@ const ProductDetails = ({ params }: ProductDetailsPropsType) => {
             </div>
           </div>
           <div className="flex items-center gap-1">
-            <div className="text-sm text-[#605F5F] font-medium leading-[24px] flex flex-wrap items-center">
-              {productById.category.map((c, i) => (
+            <div className="text-sm text-[#1d1515] font-medium leading-[24px] flex flex-wrap items-center">
+              {productById.category.map((c: string, i: number) => (
                 <span key={i}>
                   {normalizeFirstChar(c)}
                   {i < productById.category.length - 1 && (
@@ -55,12 +57,10 @@ const ProductDetails = ({ params }: ProductDetailsPropsType) => {
               <ChevronRight />
             </div>
           </div>
-
           <p className="text-sm text-[#605F5F] font-medium leading-[24px]">
             {params && "Product"}
           </p>
         </div>
-
         <DetailsSection productById={productById} params={params} />
       </div>
       <Tabs productName={productById.productName} params={params} />

@@ -686,8 +686,14 @@ export interface IUseShopStore {
   mapSortValueToBackend: (sortValue: string) => string;
   loadMoreProducts: () => Promise<void>;
   applyFilters: (filters: FiltersType, sortBy: string) => Promise<void>;
-  normalizeFirstChar: (str?: string) => string;
+  normalizeFirstChar: (str: string) => string;
   setPageNumber: (pageNumber: number) => void;
+  hasMoreProducts: () => boolean;
+  clearCache: () => void;
+  clearCurrentPageData: () => void;
+  setCachedProductsData: (
+    cachedImages: Record<string, ProductsDataType[]>
+  ) => void;
 
   buildCacheKey: (
     page: number,
@@ -719,27 +725,23 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
   newArrivalsLoading: false,
   cachedNewArrivalsByPage: {},
   isLoadingMore: false,
-
   productsData: [],
   cachedProductsData: {},
   cachedDataLengthByKey: {},
   productsDataLengthByKey: 0,
   productsDataTotalLength: 0,
   cachedProductsDataTotalLength: 0,
-
-  //   setSortBy: (sortBy: string) => set({ sortBy }),
-
   setSortBy: async (sortBy: string) => {
     set({
       sortBy,
       pageNumber: 1,
       productsData: [],
+
+      productsDataTotalLength: 0, 
+      productsDataLengthByKey: 0,
     });
     await get().getAllProducts(false);
   },
-
-  // ... rest of your existing methods ...
-
   setFilters: (filters: FiltersType) => {
     set({
       filters,
@@ -819,17 +821,17 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
   },
 
   applyFilters: async (filters: FiltersType) => {
-    // const state = get();
-
     set({
       filters,
-      pageNumber: 1, // Reset to page 1
+      pageNumber: 1,
       productsData: [],
+      productsDataTotalLength: 0,
+      productsDataLengthByKey: 0,
       isLoading: true,
       axiosError: null,
     });
 
-    await get().getAllProducts(false); // Initial load
+    await get().getAllProducts(false);
   },
 
   getNewArrivalProductsFromApi: async () => {
@@ -850,10 +852,7 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
             ...prev.cachedNewArrivalsByPage,
             [pageKey]: newProducts,
           },
-          //   cachedImagesByPage: {
-          //     ...prev.cachedProductsData,
-          //     [shopKey]: newProducts,
-          //   },
+
           cachedProductsData: {
             ...prev.cachedProductsData,
             [shopKey]: newProducts,
@@ -890,16 +889,19 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
   },
 
   getProductsFromCacheOrApi: async () => {
-    await get().getAllProducts(false); // Initial load
-    console.log(
-      get().cachedProductsData,
-      "cachedProductsData ->>> from getProductsFromCacheOrApi"
-    );
+    await get().getAllProducts(false);
+    // console.log(
+    //   get().cachedProductsData,
+    //   "cachedProductsData ->>> from getProductsFromCacheOrApi"
+    // );
   },
 
   hasMoreProducts: () => {
     const state = get();
-    return state.productsData.length < state.productsDataTotalLength;
+    return (
+      state.productsData.length < state.productsDataTotalLength &&
+      state.productsDataTotalLength > 0
+    );
   },
 
   mapSortValueToBackend: (sortValue: string): string => {
@@ -961,11 +963,7 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
           axiosError: null,
         });
       }
-      console.log(`Loaded page ${currentPage} from cache`);
-      console.log(
-        get().cachedProductsData,
-        "cachedProductsData ->>> from getAllProducts"
-      );
+      // console.log(`Loaded page ${currentPage} from cache`);
       return;
     }
 
@@ -982,7 +980,8 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
 
       if (res.status >= 200 && res.status <= 204) {
         const newProducts = res.data.data;
-        const totalLength = res.data.totalProductsLength;
+        // Use the FILTERED total length, not the unfiltered total
+        const filteredTotalLength = res.data.productsDataLength; // This is the key change!
 
         set((prev) => ({
           productsData: isLoadMore
@@ -991,9 +990,8 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
           productsDataLengthByKey: isLoadMore
             ? prev.productsDataLengthByKey + newProducts.length
             : newProducts.length,
-
-          
-          productsDataTotalLength: totalLength,
+          // Use filtered total length for pagination logic
+          productsDataTotalLength: filteredTotalLength,
           isLoading: false,
           isLoadingMore: false,
           axiosError: null,
@@ -1008,8 +1006,9 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
           },
         }));
 
-        console.log(`Loaded page ${currentPage} from API and cached`);
-        console.log(get().productsDataLengthByKey, "productsDataLengthByKey");
+
+        // console.log(get().productsData, "productsData");
+        // console.log(get().cachedProductsData, "cachedProductsData");
       }
     } catch (e) {
       set({
@@ -1023,25 +1022,50 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
 
   loadMoreProducts: async () => {
     const state = get();
-
-    // Check if we have more products to load
-    const currentProductsLength = state.productsData.length;
-    const totalLength = state.productsDataTotalLength;
-
-    if (currentProductsLength >= totalLength && totalLength > 0) {
+    if (!get().hasMoreProducts()) {
       console.log("No more products to load");
       return;
     }
 
-    // Increment page number for next page
+    if (state.isLoadingMore) {
+      console.log("Already loading more products");
+      return;
+    }
+
     const nextPage = state.pageNumber + 1;
     set({ pageNumber: nextPage });
-
-    // Call getAllProducts with load more flag
     await get().getAllProducts(true);
     console.log(
       get().cachedProductsData,
       "cachedProductsData ->>> from loadMoreProducts"
     );
   },
+
+  clearCache: () => {
+    set({
+      productsData: [],
+      isLoading: false,
+      axiosError: null,
+      cachedProductsData: {},
+      cachedDataLengthByKey: {},
+
+      productsDataTotalLength: 0,
+      productsDataLengthByKey: 0,
+      pageNumber: 1,
+    });
+  },
+  clearCurrentPageData: () =>
+    set({
+      productsData: [],
+      isLoading: false,
+      axiosError: null,
+      sortByTwoVertically: false,
+
+      productsDataTotalLength: 0,
+      productsDataLengthByKey: 0,
+      pageNumber: 1,
+    }),
+
+  setCachedProductsData: (cachedImages: Record<string, ProductsDataType[]>) =>
+    set({ cachedProductsData: cachedImages }),
 }));

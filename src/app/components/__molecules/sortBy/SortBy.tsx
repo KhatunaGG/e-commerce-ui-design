@@ -1,16 +1,17 @@
 "use client";
-import { useShopPageStore } from "@/app/store/useShopPage.store";
+import { useShopStore } from "@/app/store/shop-page.store";
+// import { useShopPageStore } from "@/app/store/useShopPage.store";
 import { ChevronDown } from "../../__atoms";
 // import { sortByOptions } from "@/app/commons/data";
 import { sortBy as sortByOptions } from "@/app/commons/data";
 
 const SortBy = () => {
   const {  setIsDroppedDown, isDroppedDown,  sortBy, setSortBy, getAllProducts  } =
-    useShopPageStore();
+    useShopStore();
 
 const handleSortChange = async (selected: string) => {
   setSortBy(selected);
-  await getAllProducts("1");
+  await getAllProducts(false);
 };
 
   return (

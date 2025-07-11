@@ -2,11 +2,11 @@
 import { categoriesFilter, priceFilter } from "../../../commons/data";
 import Checkbox from "../../__molecules/checkbox/Checkbox";
 import { Filter } from "../../__atoms";
-import {
-  CategoryFilter,
-  PriceFilter,
-} from "@/app/store/useShopPage.store";
-import { useShopStore } from "@/app/store/shop-page.store";
+// import {
+//   CategoryFilter,
+//   PriceFilter,
+// } from "@/app/store/useShopPage.store";
+import { CategoryFilter, PriceFilter, useShopStore } from "@/app/store/shop-page.store";
 
 const FilterSection = () => {
   // const currentCategory = useShopStore.getState().filters.category;

@@ -1,8 +1,8 @@
 import { create } from "zustand";
-import { ProductsDataType, useShopPageStore } from "./useShopPage.store";
+// import { ProductsDataType, useShopPageStore } from "./useShopPage.store";
 import axios, { AxiosError } from "axios";
 import { axiosInstance } from "../libs/axiosInstance";
-
+import { ProductsDataType, useShopStore } from "./shop-page.store";
 
 export interface ErrorResponse {
   message: string;
@@ -22,17 +22,17 @@ export interface IUseProductStore {
   productById: ProductsDataType | null;
   isLoading: boolean;
   axiosError: string | null;
-  selectedColor: string;
+  // selectedColor: string;
   wishlistData: ProductsDataType[];
   wishListStatus: boolean | undefined;
   pageNumber: number;
   take: number;
   wishlistDataLength: number;
 
-  setSelectedColor: (selectedColor: string) => void;
+  // setSelectedColor: (selectedColor: string) => void;
   getProductById: (id: string) => Promise<void>;
   clearProduct: () => void;
-  getProductColor: (color: string) => void;
+  // getProductColor: (color: string) => void;
   activeTab: string;
   setActiveTab: (activeTab: string) => void;
   emojiVisible: boolean;
@@ -62,14 +62,14 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
     set((state) => ({ emojiVisible: !state.emojiVisible })),
 
   setActiveTab: (activeTab) => set({ activeTab }),
-  setSelectedColor: (selectedColor) => set({ selectedColor }),
+  // setSelectedColor: (selectedColor) => set({ selectedColor }),
 
   getProductById: async (id) => {
     set({ isLoading: true, axiosError: null });
-    const shopCash = useShopPageStore.getState();
+    const shopCash = useShopStore.getState();
     let searchedProduct = shopCash.productsData.find((pr) => pr._id === id);
     if (!searchedProduct) {
-      const arr = shopCash.cachedImagesByPage.shop || [];
+      const arr = shopCash.cachedProductsData.shop || [];
       searchedProduct = arr.find((pr) => pr._id === id);
     }
     if (searchedProduct) {
@@ -90,10 +90,10 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
       });
     }
   },
-  
-  getProductColor: (color: string) => {
-    set({ selectedColor: color });
-  },
+
+  // getProductColor: (color: string) => {
+  //   set({ selectedColor: color });
+  // },
 
   updateProduct: async (id: string, val: boolean) => {
     set({ isLoading: true, axiosError: null });
@@ -114,8 +114,8 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
             },
           });
         }
-        const shopStore = useShopPageStore.getState();
-        const updatedCachedData = { ...shopStore.cachedImagesByPage };
+        const shopStore = useShopStore.getState();
+        const updatedCachedData = { ...shopStore.cachedProductsData };
 
         Object.keys(updatedCachedData).forEach((page) => {
           updatedCachedData[page] = updatedCachedData[page].map((product) =>
@@ -130,8 +130,8 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
             ? { ...product, wishlist: wishlistStatus }
             : product
         );
-        useShopPageStore.setState({
-          cachedImagesByPage: updatedCachedData,
+        useShopStore.setState({
+          cachedProductsData: updatedCachedData,
           productsData: updatedProductsData,
         });
         set({
@@ -194,15 +194,14 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
   //   }
   // },
 
-setWishlistDataFromCache: async (page: string) => {
-  const cached = get().cashedWishList[page];
-  if (cached) {
-    set({ wishlistData: cached });
-  } else {
-    await get().getAllWishlist(page);
-  }
-},
-
+  setWishlistDataFromCache: async (page: string) => {
+    const cached = get().cashedWishList[page];
+    if (cached) {
+      set({ wishlistData: cached });
+    } else {
+      await get().getAllWishlist(page);
+    }
+  },
 
   loadMoreWishList: async () => {
     const state = get();

@@ -83,7 +83,7 @@ import { AnimateSpin } from "../../__molecules";
 import Banner from "../banner/Banner";
 import FilterSection from "../filterSection/FilterSection";
 import Products from "../products/Products";
-import { useShopPageStore } from "@/app/store/useShopPage.store";
+// import { useShopPageStore } from "@/app/store/useShopPage.store";
 import { useHomePageStore } from "@/app/store/useHomePage.store.";
 import { useShopStore } from "@/app/store/shop-page.store";
 
@@ -107,7 +107,7 @@ const Shop = () => {
     sortedByFour,
     sortByTwoVertically,
     sortByTwoHorizontally,
-  } = useShopPageStore();
+  } = useShopStore();
 
   const {getProductsFromCacheOrApi} = useShopStore()
 

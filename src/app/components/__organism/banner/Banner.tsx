@@ -1,14 +1,15 @@
 import Image from "next/image";
 import { ChevronRight } from "../../__atoms";
 import { IImageData } from "@/app/store/useHomePage.store.";
-import { useShopPageStore } from "@/app/store/useShopPage.store";
+import { useShopStore } from "@/app/store/shop-page.store";
+// import { useShopPageStore } from "@/app/store/useShopPage.store";
 
 export type ImagesPropsTypes = {
   images: IImageData[];
 };
 
 const Banner = ({ images }: ImagesPropsTypes) => {
-  const currentCategory = useShopPageStore.getState().filters.category;
+  const currentCategory = useShopStore.getState().filters.category;
   const hasValidImage = images && images.length > 0 && images[0];
 
   const title = hasValidImage ? images[0].title?.split("/")[0] : "Shop Page";

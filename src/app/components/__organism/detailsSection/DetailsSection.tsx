@@ -1,7 +1,3 @@
-import {
-  ProductsDataType,
-  useShopPageStore,
-} from "@/app/store/useShopPage.store";
 import Image from "next/image";
 import Product from "../product/Product";
 import StarRating from "../starRating/StarRating";
@@ -9,6 +5,8 @@ import OfferTill from "../offerTill/OfferTill";
 import ColorSection from "../colorSection/ColorSection";
 import { Add, Minus } from "../../__atoms";
 import { AddToCartButton, WishlistButton } from "../../__molecules";
+import { ProductsDataType, useShopStore } from "@/app/store/shop-page.store";
+import { useCartStore } from "@/app/store/cart.store";
 
 export type DetailsSectionPropsType = {
   productById: ProductsDataType;
@@ -16,7 +14,14 @@ export type DetailsSectionPropsType = {
 };
 
 const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
-  const { calculateDiscount } = useShopPageStore();
+  const { calculateDiscount } = useShopStore();
+  const {
+    setSelectedQty,
+    setSelectedColor,
+    selectedQty,
+    selectedColor,
+    addProductToCart,
+  } = useCartStore();
 
   return (
     <div className="w-full h-full flex flex-col gap-4 lg:flex-row lg:gap-[64px]">
@@ -73,7 +78,6 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
               ${productById.price.toFixed(2)}
             </p>
             <p className="SALE line-through text-[#6C7275] text-[20px] font-semibold leading-[22px]">
-              {/* {discount && discount > 0 ? calculateDiscount(price, discount) : ""} */}
               {productById.discount > 0
                 ? calculateDiscount(productById.price, productById.discount)
                 : ""}
@@ -94,16 +98,29 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
           </div>
         </div>
 
-        <ColorSection colors={productById.colors} />
+        <ColorSection
+          colors={productById.colors}
+          setSelectedColor={setSelectedColor}
+          selectedColor={selectedColor}
+        />
 
         <div className="w-full py-8  border-b  border-b-[#e9e9ea] flex flex-col gap-6">
           <div className="w-full flex items-center justify-center gap-2 md:gap-6">
             <div className="w-[29.67%] bg-[#F5F5F5] py-4 px-4 flex items-center justify-center gap-3  md:gap-6 ">
-              <button className="w-[20px] h-[20px] cursor-pointer">
+              <button
+                onClick={() => {
+                  if (selectedQty < 0) return;
+                  setSelectedQty(selectedQty - 1);
+                }}
+                className="w-[20px] h-[20px] cursor-pointer"
+              >
                 <Minus />
               </button>
-              <p>1</p>
-              <button className="w-[20px] h-[20px] cursor-pointer">
+              <p>{selectedQty > 0 ? selectedQty : 0}</p>
+              <button
+                onClick={() => setSelectedQty(selectedQty + 1)}
+                className="w-[20px] h-[20px] cursor-pointer"
+              >
                 <Add />
               </button>
             </div>
@@ -112,7 +129,12 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
               //  wishlist={productById.wishlist}
             />
           </div>
-          <AddToCartButton />
+          <AddToCartButton
+            params={params}
+            onClick={(id, color, qty) => addProductToCart(params, color, qty)}
+            selectedQty={selectedQty}
+            selectedColor={selectedColor}
+          />
         </div>
       </div>
     </div>
