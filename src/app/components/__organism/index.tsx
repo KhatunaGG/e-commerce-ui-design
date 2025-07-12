@@ -34,6 +34,7 @@ export { default as ClientReviewsItem } from "./clientReviewsItem/ClientReviewsI
 export { default as Wishlist } from "./wishlist/Wishlist"
 export { default as Navbar } from "./Navbar/Navbar"
 export { default as Counter } from "./counter/Counter"
+export { default as Cart } from "./cart/Cart"
 
 
 

@@ -21,7 +21,6 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
     selectedQty,
     selectedColor,
     addProductToCart,
-
   } = useCartStore();
 
   return (
@@ -107,26 +106,15 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
 
         <div className="w-full py-8  border-b  border-b-[#e9e9ea] flex flex-col gap-6">
           <div className="w-full flex items-center justify-center gap-2 md:gap-6">
-            <Counter setSelectedQty={setSelectedQty} selectedQty={selectedQty} />
-
-            {/* <div className="w-[29.67%] bg-[#F5F5F5] py-4 px-4 flex items-center justify-center gap-3  md:gap-6 ">
-              <button
-                onClick={() => {
-                  if (selectedQty < 0) return;
-                  setSelectedQty(selectedQty - 1);
-                }}
-                className="w-[20px] h-[20px] cursor-pointer"
-              >
-                <Minus />
-              </button>
-              <p>{selectedQty > 0 ? selectedQty : 0}</p>
-              <button
-                onClick={() => setSelectedQty(selectedQty + 1)}
-                className="w-[20px] h-[20px] cursor-pointer"
-              >
-                <Add />
-              </button>
-            </div> */}
+            <Counter
+              // setSelectedQty={setSelectedQty}
+              // selectedQty={selectedQty}
+              id={params}
+              color={selectedColor}
+              quantity={selectedQty}
+              onChange={(newQty: number) => setSelectedQty(Math.max(1, newQty))}
+              show={true}
+            />
 
             <WishlistButton
               params={params}
@@ -146,3 +134,24 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
 };
 
 export default DetailsSection;
+
+{
+  /* <div className="w-[29.67%] bg-[#F5F5F5] py-4 px-4 flex items-center justify-center gap-3  md:gap-6 ">
+              <button
+                onClick={() => {
+                  if (selectedQty < 0) return;
+                  setSelectedQty(selectedQty - 1);
+                }}
+                className="w-[20px] h-[20px] cursor-pointer"
+              >
+                <Minus />
+              </button>
+              <p>{selectedQty > 0 ? selectedQty : 0}</p>
+              <button
+                onClick={() => setSelectedQty(selectedQty + 1)}
+                className="w-[20px] h-[20px] cursor-pointer"
+              >
+                <Add />
+              </button>
+            </div> */
+}

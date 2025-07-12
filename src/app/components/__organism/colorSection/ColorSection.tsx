@@ -16,7 +16,6 @@ const ColorSection = ({
   selectedColor,
 }: ColorSectionPropsType) => {
   const { normalizeFirstChar } = useShopStore();
-  // const [show, setShow] = useState(false);
   const { show, setShow } = useCartStore();
 
 
