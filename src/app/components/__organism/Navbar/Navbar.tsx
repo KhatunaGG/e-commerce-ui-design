@@ -1,15 +1,18 @@
 "use client";
 import { useEffect } from "react";
 import { useCartStore } from "@/app/store/cart.store";
-import { Add, Close, Minus } from "../../__atoms";
+// import { Add, Close, Minus } from "../../__atoms";
 import Image from "next/image";
 import { useShopStore } from "@/app/store/shop-page.store";
+import Counter from "../counter/Counter";
+import { Close } from "../../__atoms";
+import Link from "next/link";
 
 function Navbar() {
   const showNavbar = useCartStore((state) => state.showNavbar);
   const handleShowNavbar = useCartStore((state) => state.handleShowNavbar);
   const handleSelectColor = useCartStore((state) => state.handleSelectColor);
-  const { cartData } = useCartStore();
+  const { cartData, updateCartQty, deleteProductFromCart } = useCartStore();
   const { normalizeFirstChar } = useShopStore();
 
   console.log(cartData, "cartData");
@@ -83,7 +86,7 @@ function Navbar() {
                         )}
                       </div>
 
-                      <div className="flex-1 flex flex-col items-start gap-2  relative group">
+                      <div className="flex-1 flex flex-col items-start gap-2  relative group ">
                         <p className="text-xs md:text-sm font-semibold leading-[22px] text-[#141718]">
                           {item.productName}
                         </p>
@@ -92,7 +95,9 @@ function Navbar() {
                           <span
                             className={`${isNotSelected && "text-red-600"} `}
                           >
-                           {item.color === null ? " Please select color" : normalizeFirstChar(item.color)}
+                            {item.color === null
+                              ? " Please select color"
+                              : normalizeFirstChar(item.color)}
                           </span>
                         </p>
                         {isNotSelected && (
@@ -107,8 +112,9 @@ function Navbar() {
                                   onClick={() => handleSelectColor(item._id, c)}
                                   className="cursor-pointer text-sm text-black/70  p-1 rounded"
                                 >
-                     
-                                {normalizeFirstChar ? normalizeFirstChar(c) : c}
+                                  {normalizeFirstChar
+                                    ? normalizeFirstChar(c)
+                                    : c}
                                 </button>
                               ))
                             ) : (
@@ -116,23 +122,36 @@ function Navbar() {
                             )}
                           </div>
                         )}
-                            
-                        <div className="border border-black/20 rounded-[4px] bg-[#F5F5F5] py-4 px-4 flex items-center justify-center gap-3 md:gap-6">
-                          <button className="w-[20px] h-[20px] cursor-pointer">
-                            <Minus />
-                          </button>
-                          <p>{item.purchasedQty}</p>
-                          <button className="w-[20px] h-[20px] cursor-pointer">
-                            <Add />
-                          </button>
-                        </div>
+
+                        {/* <Counter
+                          setSelectedQty={setSelectedQty}
+                          selectedQty={selectedQty}
+                          show={true}
+                          id={item._id}
+                        /> */}
+                        <Counter
+                          id={item._id}
+                          color={item.color}
+                          quantity={item.purchasedQty}
+                          onChange={(newQty: number) =>
+                            updateCartQty(item._id, item.color, newQty)
+                          }
+                          show={true}
+                        />
                       </div>
 
                       <div className="h-full font-semibold w-[22.32%] md:w-[21%] flex flex-col items-start gap-2">
                         <p className="text-xs md:text-sm leading-[22px]">
                           ${(item.price * item.purchasedQty).toFixed(2)}
                         </p>
-                        <Close />
+                        <button
+                          onClick={() => deleteProductFromCart(item._id, item.color)}
+                          // className="cursor-pointer w-[20px] h-[20px] rounded-[4px] flex items-center justify-center hover:bg-[#eeecec] font-extrabold transition-colors duration-300 ease-in-out        text-[#343839] hover:text-red-600"
+                          className="group cursor-pointer w-[20px] h-[20px] rounded-[4px] flex items-center justify-center 
+                                          transition-all duration-300 ease-in-out text-[#343839] hover:text-red-600 hover:scale-105"
+                        >
+                          <Close />
+                        </button>
                       </div>
                     </div>
                   );
@@ -146,12 +165,12 @@ function Navbar() {
           </div>
 
           <div className="w-full flex items-center justify-center  pb-10">
-            <div className="flex flex-col gap-1">
-              <button className="font-semibold text-sm leading-[22px]">
+            <Link className="flex flex-col gap-1" href={"/cart-page"}>
+              <button className="font-semibold text-sm leading-[22px] cursor-pointer">
                 View Cart
               </button>
               <div className="w-full h-[2px] bg-black" />
-            </div>
+            </Link>
           </div>
         </div>
       </div>
@@ -160,3 +179,15 @@ function Navbar() {
 }
 
 export default Navbar;
+
+{
+  /* <div className="border border-black/20 rounded-[4px] bg-[#F5F5F5] py-4 px-4 flex items-center justify-center gap-3 md:gap-6">
+                          <button className="w-[20px] h-[20px] cursor-pointer">
+                            <Minus />
+                          </button>
+                          <p>{item.purchasedQty}</p>
+                          <button className="w-[20px] h-[20px] cursor-pointer">
+                            <Add />
+                          </button>
+                        </div> */
+}
