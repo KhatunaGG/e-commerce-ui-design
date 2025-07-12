@@ -33,6 +33,7 @@ export { default as InteractiveForm } from "./interactiveForm/InteractiveForm"
 export { default as ClientReviewsItem } from "./clientReviewsItem/ClientReviewsItem"
 export { default as Wishlist } from "./wishlist/Wishlist"
 export { default as Navbar } from "./Navbar/Navbar"
+export { default as Counter } from "./counter/Counter"
 
 
 
