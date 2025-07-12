@@ -1,7 +1,8 @@
 "use client";
+import { useCartStore } from "@/app/store/cart.store";
 import { ChevronRight } from "../../__atoms";
 import { useShopStore } from "@/app/store/shop-page.store";
-import { useState } from "react";
+
 
 export type ColorSectionPropsType = {
   colors: string[];
@@ -15,8 +16,11 @@ const ColorSection = ({
   selectedColor,
 }: ColorSectionPropsType) => {
   const { normalizeFirstChar } = useShopStore();
-  const [show, setShow] = useState(false);
+  // const [show, setShow] = useState(false);
+  const { show, setShow } = useCartStore();
 
+
+  
   return (
     <div className="flex flex-col gap-4 items-start">
       <div className="w-full flex flex-col items-start justify-start gap-2">

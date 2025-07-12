@@ -3,10 +3,10 @@ import Product from "../product/Product";
 import StarRating from "../starRating/StarRating";
 import OfferTill from "../offerTill/OfferTill";
 import ColorSection from "../colorSection/ColorSection";
-import { Add, Minus } from "../../__atoms";
 import { AddToCartButton, WishlistButton } from "../../__molecules";
 import { ProductsDataType, useShopStore } from "@/app/store/shop-page.store";
 import { useCartStore } from "@/app/store/cart.store";
+import Counter from "../counter/Counter";
 
 export type DetailsSectionPropsType = {
   productById: ProductsDataType;
@@ -21,6 +21,7 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
     selectedQty,
     selectedColor,
     addProductToCart,
+
   } = useCartStore();
 
   return (
@@ -106,7 +107,9 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
 
         <div className="w-full py-8  border-b  border-b-[#e9e9ea] flex flex-col gap-6">
           <div className="w-full flex items-center justify-center gap-2 md:gap-6">
-            <div className="w-[29.67%] bg-[#F5F5F5] py-4 px-4 flex items-center justify-center gap-3  md:gap-6 ">
+            <Counter setSelectedQty={setSelectedQty} selectedQty={selectedQty} />
+
+            {/* <div className="w-[29.67%] bg-[#F5F5F5] py-4 px-4 flex items-center justify-center gap-3  md:gap-6 ">
               <button
                 onClick={() => {
                   if (selectedQty < 0) return;
@@ -123,7 +126,8 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
               >
                 <Add />
               </button>
-            </div>
+            </div> */}
+
             <WishlistButton
               params={params}
               //  wishlist={productById.wishlist}

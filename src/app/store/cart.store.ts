@@ -168,19 +168,22 @@ export interface IUseCartStore {
   showNavbar: boolean;
   cartData: CartItemType[];
   cartDataLength: number;
+  show: boolean;
 
   selectedQty: number;
   selectedColor: string | null;
+  setShow: (show: boolean) => void;
   setSelectedQty: (qty: number) => void;
   setSelectedColor: (color: string | null) => void;
 
   handleShowNavbar: () => void;
   addProductToCart: (id: string, color?: string | null, qty?: number) => void;
+  handleSelectColor: (id: string, color: string) => void;
 }
 
 export const useCartStore = create<IUseCartStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       isLoading: false,
       axiosError: null,
       showNavbar: false,
@@ -189,6 +192,36 @@ export const useCartStore = create<IUseCartStore>()(
 
       selectedQty: 0,
       selectedColor: null,
+      show: false,
+
+      setShow: (show: boolean) => {
+        set({ show });
+      },
+      handleSelectColor: (id, color) => {
+        set({ selectedColor: color });
+
+        if (color) {
+          const state = get();
+          const existingIndex = state.cartData.findIndex(
+            (item) => item._id === id
+          );
+
+          if (existingIndex !== -1) {
+            const existingItem = state.cartData[existingIndex];
+            const updatedItem = {
+              ...existingItem,
+              color,
+            };
+
+            const updatedCart = [...state.cartData];
+            updatedCart[existingIndex] = updatedItem;
+
+            set({
+              cartData: updatedCart,
+            });
+          }
+        }
+      },
 
       setSelectedQty: (qty: number) =>
         // set(() => ({ selectedQty: Math.max(1, qty) })),
@@ -200,7 +233,11 @@ export const useCartStore = create<IUseCartStore>()(
       handleShowNavbar: () =>
         set((state) => ({ showNavbar: !state.showNavbar })),
 
-      addProductToCart: async (id: string,  color?: string | null,   qty: number = 1) => {
+      addProductToCart: async (
+        id: string,
+        color?: string | null,
+        qty: number = 1
+      ) => {
         const shopStore = useShopStore.getState();
         let product: ProductsDataType | undefined =
           shopStore.productsData.find((item) => item._id === id) ??
@@ -233,7 +270,8 @@ export const useCartStore = create<IUseCartStore>()(
           discount: product.discount,
           price: product.price,
           // color: get().selectedColor ? get().selectedColor : "Please select color",
-          color: color ??  "Please select a color",
+          // color: color ?? "Please select a color",
+          color: color ?? null,
           stock: product.stock,
           wishlist: product.wishlist,
           discountTill: product.discountTill,
@@ -246,7 +284,7 @@ export const useCartStore = create<IUseCartStore>()(
 
         set((state) => {
           const existingItemIndex = state.cartData.findIndex(
-            (item) => item._id === id
+            (item) => item._id === id && item.color === color
           );
 
           if (existingItemIndex > -1) {
@@ -254,11 +292,15 @@ export const useCartStore = create<IUseCartStore>()(
             updatedCart[existingItemIndex] = {
               ...updatedCart[existingItemIndex],
               purchasedQty: updatedCart[existingItemIndex].purchasedQty + 1,
+
+              color: updatedCart[existingItemIndex].color, ///??????????????????????
             };
 
             return {
               cartData: updatedCart,
               cartDataLength: updatedCart.length,
+              selectedColor: null,
+              selectedQty: 0,
               isLoading: false,
               axiosError: null,
             };
@@ -269,13 +311,13 @@ export const useCartStore = create<IUseCartStore>()(
           return {
             cartData: [...state.cartData, cartItem],
             cartDataLength: state.cartDataLength + 1,
+            selectedColor: null,
+            selectedQty: 0,
             isLoading: false,
             axiosError: null,
           };
         });
       },
-
-
     }),
     {
       name: "cartData-store",
