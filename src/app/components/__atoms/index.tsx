@@ -28,3 +28,5 @@ export { default as SecondFilterIcon } from "./secondFilterIcon/SecondFilterIcon
 export { default as Minus } from "./minus/Minus"
 export { default as Add } from "./add/Add"
 export { default as EmojiArrow } from "./emojiArrow/EmojiArrow"
+export { default as ChevronLeft } from "./chevronLeft/ChevronLeft"
+export { default as Coupon } from "./coupon/Coupon"
