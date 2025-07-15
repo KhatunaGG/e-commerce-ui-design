@@ -37,6 +37,7 @@ export { default as Counter } from "./counter/Counter"
 export { default as Cart } from "./cart/Cart"
 export { default as CartItem } from "./cartItem/CartItem"
 export { default as CartHeader } from "./cartHeader/CartHeader"
+export { default as CartSummary } from "./cartSummary/CartSummary"
 
 
 

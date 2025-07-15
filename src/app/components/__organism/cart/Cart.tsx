@@ -53,12 +53,14 @@
 // export default Cart;
 
 "use client";
-import { ChevronLeft, Coupon } from "../../__atoms";
+import { ChevronLeft } from "../../__atoms";
 import Link from "next/link";
 import { useCartStore } from "@/app/store/cart.store";
 import { usePathname } from "next/navigation";
 import CartItem from "../cartItem/CartItem";
 import CartHeader from "../cartHeader/CartHeader";
+import CartSummary from "../cartSummary/CartSummary";
+import Coupons from "../coupons/Coupons";
 
 const Cart = () => {
   const path = usePathname();
@@ -66,8 +68,10 @@ const Cart = () => {
   // const isActivePage = path === "/cart-page"
   const { cartData } = useCartStore();
 
+  console.log(cartData);
+
   return (
-    <div className="w-full h-foll min-h-screen flex items-center justify-center lg:py-20">
+    <div className="w-full h-foll min-h-screen flex flex-col items-center justify-center py-20">
       <div className="w-full  md:w-[84.73%] lg:w-[77.77%] flex flex-col  gap-10 lg:gap-20">
         <Link
           className="w-full lg:hidden flex items-center gap-1"
@@ -82,66 +86,20 @@ const Cart = () => {
             Cart
           </h1>
 
-
           <CartHeader
           //  isActivePage={isActivePage}
-
-
-            />
-          {/* <div className="w-full flex md:items-center justify-between gap-8">
-            {["Shopping cart", " Checkout details", "Order complete"].map(
-              (item, i) => {
-                const isIndexOne = i === 1;
-                const isIndexTwo = i === 2;
-                const isZeroIndex = i === 0;
-                return (
-                  <div
-                    key={i}
-                    className={`${
-                      isIndexOne
-                        ? "  border-b-0 md:border-b md:border-b-[#141718]"
-                        : "w-0 "
-                    } ${isZeroIndex && "flex-1"}
-                  ${isIndexTwo && "hidden md:flex"}
-                   bg-blue-200 flex items-center  gap-[17px]  pb-[26px] border-b border-b-[#141718]           md:flex-1`}
-                  >
-                    <div className="flex rounded-full bg-[#B1B5C3] items-center justify-center w-[42px] h-[42px]">
-                      {i + 1}
-                    </div>
-                    <p
-                      className={`${
-                        (isIndexTwo || isIndexOne) && "hidden md:flex"
-                      } font-normal text-base leading-[26px]`}
-                    >
-                      {item}
-                    </p>
-                  </div>
-                );
-              }
-            )}
-          </div> */}
+          />
         </div>
 
         <div className="w-full flex flex-col lg:flex-row gap-6 lg:gap-[64px]">
-          <div className="COUPON lg:hidden flex flex-col gap-4">
-            <div className="flex flex-col gap-[7px]">
-              <h2>Have a coupon?</h2>
-              <p>Add your code for an instant cart discount</p>
-            </div>
-
-            <div className="w-full md:w-1/2  border border-[#6C7275] py-3 px-4 flex items-center justify-between gap-2">
-              <div className="w-fit">
-                <Coupon />
-              </div>
-              <input type="text" className="border-none w-auto bg-violet-300" />
-              <p className="w-fit">Apply</p>
-            </div>
+          <div className="w-full flex lg:hidden ">
+            <Coupons />
           </div>
 
           <div className="w-full lg:w-[57.41%] flex flex-col">
-            <div className="w-full pb-6 border-b border-b-[#6C7275] flex">
+            <div className="w-full pb-6 border-b border-b-[#6C7275] flex text-base font-semibold leading-[26px]">
               <p className="flex-1">Product</p>
-              <div className="hidden flex-1 lg:flex items-center justify-between">
+              <div className="hidden flex-1 lg:flex items-center justify-between ">
                 <p>Quantity</p>
                 <p>Price</p>
                 <p>Subtotal</p>
@@ -162,7 +120,18 @@ const Cart = () => {
             })}
           </div>
 
-          <div className="w-full lg:flex-1"></div>
+          <div className="w-full lg:flex-1">
+            <CartSummary
+              subtotal={cartData.reduce((acc, item) => {
+                const discountedPrice =
+                  item.price - (item.price * item.discount) / 100;
+                return acc + discountedPrice * item.purchasedQty;
+              }, 0)}
+            />
+          </div>
+        </div>
+        <div className="hidden lg:flex">
+          <Coupons />
         </div>
       </div>
     </div>
@@ -170,4 +139,3 @@ const Cart = () => {
 };
 
 export default Cart;
-
