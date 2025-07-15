@@ -21,7 +21,12 @@ export const labels = [
   },
 ];
 
-export const sortIcons = ["FirstFilterIcon", "SecondFilterIcon", "ThirdFilterIcon", "FourthFilterIcon" ]
+export const sortIcons = [
+  "FirstFilterIcon",
+  "SecondFilterIcon",
+  "ThirdFilterIcon",
+  "FourthFilterIcon",
+];
 
 export const categoriesFilter = [
   "All Rooms",
@@ -32,7 +37,6 @@ export const categoriesFilter = [
   "Dinning",
   "Outdoor",
 ];
-
 
 export const priceFilter = [
   "All Price",
@@ -51,7 +55,6 @@ export const priceFilter = [
 //   `${(400.0).toFixed(2)}+`,
 // ];
 
-
 export const sortBy = [
   "Sort By",
   "Latest",
@@ -62,7 +65,6 @@ export const sortBy = [
   "Lowest",
 ];
 
-
 // export const sortByOptions = {
 //   "Latest": "latest",
 //   "Oldest": "oldest",
@@ -72,6 +74,21 @@ export const sortBy = [
 //   "Lowest": "lowest",
 // };
 
+export const emojis = ["😀", "😂", "😍", "😢", "😠", "👍", "🙏", "💯"];
 
 
-export const emojis = ['😀', '😂', '😍', '😢', '😠', '👍', '🙏', '💯'];
+
+export const shippings = [
+  {
+    shippingCost: 0.0,
+    shippingOption: "free shipping",
+  },
+  {
+    shippingCost: 15.0,
+    shippingOption: "express shipping",
+  },
+  {
+    shippingCost: 21,
+    shippingOption: "pick up",
+  },
+];
