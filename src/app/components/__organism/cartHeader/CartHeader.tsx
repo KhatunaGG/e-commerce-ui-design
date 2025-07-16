@@ -50,69 +50,107 @@
 
 // export default CartHeader;
 
+
 "use client";
 import { usePathname } from "next/navigation";
 
 export type CurtHeaderPropsType = {
-  isActivePage: boolean;
+  isCartPage?: boolean;
 };
 
-//after colors
 const CartHeader = () => {
   const path = usePathname();
   const isCartPage = path.includes("cart-page");
   const isCheckoutPage = path.includes("checkout-page");
-  const isCompletePage = path.includes("complete-page");
-
-  const steps = ["Shopping cart", "Checkout details", "Order complete"];
+  // const isCompletePage = path.includes("complete-page");
 
   return (
-    <div className="w-full flex md:items-center justify-between gap-8">
-      {steps.map((step, i) => {
-        const isActive =
-          (i === 0 && isCartPage) ||
-          (i === 1 && isCheckoutPage) ||
-          (i === 2 && isCompletePage);
+    <div className="w-full flex flex-col items-center gap-6 lg:gap-10">
+      <h1 className="text-[40px] lg:text-[54px] font-medium leading-[44px] tracking-[-0.4px] lg:leading-[5f8px] lg:tracking-[-1px] text-black">
+        {isCartPage ? "Cart" : "Check Out"}
+      </h1>
 
-        return (
-          <div
-            key={i}
-            className={`
-              flex items-center gap-[17px] pb-[26px] border-b bg-green-300               md:flex-1
-              ${i === 1 ? "border-b-0 md:border-b" : ""}
-              ${i === 2 ? "hidden md:flex" : ""}
-              ${
-                isActive
-                  ? "md:flex-1 font-bold  border-b-[#141718]"
-                  : "md:flex-1 font-normal  border-transparent"
+      <div className="w-full flex md:items-center justify-between gap-8">
+        {["Shopping cart", "Checkout details", "Order complete"].map(
+          (item, i) => {
+            const isZeroIndex = i === 0;
+            const isIndexOne = i === 1;
+            const isIndexTwo = i === 2;
+
+            const wrapperClass = (() => {
+              if (isCartPage) {
+                if (isZeroIndex) return "flex-1";
+                if (isIndexOne) return "w-fit md:flex-1";
+                if (isIndexTwo) return "hidden md:flex md:flex-1";
               }
-            `}
-          >
-            <div
-              className={`
-                flex items-center justify-center rounded-full w-[42px] h-[42px]
-                ${
-                  isActive
-                    ? "bg-[#23262F] text-white"
-                    : "bg-[#B1B5C3] text-black"
-                }
-              `}
-            >
-              {i + 1}
-            </div>
-            <p
-              className={`
-                text-base leading-[26px] 
-                ${i > 0 ? "hidden md:flex" : "flex"}
-              `}
-            >
-              {step}
-            </p>
-          </div>
-        );
-      })}
+              if (isCheckoutPage) {
+                if (isZeroIndex) return "hidden md:flex md:flex-1";
+                if (isIndexOne) return "flex-1";
+                if (isIndexTwo) return "w-fit md:flex-1";
+              }
+
+              return "flex-1";
+            })();
+
+            const borderClass =
+              isZeroIndex && isCartPage
+                ? "border-b-2 border-b-[#141718]"
+                : isZeroIndex && isCheckoutPage
+                ? "border-b-2 border-b-[#45B26B]"
+                : isIndexOne && isCheckoutPage
+                ? "border-b-2 border-b-[#141718]"
+                : "border-b-0";
+
+            const badgeColor =
+              isZeroIndex && isCartPage
+                ? "bg-black"
+                : isZeroIndex && isCheckoutPage
+                ? "bg-[#45B26B]"
+                : isIndexOne && isCheckoutPage
+                ? "bg-black"
+                : "bg-[#B1B5C3]";
+
+            const Color =
+              isZeroIndex && isCartPage
+                ? "text-black font-bold"
+                : isZeroIndex && isCheckoutPage
+                ? "text-[#45B26B] font-bold"
+                : isIndexOne && isCheckoutPage
+                ? "text-black font-bold "
+                : "text-black";
+
+            // const labelClass =
+            //   isIndexOne  || isIndexTwo ? "hidden md:flex bg-yellow-100" : "";
+            const labelClass =
+              (isIndexOne && isCartPage) || (isIndexTwo && isCheckoutPage)
+                ? "hidden md:flex bg-yellow-100"
+                : "";
+
+            return (
+              <div
+                key={i}
+                className={`${wrapperClass} ${borderClass} bg-blue-200 flex items-center gap-[17px] pb-[26px]`}
+              >
+                <div
+                  className={`${badgeColor} flex rounded-full items-center justify-center w-[42px] h-[42px] text-white`}
+                >
+                  {i + 1}
+                </div>
+                <p
+                  className={`${labelClass} ${Color}  text-base leading-[26px]`}
+                >
+                  {item}
+                </p>
+              </div>
+            );
+          }
+        )}
+      </div>
     </div>
   );
 };
 
 export default CartHeader;
+
+// ${isCartPage && isZeroIndex && "bg-black"}
+// ${isZeroIndex && isCheckoutPage && "bg-[#45B26B]"}
