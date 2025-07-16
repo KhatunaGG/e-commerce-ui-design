@@ -1,0 +1,10 @@
+import Checkout from "@/app/components/__organism/checkout/Checkout";
+import React from "react";
+
+export default function Page() {
+  return (
+    <div className="w-full px-[8.53%] md:px-0">
+      <Checkout />
+    </div>
+  );
+}

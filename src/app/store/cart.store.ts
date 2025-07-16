@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 import { ProductsDataType, useShopStore } from "./shop-page.store";
 import { useProductStore } from "./product.store";
 import { toast } from "react-toastify";
+import { useSignInStore } from "./sign-in.store";
 
 export interface ErrorResponse {
   message: string;
@@ -59,6 +60,7 @@ export interface IUseCartStore {
 
   updateCartQty: (id: string, color: string | null, newQty: number) => void;
   deleteProductFromCart: (id: string, color: string | null) => void;
+  handelCheckout: () => Promise<void>;
 }
 
 export const useCartStore = create<IUseCartStore>()(
@@ -383,7 +385,47 @@ export const useCartStore = create<IUseCartStore>()(
           cartDataLength: copiedCart.length,
         });
       },
+      handelCheckout: async () => {
+        const state = get();
+        const signInStore = useSignInStore.getState();
+        set({ isLoading: true, axiosError: null });
+
+        await signInStore.initialize();
+
+        if (state.cartData.length === 0) {
+          toast.error("Cart is empty. Please add items before checking out.");
+          return;
+        }
+        if (state.selectedShipping === null) {
+          toast.error("Please select a shipping option.");
+          return;
+        }
+
+        if (
+          signInStore.accessToken &&
+          state.selectedShipping !== null &&
+          state.cartData.length > 0
+        ) {
+          window.location.href = "/checkout-page";
+        }
+
+        // const purchasePrice = state.cartData.reduce((acc, el) => {
+        //   const discountedPrice = el.price - (el.price * el.discount) / 100;
+        //   return acc + discountedPrice * el.purchasedQty;
+        // }, 0);
+
+        // const newPurchase = {
+        //   order: state.cartData,
+        //   shipping: state.selectedShipping,
+        //   purchasePrice,
+        //   total: purchasePrice,
+        // };
+
+
+
+      },
     }),
+
     {
       name: "cartData-store",
       partialize: (state) => ({
