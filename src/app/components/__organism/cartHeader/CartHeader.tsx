@@ -123,13 +123,13 @@ const CartHeader = () => {
             //   isIndexOne  || isIndexTwo ? "hidden md:flex bg-yellow-100" : "";
             const labelClass =
               (isIndexOne && isCartPage) || (isIndexTwo && isCheckoutPage)
-                ? "hidden md:flex bg-yellow-100"
+                ? "hidden md:flex "
                 : "";
 
             return (
               <div
                 key={i}
-                className={`${wrapperClass} ${borderClass} bg-blue-200 flex items-center gap-[17px] pb-[26px]`}
+                className={`${wrapperClass} ${borderClass}  flex items-center gap-[17px] pb-[26px]`}
               >
                 <div
                   className={`${badgeColor} flex rounded-full items-center justify-center w-[42px] h-[42px] text-white`}

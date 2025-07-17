@@ -19,6 +19,7 @@ export type CartItemPropsType = {
   isNotSelected?: boolean;
   colors: string[];
   handleSelectColor?: (id: string, color: string) => void;
+  isCheckoutPage?: boolean
 };
 
 const CartItem = ({
@@ -28,6 +29,7 @@ const CartItem = ({
   isNotSelected,
   //   show,
   handleSelectColor,
+  isCheckoutPage,
   ...item
 }: CartItemPropsType) => {
   const { _id, productName, price, purchasedQty, color, presignedUrl, colors } =
@@ -39,7 +41,9 @@ const CartItem = ({
     <div
       className={`${isLastItem && "border-b-0"} ${
         isFirstItem && "border-t-0"
-      } w-full flex items-start gap-2 md:gap-4 py-4 md:py-6  border-t border-t-black/20 border-b border-b-black/20`}
+      } 
+      ${(isCheckoutPage && isLastItem) ? "border-b border-b-black/20" : ""} 
+      w-full flex items-start gap-2 md:gap-4 py-4 md:py-6  border-t border-t-black/20 border-b border-b-black/20`}
     >
       <div className={` w-[23.32%] md:w-[19.37%]  h-full  lg:h-full `}>
         {presignedUrl ? (
@@ -121,6 +125,7 @@ const CartItem = ({
               onChange={(newQty: number) => updateCartQty(_id, color, newQty)}
               isCartPage={isCartPage}
               show={true}
+             isCheckoutPage={isCheckoutPage}
             />
           </div>
         </div>
