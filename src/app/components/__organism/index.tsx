@@ -38,6 +38,10 @@ export { default as Cart } from "./cart/Cart"
 export { default as CartItem } from "./cartItem/CartItem"
 export { default as CartHeader } from "./cartHeader/CartHeader"
 export { default as CartSummary } from "./cartSummary/CartSummary"
+export { default as Contact } from "./contact/Contact"
+export { default as ShippingAddress } from "./shippingAddress/ShippingAddress"
+export { default as PaymentMethod } from "./paymentMethod/PaymentMethod"
+export { default as CostSummary } from "./costSummary/CostSummary"
 
 
 

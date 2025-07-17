@@ -60,7 +60,7 @@ export interface IUseCartStore {
 
   updateCartQty: (id: string, color: string | null, newQty: number) => void;
   deleteProductFromCart: (id: string, color: string | null) => void;
-  handelCheckout: () => Promise<void>;
+  handleCheckout: () => Promise<void>;
 }
 
 export const useCartStore = create<IUseCartStore>()(
@@ -80,32 +80,6 @@ export const useCartStore = create<IUseCartStore>()(
       setShow: (show: boolean) => {
         set({ show });
       },
-      // handleSelectColor: (id, color) => {
-      //   set({ selectedColor: color });
-
-      //   if (color) {
-      //     const state = get();
-      //     const existingIndex = state.cartData.findIndex(
-      //       (item) => item._id === id && item.color === null
-      //     );
-
-      //     if (existingIndex !== -1) {
-      //       const existingItem = state.cartData[existingIndex];
-      //       const updatedItem = {
-      //         ...existingItem,
-      //         color,
-      //       };
-
-      //       const updatedCart = [...state.cartData];
-      //       updatedCart[existingIndex] = updatedItem;
-
-      //       set({
-      //         cartData: updatedCart,
-      //       });
-      //     }
-      //   }
-      // },
-
       setSelectedShipping: (shipping) => set({ selectedShipping: shipping }),
       handleSelectColor: (id, color) => {
         set({ selectedColor: color });
@@ -180,90 +154,6 @@ export const useCartStore = create<IUseCartStore>()(
           };
         });
       },
-
-      // addProductToCart: async (
-      //   id: string,
-      //   color?: string | null,
-      //   qty: number = 1
-      // ) => {
-      //   const shopStore = useShopStore.getState();
-      //   let product: ProductsDataType | undefined =
-      //     shopStore.productsData.find((item) => item._id === id) ??
-      //     shopStore.cachedProductsData.shop?.find((item) => item._id === id);
-
-      //   if (!product) {
-      //     try {
-      //       const { getProductById } = useProductStore.getState();
-      //       await getProductById(id);
-      //       product = useProductStore.getState().productById || undefined;
-      //     } catch (e) {
-      //       set({
-      //         isLoading: false,
-      //         axiosError: handleApiError(e as AxiosError<ErrorResponse>),
-      //       });
-      //       return;
-      //     }
-      //   }
-
-      //   if (!product) {
-      //     console.warn("Product not found:", id);
-      //     return;
-      //   }
-      //   // console.log("Adding to cart with presignedUrl:", product.presignedUrl);
-
-      //   const cartItem: CartItemType = {
-      //     productName: product.productName,
-      //     filePath: product.filePath || "",
-      //     new: product.new,
-      //     discount: product.discount,
-      //     price: product.price,
-      //     // color: get().selectedColor ? get().selectedColor : "Please select color",
-      //     // color: color ?? "Please select a color",
-      //     color: color ?? null,
-      //     stock: product.stock,
-      //     wishlist: product.wishlist,
-      //     discountTill: product.discountTill,
-      //     _id: product._id,
-      //     // purchasedQty: 1,
-      //     colors: product.colors,
-      //     purchasedQty: qty,
-      //     presignedUrl: product.presignedUrl || "",
-      //   };
-
-      //   set((state) => {
-      //     const existingItemIndex = state.cartData.findIndex(
-      //       (item) => item._id === id && item.color === color && item.stock > 0
-      //     );
-
-      //     if (existingItemIndex > -1) {
-      //       const updatedCart = [...state.cartData];
-      //       updatedCart[existingItemIndex] = {
-      //         ...updatedCart[existingItemIndex],
-      //         purchasedQty: updatedCart[existingItemIndex].purchasedQty + 1,
-      //         color: updatedCart[existingItemIndex].color, ///??????????????????????
-      //       };
-
-      //       return {
-      //         cartData: updatedCart,
-      //         cartDataLength: updatedCart.length,
-      //         selectedColor: null,
-      //         selectedQty: 0,
-      //         isLoading: false,
-      //         axiosError: null,
-      //       };
-      //     }
-
-      //     return {
-      //       cartData: [...state.cartData, cartItem],
-      //       cartDataLength: state.cartDataLength + 1,
-      //       selectedColor: null,
-      //       selectedQty: 0,
-      //       isLoading: false,
-      //       axiosError: null,
-      //     };
-      //     console.log(cartItem, "cartItem from ADDTOCART function");
-      //   });
-      // },
 
       addProductToCart: async (
         id: string,
@@ -385,7 +275,8 @@ export const useCartStore = create<IUseCartStore>()(
           cartDataLength: copiedCart.length,
         });
       },
-      handelCheckout: async () => {
+
+      handleCheckout: async () => {
         const state = get();
         const signInStore = useSignInStore.getState();
         set({ isLoading: true, axiosError: null });
@@ -400,14 +291,14 @@ export const useCartStore = create<IUseCartStore>()(
           toast.error("Please select a shipping option.");
           return;
         }
-
-        if (
-          signInStore.accessToken &&
-          state.selectedShipping !== null &&
-          state.cartData.length > 0
-        ) {
-          window.location.href = "/checkout-page";
-        }
+        window.location.href = "/checkout-page";
+        // if (
+        //   signInStore.accessToken &&
+        //   state.selectedShipping !== null &&
+        //   state.cartData.length > 0
+        // ) {
+        //   window.location.href = "/checkout-page";
+        // }
 
         // const purchasePrice = state.cartData.reduce((acc, el) => {
         //   const discountedPrice = el.price - (el.price * el.discount) / 100;
@@ -420,9 +311,6 @@ export const useCartStore = create<IUseCartStore>()(
         //   purchasePrice,
         //   total: purchasePrice,
         // };
-
-
-
       },
     }),
 
@@ -431,6 +319,7 @@ export const useCartStore = create<IUseCartStore>()(
       partialize: (state) => ({
         cartData: state.cartData,
         cartDataLength: state.cartDataLength,
+        selectedShipping: state.selectedShipping
       }),
     }
   )

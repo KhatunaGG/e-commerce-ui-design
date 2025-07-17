@@ -93,6 +93,7 @@ export type CounterPropsType = {
   onChange: (qty: number) => void;
   show?: boolean;
   isCartPage?: boolean;
+  isCheckoutPage?: boolean;
 };
 
 const Counter = ({
@@ -100,10 +101,11 @@ const Counter = ({
   quantity,
   onChange,
   isCartPage,
+  isCheckoutPage
 }: CounterPropsType) => {
 
     const handleChange = (newQty: number) => {
-    if (!isCartPage) {
+    if (!isCartPage && !isCheckoutPage) {
       onChange(newQty);
     }
   };

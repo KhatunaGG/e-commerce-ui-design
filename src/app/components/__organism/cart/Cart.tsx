@@ -58,11 +58,11 @@ const Cart = () => {
 
           <div className="w-full lg:flex-1">
             <CartSummary
-              subtotal={cartData.reduce((acc, item) => {
-                const discountedPrice =
-                  item.price - (item.price * item.discount) / 100;
-                return acc + discountedPrice * item.purchasedQty;
-              }, 0)}
+              // subtotal={cartData.reduce((acc, item) => {
+              //   const discountedPrice =
+              //     item.price - (item.price * item.discount) / 100;
+              //   return acc + discountedPrice * item.purchasedQty;
+              // }, 0)}
             />
           </div>
         </div>
