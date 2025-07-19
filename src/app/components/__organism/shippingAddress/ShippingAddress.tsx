@@ -105,7 +105,6 @@
 // export default ShippingAddress;
 
 "use client";
-// import { useShopStore } from "@/app/store/shop-page.store";
 import { useMemo, useState } from "react";
 import Select, { SingleValue } from "react-select";
 import countryList, { CountryType } from "react-select-country-list";
@@ -117,6 +116,7 @@ export type ShippingAddressPropsType = {
   register: UseFormRegister<CheckoutType>;
   errors: FieldErrors<CheckoutType>;
   setValue: UseFormSetValue<CheckoutType>;
+  isCheckoutPage?: boolean;
 };
 
 export type CountryType = {
@@ -128,6 +128,7 @@ const ShippingAddress = ({
   register,
   errors,
   setValue,
+  isCheckoutPage,
 }: ShippingAddressPropsType) => {
   // const { normalizeFirstChar } = useShopStore();
   const [selectedCountry, setSelectedCountry] =
@@ -137,10 +138,19 @@ const ShippingAddress = ({
 
   const changeHandler = (val: SingleValue<CountryType>) => {
     setSelectedCountry(val);
+
     if (val) {
-      setValue("country", val.value);
+      setValue("country", val.label);
+      setValue("state", val.value);
     }
   };
+
+  // useEffect(() => {
+  //   if (!selectedCountry) {
+  //     const match = options.find((c) => c.value === "GB");
+  //     if (match) setSelectedCountry(match);
+  //   }
+  // }, [options]);
 
   return (
     <div className="w-full flex flex-col items-center px-4 py-6 md:px-6 md:py-10 gap-6 border border-[#CBCBCB] rounded-sm">
@@ -148,10 +158,15 @@ const ShippingAddress = ({
         Shipping Address
       </h1>
 
-      <Input register={register} errors={errors} fieldName="streetAddress" />
+      <Input
+        register={register}
+        errors={errors}
+        fieldName="streetAddress"
+        isCheckoutPage={isCheckoutPage}
+      />
 
       <div className="w-full">
-        <label className="text-[#6C7275] text-base font-normal mb-2 block">
+        <label className=" mb-2 block uppercase text-xs font-bold leading-[20px] text-[#6C7275]">
           Country
         </label>
         <Select
@@ -199,15 +214,34 @@ const ShippingAddress = ({
         )}
       </div>
 
-      <Input register={register} errors={errors} fieldName="townCity" />
+      <Input
+        register={register}
+        errors={errors}
+        fieldName="townCity"
+        isCheckoutPage={isCheckoutPage}
+      />
 
       <div className="w-full grid grid-cols-2 gap-2 md:gap-6">
-        <Input register={register} errors={errors} fieldName="state" />
-        <Input register={register} errors={errors} fieldName="zipCode" />
+        <Input
+          register={register}
+          errors={errors}
+          fieldName="state"
+          isCheckoutPage={isCheckoutPage}
+        />
+        <Input
+          register={register}
+          errors={errors}
+          fieldName="zipCode"
+          isCheckoutPage={isCheckoutPage}
+        />
       </div>
 
       <div className="w-full flex items-center gap-3">
-        <input type="checkbox" name="differentBilling" id="differentBilling" />
+        <input
+          type="checkbox"
+          id="differentBilling"
+          {...register("differentBilling")}
+        />
         <label
           htmlFor="differentBilling"
           className="text-xs font-normal leading-[20px] text-[#6C7275]"
