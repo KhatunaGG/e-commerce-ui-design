@@ -52,7 +52,7 @@ const PaymentMethod = ({
           </div>
         </div>
 
-        <div className="w-full flex items-center justify-between border border-[#141718] py-[13px] px-4 rounded-[5px] font-normal md:font-semibold text-sm md:text-base leading-[22px] md:leading-[26px] bg-green-200 relative">
+        <div className="w-full flex items-center justify-between border border-[#141718] py-[13px] px-4 rounded-[5px] font-normal md:font-semibold text-sm md:text-base leading-[22px] md:leading-[26px] relative">
           <div className="w-full flex items-center gap-3 p-1">
             <label className="w-[18px] h-[18px] rounded-full bg-white border border-[#141718] flex items-center justify-center relative cursor-pointer">
               <input

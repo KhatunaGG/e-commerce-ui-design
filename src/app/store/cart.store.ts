@@ -183,15 +183,6 @@ export const useCartStore = create<IUseCartStore>()(
           console.warn("Product not found:", id);
           return;
         }
-
-        // if (product.colors.length > 0 && !color) {
-        //   set({
-        //     isLoading: false,
-        //     axiosError: "Please select a color before adding to cart",
-        //   });
-        //   toast.error(get().axiosError);
-        // }
-
         if (product.stock < qty) {
           set({
             isLoading: false,
@@ -292,25 +283,6 @@ export const useCartStore = create<IUseCartStore>()(
           return;
         }
         window.location.href = "/checkout-page";
-        // if (
-        //   signInStore.accessToken &&
-        //   state.selectedShipping !== null &&
-        //   state.cartData.length > 0
-        // ) {
-        //   window.location.href = "/checkout-page";
-        // }
-
-        // const purchasePrice = state.cartData.reduce((acc, el) => {
-        //   const discountedPrice = el.price - (el.price * el.discount) / 100;
-        //   return acc + discountedPrice * el.purchasedQty;
-        // }, 0);
-
-        // const newPurchase = {
-        //   order: state.cartData,
-        //   shipping: state.selectedShipping,
-        //   purchasePrice,
-        //   total: purchasePrice,
-        // };
       },
     }),
 
@@ -319,7 +291,7 @@ export const useCartStore = create<IUseCartStore>()(
       partialize: (state) => ({
         cartData: state.cartData,
         cartDataLength: state.cartDataLength,
-        selectedShipping: state.selectedShipping
+        selectedShipping: state.selectedShipping,
       }),
     }
   )

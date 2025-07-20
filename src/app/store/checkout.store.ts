@@ -1,21 +1,22 @@
-// import axios, { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { create } from "zustand";
 import { CheckoutType } from "../components/__organism/checkout/Checkout";
 import { CartItemType, useCartStore } from "./cart.store";
-
+import { useSignInStore } from "./sign-in.store";
+import { axiosInstance } from "../libs/axiosInstance";
 
 export interface ErrorResponse {
   message: string;
 }
 
-// const handleApiError = (error: AxiosError<ErrorResponse>): string => {
-//   if (axios.isAxiosError(error)) {
-//     const errorMessage = error.response?.data.message || "An error occurred";
-//     return errorMessage;
-//   }
-//   const unexpectedError = "An unexpected error occurred";
-//   return unexpectedError;
-// };
+const handleApiError = (error: AxiosError<ErrorResponse>): string => {
+  if (axios.isAxiosError(error)) {
+    const errorMessage = error.response?.data.message || "An error occurred";
+    return errorMessage;
+  }
+  const unexpectedError = "An unexpected error occurred";
+  return unexpectedError;
+};
 
 export interface IUseCheckoutStore {
   isLoading: boolean;
@@ -24,6 +25,7 @@ export interface IUseCheckoutStore {
 
   subtotal: number;
   shippingCost: number;
+  shippingOption: string;
 
   setSubtotalAndShipping: (
     data: CartItemType[],
@@ -31,7 +33,7 @@ export interface IUseCheckoutStore {
   ) => void;
 
   setFormData: (data: CheckoutType) => void;
-  submitPurchase: (formState: CheckoutType) => Promise<void>;
+  submitPurchase: (formState: CheckoutType) => Promise<boolean>;
 }
 
 export const useCheckoutStore = create<IUseCheckoutStore>((set, get) => ({
@@ -40,48 +42,82 @@ export const useCheckoutStore = create<IUseCheckoutStore>((set, get) => ({
   formData: null,
   subtotal: 0,
   shippingCost: 0,
- setSubtotalAndShipping: (arr, selectedShipping) => {
-  const roundToTwo = (num: number) => Math.round(num * 100) / 100;
+  shippingOption: "",
 
-  const subTotal = arr.reduce((acc, item) => {
-    const hasDiscount = typeof item.discount === "number" && item.discount > 0;
-    const priceToUse = hasDiscount
-      ? item.price - (item.price * item.discount) / 100
-      : item.price;
-    return acc + roundToTwo(priceToUse * item.purchasedQty);
-  }, 0);
+  setSubtotalAndShipping: (arr, selectedShipping) => {
+    const roundToTwo = (num: number) => Math.round(num * 100) / 100;
 
-  let shippingCost = 0;
+    const subTotal = arr.reduce((acc, item) => {
+      const hasDiscount =
+        typeof item.discount === "number" && item.discount > 0;
+      const priceToUse = hasDiscount
+        ? item.price - (item.price * item.discount) / 100
+        : item.price;
+      return acc + roundToTwo(priceToUse * item.purchasedQty);
+    }, 0);
 
-  if (selectedShipping) {
-    const option = selectedShipping.shippingOption.toLowerCase();
+    let shippingCost = 0;
+    let shippingOption = "";
 
-    if (option === "pick up") {
-      shippingCost = roundToTwo((subTotal * selectedShipping.shippingCost) / 100);
-    } else {
-      shippingCost = roundToTwo(selectedShipping.shippingCost);
+    if (selectedShipping) {
+      shippingOption = selectedShipping.shippingOption.toLowerCase();
+
+      if (shippingOption === "pick up") {
+        shippingCost = roundToTwo(
+          (subTotal * selectedShipping.shippingCost) / 100
+        );
+      } else {
+        shippingCost = roundToTwo(selectedShipping.shippingCost);
+      }
     }
-  }
 
-  set({ subtotal: subTotal, shippingCost });
-},
+    set({ subtotal: subTotal, shippingCost, shippingOption });
+  },
 
   setFormData: (data) => set({ formData: data }),
 
   submitPurchase: async (formState) => {
     const cartStore = useCartStore.getState();
-    const state = get()
+    const signInStore = useSignInStore.getState();
+    const state = get();
 
-    console.log(formState, "formState from STORE");
+    const cleanedOrder = cartStore.cartData.map(
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars   
+      ({ presignedUrl, colors, ...rest }) => rest
+    );
+
     const newFormState = {
       ...formState,
-      order: cartStore.cartData,
+      order: cleanedOrder,
       shipping: state.shippingCost,
+      shippingOption: state.shippingOption,
       subtotal: state.subtotal,
-      total: state.shippingCost + state.subtotal
+      total: state.shippingCost + state.subtotal,
     };
-
-    console.log(newFormState, "newFormState")
     set({ isLoading: true, axiosError: null });
+    try {
+      const res = await axiosInstance.post("/purchase", newFormState, {
+        headers: { Authorization: `Bearer ${signInStore.accessToken}` },
+      });
+      if (res.status >= 200 && res.status <= 204) {
+        useCartStore.setState({
+          cartData: [],
+          cartDataLength: 0,
+          selectedShipping: null,
+        });
+        set({
+          isLoading: false,
+          axiosError: "",
+        });
+
+        return true;
+      }
+    } catch (e) {
+      set({
+        isLoading: false,
+        axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+      });
+    }
+    return false;
   },
 }));
