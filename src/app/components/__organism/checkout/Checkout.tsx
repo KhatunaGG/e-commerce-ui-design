@@ -17,7 +17,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import PaymentMethod from "../paymentMethod/PaymentMethod";
 import { useCheckoutStore } from "@/app/store/checkout.store";
 
-
 // const checkoutSchema = z.object({
 //   name: z.string().min(1, "Name  is required"),
 //   lastName: z
@@ -101,7 +100,7 @@ const Checkout = () => {
   const isCheckoutPage = path.includes("/checkout-page");
   const { cartData, selectedShipping } = useCartStore();
 
-  const {submitPurchase} = useCheckoutStore()
+  const { submitPurchase } = useCheckoutStore();
 
   useEffect(() => {
     initialize();
@@ -113,19 +112,17 @@ const Checkout = () => {
     formState: { errors },
     setValue,
     watch,
+    reset
   } = useForm<CheckoutType>({
     resolver: zodResolver(checkoutSchema),
   });
 
-
-
-  const onSubmit = (formState: CheckoutType) => {
-    // console.log("hello");
-    // console.log("formState:", formState);
-    submitPurchase(formState)
-  };
-
-
+const onSubmit = async (formState: CheckoutType) => {
+  const success = await submitPurchase(formState);
+  if (success) {
+    reset(); // 
+  }
+};
 
   if (!accessToken) return null;
 
