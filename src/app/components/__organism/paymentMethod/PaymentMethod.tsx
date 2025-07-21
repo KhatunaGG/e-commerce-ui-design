@@ -34,13 +34,13 @@ const PaymentMethod = ({
             <label className="w-[18px] h-[18px] rounded-full bg-white border border-[#141718] flex items-center justify-center relative cursor-pointer">
               <input
                 type="radio"
-                id="CardCredit"
-                value="card"
+                id="Card Credit"
+                 value="Credit Card"
                 {...register("paymentMethod")}
                 className="absolute w-full h-full opacity-0 cursor-pointer"
               />
 
-              {selectedMethod === "card" && (
+              {selectedMethod === "Credit Card" && (
                 <div className="bg-[#141718] w-3 h-3 rounded-full pointer-events-none"></div>
               )}
             </label>
@@ -58,11 +58,11 @@ const PaymentMethod = ({
               <input
                 type="radio"
                 id="Paypal"
-                value="paypal"
+                value="Paypal"
                 {...register("paymentMethod")}
                 className="absolute w-full h-full opacity-0 cursor-pointer"
               />
-              {selectedMethod === "paypal" && (
+              {selectedMethod === "Paypal" && (
                 <div className="bg-[#141718] w-3 h-3 rounded-full pointer-events-none"></div>
               )}
             </label>

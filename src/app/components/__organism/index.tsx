@@ -42,6 +42,7 @@ export { default as Contact } from "./contact/Contact"
 export { default as ShippingAddress } from "./shippingAddress/ShippingAddress"
 export { default as PaymentMethod } from "./paymentMethod/PaymentMethod"
 export { default as CostSummary } from "./costSummary/CostSummary"
+export { default as Complete } from "./complete/Complete"
 
 
 

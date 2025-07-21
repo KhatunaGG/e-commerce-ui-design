@@ -8,7 +8,7 @@ const Nav = () => {
   const path = usePathname();
   const handleShowNavbar = useCartStore((state) => state.handleShowNavbar);
   // const cartDataLength = useCartStore((state) => state.cartData.length);
-   const cartDataLength = useCartStore((state) => state.cartDataLength)
+  const cartDataLength = useCartStore((state) => state.cartDataLength);
 
   return (
     <>
@@ -39,10 +39,6 @@ const Nav = () => {
           <Search hidden={true} />
           <User />
           <Bag />
-          {/* <div className=" w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold">
-            1
-          </div> */}
-
           <div
             onClick={handleShowNavbar}
             className="relative w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold cursor-pointer"
