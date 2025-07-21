@@ -43,6 +43,7 @@ export { default as ShippingAddress } from "./shippingAddress/ShippingAddress"
 export { default as PaymentMethod } from "./paymentMethod/PaymentMethod"
 export { default as CostSummary } from "./costSummary/CostSummary"
 export { default as Complete } from "./complete/Complete"
+export { default as CardForm } from "./cardForm/CardForm "
 
 
 

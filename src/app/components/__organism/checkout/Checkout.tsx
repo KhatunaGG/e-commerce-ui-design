@@ -37,9 +37,11 @@ export const checkoutSchema = z.object({
   // paymentMethod: z.enum(["card", "paypal"], {
   //   required_error: "Please select a payment method",
   // }),
-  paymentMethod: z.enum(["Credit Card", "Paypal"], {
-    required_error: "Please select a payment method",
-  }),
+  paymentMethod: z
+    .enum(["Credit Card", "Paypal"], {
+      required_error: "Please select a payment method",
+    })
+    .nullable(),
 });
 
 export type CheckoutType = z.infer<typeof checkoutSchema>;
@@ -66,6 +68,20 @@ const Checkout = () => {
     reset,
   } = useForm<CheckoutType>({
     resolver: zodResolver(checkoutSchema),
+    defaultValues: {
+      name: "",
+      lastName: "",
+      phoneNumber: "",
+      yourEmail: "",
+      streetAddress: "",
+      country: "",
+      state: "",
+      zipCode: "",
+      expirationDate: "",
+      CVC: "",
+      differentBilling: false,
+      paymentMethod: null,
+    },
   });
 
   const onSubmit = async (formState: CheckoutType) => {

@@ -62,8 +62,9 @@ const Complete = () => {
           </h1>
         </div>
 
-        {/* <div className="flex items-center justify-center gap-4 md:gap-10"> */}
-        <div className="grid grid-cols-3 gap-4 md:gap-10 relative">
+
+        {/* <div className="grid grid-cols-3 gap-4 md:gap-10 relative "> */}
+        <div className="flex items-center justify-center gap-4 md:gap-10 relative  bg-green-300">
           {slicedPresignedUrl.map((item, i) => {
             return (
               <div key={i} className="">

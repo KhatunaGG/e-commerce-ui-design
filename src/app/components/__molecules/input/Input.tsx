@@ -217,7 +217,7 @@ export default function Input<T extends FieldValues>({
         )}
       </div>
       {errors[fieldName] && (
-        <span className="text-red-500 text-sm mt-1">
+        <span className="absolute bottom-[-18px] left-0 text-red-500 text-sm mt-1">
           {errors[fieldName]?.message as string}
         </span>
       )}
