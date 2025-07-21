@@ -10,7 +10,6 @@ import SaleOffer from "../saleOffer/SaleOffer";
 import Articles from "../articles/Articles";
 import { useHomePageStore } from "@/app/store/useHomePage.store.";
 import { useShopStore } from "@/app/store/shop-page.store";
-// import { useShopPageStore } from "@/app/store/useShopPage.store";
 
 const Dashboard = () => {
   const path = usePathname();
@@ -83,8 +82,6 @@ const Dashboard = () => {
 
   return (
     <section className="w-full">
-     
-      {/* {showNavbar && <Navbar />} */}
       <div className="w-full h-full flex flex-col">
         <Hero images={heroImages} />
         <SubText />

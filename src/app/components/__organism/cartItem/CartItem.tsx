@@ -17,7 +17,7 @@ export type CartItemPropsType = {
   isCartPage?: boolean;
   show?: boolean;
   isNotSelected?: boolean;
-  colors: string[];
+  colors?: string[];
   handleSelectColor?: (id: string, color: string) => void;
   isCheckoutPage?: boolean
 };
@@ -94,7 +94,7 @@ const CartItem = ({
             opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition duration-300 ease-in-out"
             >
               {colors && colors.length > 0
-                ? colors.map((c, i) => (
+                ? colors?.map((c, i) => (
                     <button
                       key={i}
                       onClick={() => handleSelectColor?.(_id, c)}

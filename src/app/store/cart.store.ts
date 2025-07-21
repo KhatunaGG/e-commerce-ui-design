@@ -23,14 +23,14 @@ export type CartItemType = {
   new: boolean;
   discount: number;
   price: number;
-  colors: string[];
+  colors?: string[];
   color: string | null;
   stock: number;
   wishlist: boolean;
   discountTill: string;
   _id: string;
   purchasedQty: number;
-  presignedUrl: string | "";
+  presignedUrl?: string | "";
 };
 
 export type ShippingsType = {
@@ -61,6 +61,7 @@ export interface IUseCartStore {
   updateCartQty: (id: string, color: string | null, newQty: number) => void;
   deleteProductFromCart: (id: string, color: string | null) => void;
   handleCheckout: () => Promise<void>;
+  resetCartStore: () => void;
 }
 
 export const useCartStore = create<IUseCartStore>()(
@@ -283,6 +284,16 @@ export const useCartStore = create<IUseCartStore>()(
           return;
         }
         window.location.href = "/checkout-page";
+      },
+      resetCartStore: () => {
+        set({
+          cartData: [],
+          cartDataLength: 0,
+          selectedShipping: null,
+          selectedColor: null,
+          selectedQty: 0,
+        });
+        useCartStore.persist.clearStorage();
       },
     }),
 

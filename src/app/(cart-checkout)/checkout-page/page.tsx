@@ -3,7 +3,7 @@ import React from "react";
 
 export default function Page() {
   return (
-    <div className="w-full px-[8.53%] md:px-0">
+    <div className="w-full px-[8.53%] md:px-0 min-h-[calc(100vh-61px)] ">
       <Checkout />
     </div>
   );

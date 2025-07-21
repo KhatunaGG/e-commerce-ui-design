@@ -6,7 +6,7 @@ import CartHeader from "../cartHeader/CartHeader";
 import { useSignInStore } from "@/app/store/sign-in.store";
 import Contact from "../contact/Contact";
 import ShippingAddress from "../shippingAddress/ShippingAddress";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useCartStore } from "@/app/store/cart.store";
 import CartItem from "../cartItem/CartItem";
 import Coupons from "../coupons/Coupons";
@@ -16,56 +16,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PaymentMethod from "../paymentMethod/PaymentMethod";
 import { useCheckoutStore } from "@/app/store/checkout.store";
-
-// const checkoutSchema = z.object({
-//   name: z.string().min(1, "Name  is required"),
-//   lastName: z
-//     .string()
-//     .min(1, "Last Name is required")
-//     .max(50, "Last name is to long"),
-//   phoneNumber: z
-//     .number()
-//     .min(1, "Last Name is required")
-//     .max(50, "Phone number is to long"),
-//   yourEmail: z
-//     .string()
-//     .min(1, "Email is required")
-//     .max(50, "Email is too long")
-//     .nonempty("Email is required"),
-//   streetAddress: z.string().min(1, "Email is required").max(50, "Email is too long"),
-//   country: z.string().min(1, "Email is required").max(50, "Email is too long"),
-//   townCity: z.string().min(1, "Email is required").max(50, "Email is too long"),
-//   state: z.string().min(1, "Email is required").max(50, "Email is too long"),
-//   zipCode: z.string().min(1, "Email is required").max(50, "Email is too long"),
-// });
-
-// const checkoutSchema = z.object({
-//   name: z.string().min(1, "Name is required"),
-//   lastName: z
-//     .string()
-//     .min(1, "Last Name is required")
-//     .max(50, "Last name is too long"),
-//   phoneNumber: z
-//     .string()
-//     .min(1, "Phone number is required")
-//     .max(20, "Phone number is too long"),
-//   yourEmail: z
-//     .string()
-//     .min(1, "Email is required")
-//     .max(50, "Email is too long")
-//     .email("Please enter a valid email address"),
-//   streetAddress: z.string().min(1, "Street address is required"),
-//   townCity: z.string().min(1, "Town/City is required"),
-//   country: z.string().min(1, "Country is required"),
-//   state: z.string().min(1, "State is required"),
-//   zipCode: z.string().min(1, "ZIP code is required"),
-
-//   expirationDate: z.string().min(1, "Expiration Date is required"),
-//   CVC: z.string().min(1, "CVC code Date is required"),
-
-//   differentBilling: z.boolean().optional(),
-
-// });
 
 export const checkoutSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -81,13 +31,13 @@ export const checkoutSchema = z.object({
   country: z.string().min(1, "Country is required"),
   state: z.string().min(1, "State is required"),
   zipCode: z.string().min(1, "ZIP code is required"),
-
   expirationDate: z.string().min(1, "Expiration Date is required"),
   CVC: z.string().min(1, "CVC code is required"),
-
   differentBilling: z.boolean().optional(),
-
-  paymentMethod: z.enum(["card", "paypal"], {
+  // paymentMethod: z.enum(["card", "paypal"], {
+  //   required_error: "Please select a payment method",
+  // }),
+  paymentMethod: z.enum(["Credit Card", "Paypal"], {
     required_error: "Please select a payment method",
   }),
 });
@@ -97,6 +47,7 @@ export type CheckoutType = z.infer<typeof checkoutSchema>;
 const Checkout = () => {
   const { accessToken, initialize } = useSignInStore();
   const path = usePathname();
+  const router = useRouter();
   const isCheckoutPage = path.includes("/checkout-page");
   const { cartData, selectedShipping } = useCartStore();
 
@@ -112,24 +63,25 @@ const Checkout = () => {
     formState: { errors },
     setValue,
     watch,
-    reset
+    reset,
   } = useForm<CheckoutType>({
     resolver: zodResolver(checkoutSchema),
   });
 
-const onSubmit = async (formState: CheckoutType) => {
-  const success = await submitPurchase(formState);
-  if (success) {
-    reset(); // 
-  }
-};
+  const onSubmit = async (formState: CheckoutType) => {
+    const success = await submitPurchase(formState);
+    if (success) {
+      reset();
+      router.push("/complete-page");
+    }
+  };
 
   if (!accessToken) return null;
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full h-foll min-h-screen flex flex-col items-center justify-center py-20 gap-6 "
+      className="w-full h-full min-h-screen flex flex-col items-center justify-center py-20 gap-6 "
     >
       <div className="w-full  md:w-[84.73%] lg:w-[77.77%] flex flex-col  gap-10 lg:gap-20">
         <Link
@@ -148,7 +100,6 @@ const onSubmit = async (formState: CheckoutType) => {
               errors={errors}
               isCheckoutPage={isCheckoutPage}
             />
-            {/* <ShippingAddress register={register} errors={errors} /> */}
             <ShippingAddress
               register={register}
               errors={errors}

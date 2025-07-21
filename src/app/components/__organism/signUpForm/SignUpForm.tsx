@@ -38,7 +38,10 @@ const SignUpForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, 
+      // isSubmitting 
+    
+    },
     reset,
     // watch,
     setValue,
@@ -100,7 +103,10 @@ const SignUpForm = () => {
           </p>
         )}
       </div>
-      <Submit isSubmitting={isSubmitting} />
+      <Submit 
+      
+      // isSubmitting={isSubmitting}
+       />
     </form>
   );
 };
