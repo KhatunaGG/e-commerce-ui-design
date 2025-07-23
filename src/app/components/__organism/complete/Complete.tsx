@@ -11,11 +11,12 @@ import Image from "next/image";
 const Complete = () => {
   const { checkoutData } = useCheckoutStore();
   console.log(checkoutData, "checkoutData");
-  // const path = usePathname();
-  // const isCompletePage = path.includes("./complete");
 
   useEffect(() => {
     useCartStore.getState().resetCartStore();
+    return () => {
+      localStorage.removeItem("checkout-storage");
+    };
   }, []);
 
   const formattedDate = checkoutData?.createdAt
@@ -26,17 +27,8 @@ const Complete = () => {
       })
     : "";
 
-  // const slicedPresignedUrl =
-  //   checkoutData?.presignedUrls && (checkoutData?.presignedUrls?.length <= 3) &&
-  //   (checkoutData?.presignedUrls?.length) > 0
-  //     ? checkoutData?.presignedUrls
-  //     : checkoutData?.presignedUrls?.slice(0, 3);
   const slicedPresignedUrl = checkoutData?.presignedUrls?.slice(0, 3) ?? [];
 
-  console.log(
-    checkoutData?.presignedUrls?.slice(0, 3),
-    "checkoutData?.presignedUrls"
-  );
 
   return (
     <div className=" h-full flex flex-col items-center justify-center min-h-[calc(100vh-61px)]  py-20 gap-10 md:gap-20 rounded-lg">
@@ -46,7 +38,7 @@ const Complete = () => {
           href={"/shop"}
         >
           <ChevronLeft />
-          <h2> Back</h2>
+          <h2>Back</h2>
         </Link>
 
         <CartHeader />
@@ -61,7 +53,6 @@ const Complete = () => {
             Your order has been received
           </h1>
         </div>
-
 
         {/* <div className="grid grid-cols-3 gap-4 md:gap-10 relative "> */}
         <div className="flex items-center justify-center gap-4 md:gap-10 relative  bg-green-300">

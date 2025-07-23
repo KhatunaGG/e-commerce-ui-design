@@ -1,4 +1,4 @@
-export { default as Header } from "./header/Header";
+
 export { default as SignUp } from "./signUp/SignUp";
 export { default as MainImage } from "./mainImage/MainImage";
 export { default as SignUpForm } from "./signUpForm/SignUpForm";
@@ -43,7 +43,10 @@ export { default as ShippingAddress } from "./shippingAddress/ShippingAddress"
 export { default as PaymentMethod } from "./paymentMethod/PaymentMethod"
 export { default as CostSummary } from "./costSummary/CostSummary"
 export { default as Complete } from "./complete/Complete"
-export { default as CardForm } from "./cardForm/CardForm "
+export { default as Account } from "./account/Account"
+export { default as AccountSidebar } from "./accountSidebar/AccountSidebar"
+export { default as AccountDetails } from "./accountDetails/AccountDetails"
+
 
 
 

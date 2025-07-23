@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import { Bag, Burger, Logo, Search, User } from "../../__atoms";
 import { NavLink } from "../../__molecules";
 import { useCartStore } from "@/app/store/cart.store";
+import Link from "next/link";
 
 const Nav = () => {
   const path = usePathname();
@@ -37,7 +38,9 @@ const Nav = () => {
 
         <div className="flex items-center gap-[16px]">
           <Search hidden={true} />
-          <User />
+          <Link href={"/account-page"}>
+            <User />
+          </Link>
           <Bag />
           <div
             onClick={handleShowNavbar}
