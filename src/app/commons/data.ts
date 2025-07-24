@@ -92,3 +92,6 @@ export const shippings = [
     shippingOption: "pick up",
   },
 ];
+
+
+ export const accountLinks = ["account", "address", "orders", "wishlist", "logout"];
