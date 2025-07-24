@@ -7,6 +7,8 @@ import { usePathname } from "next/navigation";
 import AccountPassword from "../accountPassword/AccountPassword";
 import { useSignInStore } from "@/app/store/sign-in.store";
 import { useEffect } from "react";
+import { useAccountStore } from "@/app/store/account.store";
+import { useShopStore } from "@/app/store/shop-page.store";
 
 export const myAccountSchema = z
   .object({
@@ -45,6 +47,8 @@ const Account = () => {
   const path = usePathname();
   const isMyAccountPage = path.includes("account-page");
   const { accessToken, initialize, currentUser } = useSignInStore();
+  const { submitAccountSettings } = useAccountStore();
+  const {normalizeFirstChar} = useShopStore()
 
   useEffect(() => {
     initialize();
@@ -72,17 +76,45 @@ const Account = () => {
     },
   });
 
-  useEffect(() => {
-    if (currentUser) {
-      setValue("accountName", currentUser.yourName || "");
-      setValue("accountLastName", "");
-      setValue("displayName", currentUser.userName || "");
-      setValue("accountEmail", currentUser.email || "");
-    }
-  }, [currentUser, setValue]);
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     setValue("accountName", currentUser.yourName || "");
+  //     setValue("accountLastName", "");
+  //     setValue("displayName", currentUser.userName || "");
+  //     setValue("accountEmail", currentUser.email || "");
+  //   }
+  // }, [currentUser, setValue]);
+
+  const { setFormData } = useAccountStore();
+
+useEffect(() => {
+  if (currentUser) {
+    const formattedFirstName = normalizeFirstChar(currentUser.yourName ?? "");
+    const formattedLastName = normalizeFirstChar(currentUser.lastName ?? "");
+    const formattedDisplayName = normalizeFirstChar(currentUser.userName ?? "");
+
+    setValue("accountName", formattedFirstName);
+    setValue("accountLastName", formattedLastName);
+    setValue("displayName", formattedDisplayName);
+    setValue("accountEmail", currentUser.email ?? "");
+
+    setFormData({
+      accountName: formattedFirstName,
+      accountLastName: formattedLastName,
+      displayName: formattedDisplayName,
+      accountEmail: currentUser.email ?? "",
+      oldPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
+  }
+}, [currentUser, setValue, setFormData, normalizeFirstChar]);
+
+
 
   const onsubmit = async (formState: MyAccountType) => {
-    console.log(formState, "formState");
+    if (!accessToken) return;
+    await submitAccountSettings(formState, accessToken);
   };
 
   if (!accessToken) return null;

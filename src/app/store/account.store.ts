@@ -2,7 +2,8 @@ import axios, { AxiosError } from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { MyAccountType } from "../components/__organism/account/Account";
-// import { useSignInStore } from "./sign-in.store";
+import { useSignInStore } from "./sign-in.store";
+import { axiosInstance } from "../libs/axiosInstance";
 
 export interface ErrorResponse {
   message: string;
@@ -23,26 +24,84 @@ export interface IUseAccountStore {
   formData: MyAccountType | null;
 
   setFormData: (formData: MyAccountType) => void;
-//   submitAccountSettings: (data: MyAccountType) => Promise<boolean>;
+  submitAccountSettings: (
+    formState: Partial<MyAccountType>,
+    accessToken: string
+  ) => Promise<void>;
 }
 
 export const useAccountStore = create<IUseAccountStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       isLoading: false,
       axiosError: null,
       formData: null,
 
       setFormData: (data) => set({ formData: data }),
 
-      submitAccountSettings: async (data: MyAccountType) => {
-        // const signInStore = useSignInStore();
-        console.log(data, "data from account store")
-        // const state = get()
-   
+      submitAccountSettings: async (
+        formState: Partial<MyAccountType>,
+        accessToken: string
+      ) => {
+
+        
+        const originalData = get().formData;
+
+        if (!originalData) {
+          set({ axiosError: "Original data not set." });
+          return;
+        }
+
+        set({ isLoading: true, axiosError: null });
+        const changedData: Partial<MyAccountType> = Object.fromEntries(
+          Object.entries(formState).filter(([key, value]) => {
+            const changed = value !== originalData[key as keyof MyAccountType];
+            return changed;
+          })
+
+       
+        );
+
+        if (Object.keys(changedData).length === 0) {
+          set({ isLoading: false });
+          return;
+        }
+
+        const mappedPayload: Record<string, unknown> = {};
+        if (changedData.accountName)
+          mappedPayload.yourName = changedData.accountName;
+        if (changedData.accountLastName !== undefined)
+          mappedPayload.lastName = changedData.accountLastName;
+        if (changedData.displayName)
+          mappedPayload.userName = changedData.displayName;
+        if (changedData.accountEmail)
+          mappedPayload.email = changedData.accountEmail;
+        if (changedData.newPassword)
+          mappedPayload.password = changedData.newPassword;
 
         try {
-          // set({isLoading: true, axiosError: null})
+          const res = await axiosInstance.patch(`/auth/update`, mappedPayload, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          if (res.status >= 200 && res.status <= 204) {
+            const { initialize } = useSignInStore.getState();
+            await initialize();
+
+            set({
+              formData: {
+                accountName: res.data.yourName ?? "",
+                accountLastName: res.data.lastName ?? "",
+                displayName: res.data.userName ?? "",
+                accountEmail: res.data.email ?? "",
+                oldPassword: "",
+                newPassword: "",
+                confirmPassword: "",
+              },
+            });
+          }
+          set({ isLoading: false });
         } catch (e) {
           set({
             isLoading: false,
