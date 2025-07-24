@@ -1,48 +1,43 @@
 "use client";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { Input } from "../../__molecules";
-import { MyAccountType } from "../account/Account";
 
-export type AccountDetailsPropsType = {
+import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { MyAccountType } from "../account/Account";
+import { Input } from "../../__molecules";
+
+export type AccountPasswordPropsType = {
   register: UseFormRegister<MyAccountType>;
   errors: FieldErrors<MyAccountType>;
   isMyAccountPage: boolean;
 };
-
-const AccountDetails = ({
+const AccountPassword = ({
   register,
   errors,
   isMyAccountPage,
-}: AccountDetailsPropsType) => {
+}: AccountPasswordPropsType) => {
   return (
-    <div className="w-full flex flex-col gap-6 ">
-      <h2 className="text-black font-semibold leading-[32px] text-[20px]">Account Details</h2>
-      <div className="w-full flex flex-col  gap-6">
+    <div className="w-full flex flex-col gap-6">
+      <h2 className="text-black font-semibold leading-[32px] text-[20px]">
+        Password
+      </h2>
+      <div className="w-full flex flex-col gap-6">
         <Input
           register={register}
           errors={errors}
-          fieldName={"accountName"}
+          fieldName={"oldPassword"}
           isMyAccountPage={isMyAccountPage}
         />
 
         <Input
           register={register}
           errors={errors}
-          fieldName={"accountLastName"}
+          fieldName={"newPassword"}
           isMyAccountPage={isMyAccountPage}
         />
 
         <Input
           register={register}
           errors={errors}
-          fieldName={"displayName"}
-          isMyAccountPage={isMyAccountPage}
-        />
-
-        <Input
-          register={register}
-          errors={errors}
-          fieldName={"accountEmail"}
+          fieldName={"confirmPassword"}
           isMyAccountPage={isMyAccountPage}
         />
       </div>
@@ -50,4 +45,4 @@ const AccountDetails = ({
   );
 };
 
-export default AccountDetails;
+export default AccountPassword;

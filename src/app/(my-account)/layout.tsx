@@ -47,7 +47,7 @@ export default function AccountLayout({
         <Nav />
 
         <div className="w-full h-full min-h-screen flex justify-center px-[8.53%] md:px-[11.11%]">
-          <div className="w-full   flex flex-col items-center justify-center gap-10">
+          <div className="w-full   flex flex-col items-center justify-center gap-10  py-10 lg:py-20">
             <h1 className="w-full  flex items-center justify-center text-[40px] lg:text-[54px] tracking-[-0.4px] font-medium leading-[44px]  lg:leading-[58px] lg:tracking-[-1px] text-black">
               My Account
             </h1>

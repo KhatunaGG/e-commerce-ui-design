@@ -46,6 +46,7 @@ export { default as Complete } from "./complete/Complete"
 export { default as Account } from "./account/Account"
 export { default as AccountSidebar } from "./accountSidebar/AccountSidebar"
 export { default as AccountDetails } from "./accountDetails/AccountDetails"
+export { default as AccountPassword } from "./accountPassword/AccountPassword"
 
 
 
