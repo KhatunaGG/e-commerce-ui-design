@@ -27,6 +27,11 @@ export interface IUser {
   reviews: string[];
   email: string;
   _id: string;
+
+
+
+  
+  lastName?: string;
 }
 
 export interface IUseSignInStore {
