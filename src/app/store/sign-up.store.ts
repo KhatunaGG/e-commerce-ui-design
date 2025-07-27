@@ -65,6 +65,7 @@ signUp: async (formData) => {
   try {
     const res = await axiosInstance.post("/auth/sign-up", formData);
     if (res.status >= 200 && res.status <= 204) {
+       window.location.href = "/sign-in";
       set({
         isLoading: false,
         yourName: "",
