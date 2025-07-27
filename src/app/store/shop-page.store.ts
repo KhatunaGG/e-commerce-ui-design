@@ -358,8 +358,6 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
       mapSortValueToBackend,
       buildCacheKey,
     } = state;
-
-    // Use current pageNumber for load more, or 1 for initial load
     const currentPage = isLoadMore ? pageNumber : 1;
 
     const backendSortValue = mapSortValueToBackend(sortBy);
@@ -370,14 +368,11 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
       filters.priceRange,
       backendSortValue
     );
-
-    // Check if data is already cached
     const cachedData = state.cachedProductsData[cacheKey];
     const cachedDataLength = state.cachedDataLengthByKey?.[cacheKey];
 
     if (cachedData && cachedData.length > 0) {
       if (isLoadMore) {
-        // Append cached data to existing products
         set({
           productsData: [...state.productsData, ...cachedData],
           productsDataLengthByKey:
@@ -386,7 +381,6 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
           axiosError: null,
         });
       } else {
-        // Replace products data for initial load
         set({
           productsData: cachedData,
           productsDataLengthByKey: cachedDataLength || cachedData.length,
@@ -398,7 +392,6 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
       return;
     }
 
-    // Set appropriate loading state
     if (isLoadMore) {
       set({ isLoadingMore: true, axiosError: null });
     } else {
@@ -411,22 +404,19 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
 
       if (res.status >= 200 && res.status <= 204) {
         const newProducts = res.data.data;
-        // Use the FILTERED total length, not the unfiltered total
-        const filteredTotalLength = res.data.productsDataLength; // This is the key change!
+        const filteredTotalLength = res.data.productsDataLength; 
 
         set((prev) => ({
           productsData: isLoadMore
-            ? [...prev.productsData, ...newProducts] // Append for load more
-            : newProducts, // Replace for initial load
+            ? [...prev.productsData, ...newProducts] 
+            : newProducts,
           productsDataLengthByKey: isLoadMore
             ? prev.productsDataLengthByKey + newProducts.length
             : newProducts.length,
-          // Use filtered total length for pagination logic
           productsDataTotalLength: filteredTotalLength,
           isLoading: false,
           isLoadingMore: false,
           axiosError: null,
-          // Cache the new page data
           cachedProductsData: {
             ...prev.cachedProductsData,
             [cacheKey]: newProducts,
@@ -446,7 +436,7 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
         axiosError: handleApiError(e as AxiosError<ErrorResponse>),
         isLoading: false,
         isLoadingMore: false,
-        productsData: isLoadMore ? get().productsData : [], // Keep existing data on load more error
+        productsData: isLoadMore ? get().productsData : [], 
       });
     }
   },

@@ -48,14 +48,11 @@ const Account = () => {
   const isMyAccountPage = path.includes("account-page");
   const { accessToken, initialize, currentUser } = useSignInStore();
   const { submitAccountSettings } = useAccountStore();
-  const {normalizeFirstChar} = useShopStore()
+  const { normalizeFirstChar } = useShopStore();
 
   useEffect(() => {
     initialize();
   }, [initialize]);
-
-  // console.log(currentUser, "currentUser");
-  // console.log(accessToken, "accessToken");
 
   const {
     handleSubmit,
@@ -76,45 +73,42 @@ const Account = () => {
     },
   });
 
-  // useEffect(() => {
-  //   if (currentUser) {
-  //     setValue("accountName", currentUser.yourName || "");
-  //     setValue("accountLastName", "");
-  //     setValue("displayName", currentUser.userName || "");
-  //     setValue("accountEmail", currentUser.email || "");
-  //   }
-  // }, [currentUser, setValue]);
-
   const { setFormData } = useAccountStore();
 
-useEffect(() => {
-  if (currentUser) {
-    const formattedFirstName = normalizeFirstChar(currentUser.yourName ?? "");
-    const formattedLastName = normalizeFirstChar(currentUser.lastName ?? "");
-    const formattedDisplayName = normalizeFirstChar(currentUser.userName ?? "");
+  useEffect(() => {
+    if (currentUser) {
+      const formattedFirstName = normalizeFirstChar(currentUser.yourName ?? "");
+      const formattedLastName = normalizeFirstChar(currentUser.lastName ?? "");
+      const formattedDisplayName = normalizeFirstChar(
+        currentUser.userName ?? ""
+      );
 
-    setValue("accountName", formattedFirstName);
-    setValue("accountLastName", formattedLastName);
-    setValue("displayName", formattedDisplayName);
-    setValue("accountEmail", currentUser.email ?? "");
+      setValue("accountName", formattedFirstName);
+      setValue("accountLastName", formattedLastName);
+      setValue("displayName", formattedDisplayName);
+      setValue("accountEmail", currentUser.email ?? "");
 
-    setFormData({
-      accountName: formattedFirstName,
-      accountLastName: formattedLastName,
-      displayName: formattedDisplayName,
-      accountEmail: currentUser.email ?? "",
-      oldPassword: "",
-      newPassword: "",
-      confirmPassword: "",
-    });
-  }
-}, [currentUser, setValue, setFormData, normalizeFirstChar]);
-
-
+      setFormData({
+        accountName: formattedFirstName,
+        accountLastName: formattedLastName,
+        displayName: formattedDisplayName,
+        accountEmail: currentUser.email ?? "",
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    }
+  }, [currentUser, setValue, setFormData, normalizeFirstChar]);
 
   const onsubmit = async (formState: MyAccountType) => {
+    console.log(formState, "formState from Account");
+
     if (!accessToken) return;
     await submitAccountSettings(formState, accessToken);
+    // const success = await submitAccountSettings(formState, accessToken);
+    // if (success) {
+    //   reset(); // ✅ Clear or reset to default
+    // }
   };
 
   if (!accessToken) return null;
