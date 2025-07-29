@@ -4,7 +4,7 @@ import { persist } from "zustand/middleware";
 import { MyAccountType } from "../components/__organism/account/Account";
 import { useSignInStore } from "./sign-in.store";
 import { axiosInstance } from "../libs/axiosInstance";
-
+import { toast } from "react-toastify";
 
 export interface ErrorResponse {
   message: string;
@@ -23,12 +23,14 @@ export interface IUseAccountStore {
   isLoading: boolean;
   axiosError: string | null;
   formData: MyAccountType | null;
-
+  avatar: string | null;
   setFormData: (formData: MyAccountType) => void;
   submitAccountSettings: (
     formState: Partial<MyAccountType>,
     accessToken: string
-  ) => Promise<void>;
+  ) => Promise<boolean>;
+  handleFileChange: (file: File) => Promise<void>;
+  getUsersAvatar: (id: string) => Promise<void>;
 }
 
 export const useAccountStore = create<IUseAccountStore>()(
@@ -37,129 +39,22 @@ export const useAccountStore = create<IUseAccountStore>()(
       isLoading: false,
       axiosError: null,
       formData: null,
+      avatar: null,
 
       setFormData: (data) => set({ formData: data }),
-
-      // submitAccountSettings: async (
-      //   formState: Partial<MyAccountType>,
-      //   accessToken: string
-      // ) => {
-      //   const originalData = get().formData;
-
-      //   if (!originalData) {
-      //     set({ axiosError: "Original data not set." });
-      //     return;
-      //   }
-
-      //   set({ isLoading: true, axiosError: null });
-
-      //   const normalizeLower = (value?: string) =>
-      //     value?.trim().toLowerCase() ?? "";
-
-      //   const normalizedForm: Partial<MyAccountType> = {
-      //     accountName: normalizeLower(formState.accountName),
-      //     accountLastName: normalizeLower(formState.accountLastName),
-      //     displayName: normalizeLower(formState.displayName),
-      //     accountEmail: normalizeLower(formState.accountEmail),
-      //   };
-
-      //   const changedFields: Partial<MyAccountType> = {};
-
-      //   for (const key of Object.keys(
-      //     normalizedForm
-      //   ) as (keyof MyAccountType)[]) {
-      //     const newVal = normalizedForm[key];
-      //     const originalVal = normalizeLower(originalData[key]);
-      //     if (newVal && newVal !== originalVal) {
-      //       changedFields[key] = newVal;
-      //     }
-      //   }
-
-      //   const passwordFieldsPresent =
-      //     formState.oldPassword &&
-      //     formState.newPassword &&
-      //     formState.confirmPassword &&
-      //     formState.newPassword === formState.confirmPassword;
-
-      //   if (passwordFieldsPresent) {
-      //     changedFields.oldPassword = formState.oldPassword;
-      //     changedFields.newPassword = formState.newPassword;
-      //     changedFields.confirmPassword = formState.confirmPassword;
-      //   }
-
-      //   // Nothing changed?
-      //   if (Object.keys(changedFields).length === 0) {
-      //     set({ isLoading: false });
-      //     return;
-      //   }
-
-      //   // Map to backend fields
-      //   const mappedPayload = {
-      //     ...(changedFields.accountName && {
-      //       yourName: changedFields.accountName,
-      //     }),
-      //     ...(changedFields.accountLastName && {
-      //       lastName: changedFields.accountLastName,
-      //     }),
-      //     ...(changedFields.displayName && {
-      //       userName: changedFields.displayName,
-      //     }),
-      //     ...(changedFields.accountEmail && {
-      //       email: changedFields.accountEmail,
-      //     }),
-      //     ...(passwordFieldsPresent && {
-      //       oldPassword: formState.oldPassword,
-      //       newPassword: formState.newPassword,
-      //       confirmPassword: formState.confirmPassword,
-      //     }),
-      //   };
-      //   console.log(mappedPayload, "mappedPayload")
-
-      //   try {
-      //     const res = await axiosInstance.patch(`/auth/update`, mappedPayload, {
-      //       headers: {
-      //         Authorization: `Bearer ${accessToken}`,
-      //       },
-      //     });
-
-      //     if (res.status >= 200 && res.status <= 204) {
-      //       const { initialize } = useSignInStore.getState();
-      //       await initialize();
-
-      //       set({
-      //         formData: {
-      //           accountName: res.data.yourName ?? "",
-      //           accountLastName: res.data.lastName ?? "",
-      //           displayName: res.data.userName ?? "",
-      //           accountEmail: res.data.email ?? "",
-      //           oldPassword: "",
-      //           newPassword: "",
-      //           confirmPassword: "",
-      //         },
-      //       });
-      //     }
-
-      //     set({ isLoading: false });
-      //   } catch (e) {
-      //     set({
-      //       isLoading: false,
-      //       axiosError: handleApiError(e as AxiosError<ErrorResponse>),
-      //     });
-      //   }
-      // },
-
       submitAccountSettings: async (
         formState: Partial<MyAccountType>,
         accessToken: string
-      ) => {
+      ): Promise<boolean> => {
         const original = get().formData;
 
         if (!original) {
           set({ axiosError: "Original form data not found." });
-          return;
+          return false;
         }
 
         set({ isLoading: true, axiosError: null });
+
         const normalizeLower = (value?: string) =>
           value?.trim().toLowerCase() ?? "";
 
@@ -178,23 +73,27 @@ export const useAccountStore = create<IUseAccountStore>()(
             changedFields[key] = newVal;
           }
         }
-        const passwordChanged =
+
+        const passwordChanged = !!(
           formState.oldPassword?.trim() &&
           formState.newPassword?.trim() &&
           formState.confirmPassword?.trim() &&
           (formState.oldPassword !== original.oldPassword ||
             formState.newPassword !== original.newPassword ||
-            formState.confirmPassword !== original.confirmPassword);
+            formState.confirmPassword !== original.confirmPassword)
+        );
 
         if (passwordChanged) {
           changedFields.oldPassword = formState.oldPassword;
           changedFields.newPassword = formState.newPassword;
           changedFields.confirmPassword = formState.confirmPassword;
         }
+
         if (Object.keys(changedFields).length === 0) {
           set({ isLoading: false });
-          return;
+          return false;
         }
+
         const mappedPayload: Record<string, string> = {};
 
         if (changedFields.accountName)
@@ -211,8 +110,6 @@ export const useAccountStore = create<IUseAccountStore>()(
           mappedPayload.confirmPassword = formState.confirmPassword!;
         }
 
-        console.log(mappedPayload, "mappedPayload");
-
         try {
           const res = await axiosInstance.patch(`/auth/update`, mappedPayload, {
             headers: { Authorization: `Bearer ${accessToken}` },
@@ -221,6 +118,7 @@ export const useAccountStore = create<IUseAccountStore>()(
           if (res.status >= 200 && res.status <= 204) {
             const { initialize } = useSignInStore.getState();
             await initialize();
+
             set({
               formData: {
                 accountName: res.data.yourName ?? "",
@@ -232,9 +130,79 @@ export const useAccountStore = create<IUseAccountStore>()(
                 confirmPassword: "",
               },
             });
+
+            set({ isLoading: false });
+            toast.success(
+              "Your account settings have been updated successfully."
+            );
+
+            return true;
           }
 
           set({ isLoading: false });
+          return false;
+        } catch (e) {
+          set({
+            isLoading: false,
+            axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+          });
+          return false;
+        }
+      },
+
+      handleFileChange: async (file) => {
+        const signInStore = useSignInStore.getState();
+        const { accessToken } = signInStore;
+        if (!file || !accessToken) return;
+
+        if (!file.type.startsWith("image/")) {
+          set({ axiosError: "Only image files are allowed." });
+          return;
+        }
+
+        set({ isLoading: true, axiosError: null });
+        try {
+          const formData = new FormData();
+          formData.append("file", file);
+          const res = await axiosInstance.patch(
+            "auth/upload-avatar",
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+
+          if (res.status >= 200 && res.status <= 204) {
+            await get().getUsersAvatar(accessToken);
+            toast.success("Your profile picture was updated successfully.");
+          }
+        } catch (e) {
+          set({
+            isLoading: false,
+            axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+          });
+        }
+      },
+
+      getUsersAvatar: async (accessToken: string) => {
+        if (!accessToken) return;
+        set({ isLoading: true, axiosError: null });
+        try {
+          const res = await axiosInstance.get("auth/get-image", {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          if (res.status >= 200 && res.status < 300) {
+            const base64Image = res.data.avatar;
+            if (base64Image) {
+              set({ avatar: base64Image });
+            } else {
+              set({ avatar: null });
+            }
+          }
         } catch (e) {
           set({
             isLoading: false,

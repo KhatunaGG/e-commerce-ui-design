@@ -101,14 +101,14 @@ const Account = () => {
   }, [currentUser, setValue, setFormData, normalizeFirstChar]);
 
   const onsubmit = async (formState: MyAccountType) => {
-    console.log(formState, "formState from Account");
-
     if (!accessToken) return;
-    await submitAccountSettings(formState, accessToken);
-    // const success = await submitAccountSettings(formState, accessToken);
-    // if (success) {
-    //   reset(); // ✅ Clear or reset to default
-    // }
+    // await submitAccountSettings(formState, accessToken);
+    const success = await submitAccountSettings(formState, accessToken);
+    if (success) {
+      setValue("oldPassword", "");
+      setValue("newPassword", "");
+      setValue("confirmPassword", "");
+    }
   };
 
   if (!accessToken) return null;
