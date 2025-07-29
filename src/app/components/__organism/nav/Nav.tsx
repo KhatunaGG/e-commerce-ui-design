@@ -13,7 +13,7 @@ const Nav = () => {
 
   return (
     <>
-      <section className="w-full flex items-center justify-between py-[18px] md:px-[11.11%] px-[8.53%]">
+      <nav className="w-full flex items-center justify-between py-[18px] md:px-[11.11%] px-[8.53%]">
         <div className="flex items-center gap-1">
           <div className="w-6 h-6 flex items-center justify-center mb-[3px] md:mb-0 md:hidden">
             <Burger />
@@ -41,7 +41,9 @@ const Nav = () => {
           <Link href={"/account-page"}>
             <User />
           </Link>
-          <Bag />
+          <Link href={"/cart-page"}>
+            <Bag />
+          </Link>
           <div
             onClick={handleShowNavbar}
             className="relative w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold cursor-pointer"
@@ -49,7 +51,7 @@ const Nav = () => {
             {cartDataLength}
           </div>
         </div>
-      </section>
+      </nav>
     </>
   );
 };
