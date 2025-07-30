@@ -215,6 +215,7 @@ export const useAccountStore = create<IUseAccountStore>()(
       name: "account-storage",
       partialize: (state) => ({
         formData: state.formData,
+        avatar: state.avatar,
       }),
     }
   )

@@ -116,7 +116,7 @@ const Account = () => {
   return (
     <form
       onSubmit={handleSubmit(onsubmit)}
-      className="w-full  h-full flex flex-col gap-10 lg:px-[72px]   pb-10   "
+      className="w-full  h-full flex flex-col gap-10 lg:px-[72px] pb-10"
     >
       <AccountDetails
         register={register}

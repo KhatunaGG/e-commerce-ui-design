@@ -1,7 +1,5 @@
-import React from 'react'
+import { Addresses } from "@/app/components/__organism";
 
 export default function page() {
-  return (
-    <div>address</div>
-  )
+  return <Addresses />;
 }
