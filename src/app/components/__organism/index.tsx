@@ -47,6 +47,8 @@ export { default as Account } from "./account/Account"
 export { default as AccountSidebar } from "./accountSidebar/AccountSidebar"
 export { default as AccountDetails } from "./accountDetails/AccountDetails"
 export { default as AccountPassword } from "./accountPassword/AccountPassword"
+export { default as Addresses } from "./addresses/Addresses"
+export { default as AddressForm } from "./addressForm/AddressForm"
 
 
 

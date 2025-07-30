@@ -109,26 +109,35 @@ function AccountSidebar() {
   const getLinkPath = (item: string) =>
     `/account-page${item === "account" ? "" : `/${item}`}`;
 
-  const fetchAvatar = async (
-    token: string,
-    getUsersAvatarFn: (token: string) => Promise<void>
-  ) => {
-    await getUsersAvatarFn(token);
-  };
 
-  useEffect(() => {
-    if (!accessToken) return;
-    fetchAvatar(accessToken, getUsersAvatar);
-  }, [accessToken, getUsersAvatar]);
 
+
+  // const fetchAvatar = async (
+  //   token: string,
+  //   getUsersAvatarFn: (token: string) => Promise<void>
+  // ) => {
+  //   await getUsersAvatarFn(token);
+  // };
   // useEffect(() => {
-  //   const fetchAvatar = async () => {
-  //     if (accessToken) {
-  //       await getUsersAvatar(accessToken);
-  //     }
-  //   };
-  //   fetchAvatar();
-  // }, [accessToken]);
+  //   if (!accessToken) return;
+  //   fetchAvatar(accessToken, getUsersAvatar);
+  // }, [accessToken, getUsersAvatar]);
+
+
+    useEffect(() => {
+    if (!accessToken) return;
+    const fetchAvatar = async () => {
+      try {
+        await getUsersAvatar(accessToken);
+      } catch (e) {
+        console.error("Failed to fetch avatar", e);
+      }
+    };
+    fetchAvatar();
+  }, [accessToken]); 
+
+// , pathname, getUsersAvatar
+
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
