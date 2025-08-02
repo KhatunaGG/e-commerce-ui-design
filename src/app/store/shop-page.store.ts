@@ -246,10 +246,17 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
     });
   },
 
+  // normalizeFirstChar: (str?: string): string => {
+  //   if (!str) return "";
+  //   return str.charAt(0).toUpperCase() + str.slice(1);
+  // },
+
   normalizeFirstChar: (str?: string): string => {
-    if (!str) return "";
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  },
+  if (!str || typeof str !== "string") return "";
+  const trimmed = str.trim();
+  if (!trimmed) return "";
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+},
 
   applyFilters: async (filters: FiltersType) => {
     set({
@@ -456,10 +463,10 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
     const nextPage = state.pageNumber + 1;
     set({ pageNumber: nextPage });
     await get().getAllProducts(true);
-    console.log(
-      get().cachedProductsData,
-      "cachedProductsData ->>> from loadMoreProducts"
-    );
+    // console.log(
+    //   get().cachedProductsData,
+    //   "cachedProductsData ->>> from loadMoreProducts"
+    // );
   },
 
   clearCache: () => {

@@ -5,6 +5,7 @@ import { CartItemType, useCartStore } from "./cart.store";
 import { useSignInStore } from "./sign-in.store";
 import { axiosInstance } from "../libs/axiosInstance";
 import { persist } from "zustand/middleware";
+import { useShopStore } from "./shop-page.store";
 
 export interface ErrorResponse {
   message: string;
@@ -49,13 +50,14 @@ export interface IUseCheckoutStore {
   setFormData: (data: CheckoutType) => void;
   roundToTwo: (val: number) => number;
   submitPurchase: (formState: CheckoutType) => Promise<boolean>;
-
+  normalizeZipCode: (str?: string) => string;
   submitAddress: (addressForm: {
     streetAddress: string;
     townCity: string;
     country: string;
     state: string;
     zipCode: string;
+    phoneNumber: string;
     differentBilling?: boolean;
     type: string;
   }) => Promise<boolean>;
@@ -71,6 +73,7 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
       shippingCost: 0,
       shippingOption: "",
       checkoutData: null,
+
       generateOrderCode: (): string => {
         const part1 = String(Math.floor(1000 + Math.random() * 9000)); // 4 digits
         const part2 = String(Math.floor(10000 + Math.random() * 90000)); // 5 digits
@@ -116,6 +119,7 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
         country: string;
         state: string;
         zipCode: string;
+        phoneNumber: string;
         differentBilling?: boolean;
         type: string;
       }) => {
@@ -194,10 +198,17 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
       //   }
       //   return false;
       // },
+      normalizeZipCode: (str?: string): string => {
+        if (!str || typeof str !== "string") return "";
+        return str.trim().toUpperCase();
+      },
 
       submitPurchase: async (formState) => {
         const cartStore = useCartStore.getState();
         const signInStore = useSignInStore.getState();
+        // const normalizeFirstChar = useShopStore.getState();
+        const {normalizeFirstChar} = useShopStore.getState()
+        const { normalizeZipCode } = get(); 
         const state = get();
         const roundToTwo = get().roundToTwo;
 
@@ -206,11 +217,12 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
           .filter((url): url is string => Boolean(url));
 
         const addressFormState = {
-          streetAddress: formState.streetAddress,
-          townCity: formState.townCity,
-          country: formState.country,
-          state: formState.state,
-          zipCode: formState.zipCode,
+          streetAddress: normalizeFirstChar(formState.streetAddress),
+          townCity: normalizeFirstChar(formState.townCity),
+          country: normalizeFirstChar(formState.country),
+          state: normalizeFirstChar(formState.state),
+          phoneNumber: normalizeFirstChar(formState.phoneNumber),
+          zipCode: normalizeZipCode(formState.zipCode), // <- all caps
           differentBilling: formState.differentBilling,
           type: "shipping",
         };

@@ -53,6 +53,12 @@ const Checkout = () => {
 
   const { submitPurchase } = useCheckoutStore();
 
+
+  const { checkoutData } = useCheckoutStore();
+  console.log(checkoutData, "checkoutData form Checkout");
+
+
+  
   useEffect(() => {
     initialize();
   }, [initialize]);
@@ -143,7 +149,7 @@ const Checkout = () => {
         </div>
       </div>
       <div className="w-full md:w-[84.73%] lg:w-[77.77%]  flex items-center justify-center md:items-start md:justify-start ">
-        <button className="py-3 w-full lg:w-[53.5%] text-white text-base font-medium leading-[28px] tracking-[-0.4px] bg-[#141718] rounded-[8px] hover:bg-gray-800 transition-colors duration-300 ease-in-out ">
+        <button className="py-3 w-full lg:w-[53.5%] text-white text-base font-medium leading-[28px] tracking-[-0.4px] bg-[#141718] rounded-[8px] hover:bg-gray-800 transition-colors duration-300 ease-in-out cursor-pointer">
           Place Order
         </button>
       </div>
