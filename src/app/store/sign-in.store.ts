@@ -1,14 +1,13 @@
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { create } from "zustand";
-// import { ErrorResponse } from "./manage-image.store";
 import { SignInType } from "../components/__organism/signInFrom/SignInForm";
 import { axiosInstance } from "../libs/axiosInstance";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { ErrorResponse, useHomePageStore } from "./useHomePage.store.";
-// import { useShopPageStore } from "./useShopPage.store";
 import { useProductStore } from "./product.store";
 import { useShopStore } from "./shop-page.store";
+import { useAddressStore } from "./address.store";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -27,10 +26,6 @@ export interface IUser {
   reviews: string[];
   email: string;
   _id: string;
-
-
-
-  
   lastName?: string;
 }
 
@@ -137,6 +132,7 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
     useProductStore.setState({
       cashedWishList: {},
     });
+    useAddressStore.getState().clearAddressData();
     set({ currentUser: null, accessToken: "" });
     window.location.href = "/";
   },

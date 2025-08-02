@@ -9,10 +9,14 @@ import CartSummary from "../cartSummary/CartSummary";
 import Coupons from "../coupons/Coupons";
 
 
+
 const Cart = () => {
   const path = usePathname();
   const isCartPage = path.includes("/cart-page");
   const { cartData } = useCartStore();
+
+
+
 
   return (
     <div className="w-full h-foll min-h-screen flex flex-col items-center justify-center py-20">

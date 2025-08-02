@@ -113,7 +113,6 @@ const CostSummary = ({
     setSubtotalAndShipping,
   } = useCheckoutStore();
 
-  // Sync subtotal + shipping cost whenever cart or shipping changes
   useEffect(() => {
     setSubtotalAndShipping(cartData, selectedShipping || null);
   }, [cartData, selectedShipping, setSubtotalAndShipping]);
