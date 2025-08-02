@@ -1,4 +1,3 @@
-
 import axios, { AxiosError } from "axios";
 import { create } from "zustand";
 import { CheckoutType } from "../components/__organism/checkout/Checkout";
@@ -19,15 +18,6 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   const unexpectedError = "An unexpected error occurred";
   return unexpectedError;
 };
-
-// export interface ICheckoutData {
-//   formState: CheckoutType;
-//   order: CartItemType[];
-//   shipping: number;
-//   shippingOption: string;
-//   subtotal: number;
-//   total: number;
-// }
 
 export type ICheckoutData = CheckoutType & {
   order: CartItemType[];
@@ -59,6 +49,16 @@ export interface IUseCheckoutStore {
   setFormData: (data: CheckoutType) => void;
   roundToTwo: (val: number) => number;
   submitPurchase: (formState: CheckoutType) => Promise<boolean>;
+
+  submitAddress: (addressForm: {
+    streetAddress: string;
+    townCity: string;
+    country: string;
+    state: string;
+    zipCode: string;
+    differentBilling?: boolean;
+    type: string;
+  }) => Promise<boolean>;
 }
 
 export const useCheckoutStore = create<IUseCheckoutStore>()(
@@ -110,6 +110,91 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
 
       setFormData: (data) => set({ formData: data }),
 
+      submitAddress: async (addressForm: {
+        streetAddress: string;
+        townCity: string;
+        country: string;
+        state: string;
+        zipCode: string;
+        differentBilling?: boolean;
+        type: string;
+      }) => {
+        try {
+          const { accessToken } = useSignInStore.getState();
+          const res = await axiosInstance.post(
+            "/address/create-address",
+            addressForm,
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            }
+          );
+          if (res.status >= 200 && res.status <= 204) {
+            return true;
+          }
+          return false;
+        } catch (e) {
+          set({
+            isLoading: false,
+            axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+          });
+          return false;
+        }
+      },
+
+      // submitPurchase: async (formState) => {
+      //   const cartStore = useCartStore.getState();
+      //   const signInStore = useSignInStore.getState();
+      //   const state = get();
+      //   const roundToTwo = get().roundToTwo;
+
+      //   const presignedUrls = cartStore.cartData
+      //     .map((item) => item.presignedUrl)
+      //     .filter((url): url is string => Boolean(url));
+
+      //   const cleanedOrder = cartStore.cartData.map(
+      //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      //     ({ presignedUrl, colors, ...rest }) => rest
+      //   );
+
+      //   const newFormState: ICheckoutData = {
+      //     ...formState,
+      //     order: cleanedOrder,
+      //     shipping: state.shippingCost,
+      //     shippingOption: state.shippingOption,
+      //     subtotal: state.subtotal,
+      //     orderCode: get().generateOrderCode(),
+      //     // total: state.shippingCost + state.subtotal,
+      //     total: roundToTwo(state.shippingCost + state.subtotal),
+      //   };
+
+      //   const localCheckoutData: ICheckoutData = {
+      //     ...newFormState,
+      //     createdAt: new Date().toISOString(),
+      //     presignedUrls: presignedUrls.length ? presignedUrls : [],
+      //   };
+      //   set({ isLoading: true, axiosError: null });
+      //   try {
+      //     const res = await axiosInstance.post("/purchase", newFormState, {
+      //       headers: { Authorization: `Bearer ${signInStore.accessToken}` },
+      //     });
+      //     if (res.status >= 200 && res.status <= 204) {
+      //       set({ checkoutData: localCheckoutData });
+      //       set({
+      //         isLoading: false,
+      //         axiosError: "",
+      //       });
+      //       console.log(state.checkoutData, " state.checkoutData");
+      //       return true;
+      //     }
+      //   } catch (e) {
+      //     set({
+      //       isLoading: false,
+      //       axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+      //     });
+      //   }
+      //   return false;
+      // },
+
       submitPurchase: async (formState) => {
         const cartStore = useCartStore.getState();
         const signInStore = useSignInStore.getState();
@@ -119,6 +204,18 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
         const presignedUrls = cartStore.cartData
           .map((item) => item.presignedUrl)
           .filter((url): url is string => Boolean(url));
+
+        const addressFormState = {
+          streetAddress: formState.streetAddress,
+          townCity: formState.townCity,
+          country: formState.country,
+          state: formState.state,
+          zipCode: formState.zipCode,
+          differentBilling: formState.differentBilling,
+          type: "shipping",
+        };
+
+        await get().submitAddress(addressFormState);
 
         const cleanedOrder = cartStore.cartData.map(
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -132,7 +229,6 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
           shippingOption: state.shippingOption,
           subtotal: state.subtotal,
           orderCode: get().generateOrderCode(),
-          // total: state.shippingCost + state.subtotal,
           total: roundToTwo(state.shippingCost + state.subtotal),
         };
 
