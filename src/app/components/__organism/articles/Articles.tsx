@@ -20,7 +20,7 @@ const Articles = ({ images }: { images: IImageData[] }) => {
         <h2 className="text-[34px] md:text-[40px] font-medium tracking-[-0.6px] leading-[38px] md:tracking-[-0.4px] md:leading-[44px]">
           Articles
         </h2>
-        <Link href={""}>
+        <Link href={""} >
           <MoreButton styleClass="hidden md:flex" />
         </Link>
       </div>
@@ -43,8 +43,8 @@ const Articles = ({ images }: { images: IImageData[] }) => {
                 <p className="text-base font-semibold md:text-[20px] md:font-medium leading-[26px] md:leading-[28px]">
                   {item.title ?? "Untitled Image"}
                 </p>
-                <Link href={""}>
-                  <MoreButton styleClass="flex" />
+                <Link href={""} className="w-full">
+                  <MoreButton styleClass="flex" articleTitle={item.title } />
                 </Link>
               </div>
             </div>
