@@ -20,7 +20,19 @@ import { useCheckoutStore } from "@/app/store/checkout.store";
 export const checkoutSchema = z.object({
   name: z.string().min(1, "Name is required"),
   lastName: z.string().min(1, "Last Name is required").max(50),
-  phoneNumber: z.string().min(1, "Phone number is required").max(20),
+  phoneNumber: z
+    .string({
+      required_error: "Phone number is required",
+    })
+    .min(1, "Phone number is required")
+    .refine((val) => {
+      if (!val || val.trim() === "") {
+        return false;
+      }
+      const digitsOnly = val.replace(/[^\d]/g, "");
+      return digitsOnly.length >= 7;
+    }, "Please enter a complete phone number"),
+
   yourEmail: z
     .string()
     .min(1, "Email is required")
@@ -50,15 +62,9 @@ const Checkout = () => {
   const router = useRouter();
   const isCheckoutPage = path.includes("/checkout-page");
   const { cartData, selectedShipping } = useCartStore();
-
   const { submitPurchase } = useCheckoutStore();
+  // const { checkoutData } = useCheckoutStore();
 
-
-  const { checkoutData } = useCheckoutStore();
-  console.log(checkoutData, "checkoutData form Checkout");
-
-
-  
   useEffect(() => {
     initialize();
   }, [initialize]);
@@ -66,10 +72,12 @@ const Checkout = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     setValue,
     watch,
     reset,
+
+    control,
   } = useForm<CheckoutType>({
     resolver: zodResolver(checkoutSchema),
   });
@@ -81,7 +89,6 @@ const Checkout = () => {
       router.push("/complete-page");
     }
   };
-
   if (!accessToken) return null;
 
   return (
@@ -105,12 +112,14 @@ const Checkout = () => {
               register={register}
               errors={errors}
               isCheckoutPage={isCheckoutPage}
+              control={control}
             />
             <ShippingAddress
               register={register}
               errors={errors}
               setValue={setValue}
               isCheckoutPage={isCheckoutPage}
+              control={control}
             />
             <PaymentMethod
               register={register}
@@ -149,10 +158,23 @@ const Checkout = () => {
         </div>
       </div>
       <div className="w-full md:w-[84.73%] lg:w-[77.77%]  flex items-center justify-center md:items-start md:justify-start ">
-        <button className="py-3 w-full lg:w-[53.5%] text-white text-base font-medium leading-[28px] tracking-[-0.4px] bg-[#141718] rounded-[8px] hover:bg-gray-800 transition-colors duration-300 ease-in-out cursor-pointer">
+        <button
+          disabled={isSubmitting}
+          className="py-3 w-full lg:w-[53.5%] text-white text-base font-medium leading-[28px] tracking-[-0.4px] bg-[#141718] rounded-[8px] hover:bg-gray-800 transition-colors duration-300 ease-in-out cursor-pointer"
+        >
           Place Order
         </button>
       </div>
+      {/* <button
+        disabled={!isValid || isSubmitting} // Disable if form is invalid
+        className={`py-3 w-full lg:w-[53.5%] text-white text-base font-medium leading-[28px] tracking-[-0.4px] rounded-[8px] transition-colors duration-300 ease-in-out cursor-pointer ${
+          !isValid || isSubmitting
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-[#141718] hover:bg-gray-800"
+        }`}
+      >
+        {isSubmitting ? "Processing..." : "Place Order"}
+      </button> */}
     </form>
   );
 };

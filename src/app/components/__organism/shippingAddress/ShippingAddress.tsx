@@ -142,17 +142,11 @@
 
 // export default ShippingAddress;
 
-
-"use client"
+"use client";
 import { useMemo, useState } from "react";
 import Select, { SingleValue } from "react-select";
-// import countryList, {
-//   CountryType as CountryDataType,
-// } from "react-select-country-list";
-import countryList, {
-  CountryType 
-} from "react-select-country-list";
-import { Input } from "../../__molecules";
+import countryList, { CountryType } from "react-select-country-list";
+import { Input, PhoneNumberInput } from "../../__molecules";
 import {
   FieldErrors,
   UseFormRegister,
@@ -160,9 +154,9 @@ import {
   FieldValues,
   Path,
   PathValue,
+  Control,
 } from "react-hook-form";
 
-// ✅ Make ShippingAddress generic
 export type ShippingAddressPropsType<T extends FieldValues> = {
   register: UseFormRegister<T>;
   errors: FieldErrors<T>;
@@ -170,6 +164,7 @@ export type ShippingAddressPropsType<T extends FieldValues> = {
   isCheckoutPage?: boolean;
   isMyAccountPage?: boolean;
   addressType?: string | null;
+  control: Control<T>;
 };
 
 export type CountryType = {
@@ -183,7 +178,8 @@ const ShippingAddress = <T extends FieldValues>({
   setValue,
   isCheckoutPage,
   isMyAccountPage,
-  addressType
+  addressType,
+  control,
 }: ShippingAddressPropsType<T>) => {
   const [selectedCountry, setSelectedCountry] =
     useState<SingleValue<CountryType>>(null);
@@ -191,12 +187,6 @@ const ShippingAddress = <T extends FieldValues>({
 
   const changeHandler = (val: SingleValue<CountryType>) => {
     setSelectedCountry(val);
-
-    // if (val) {
-    //   setValue("country" as Path<T>, val.label);
-    //   setValue("state" as Path<T>, val.value);
-    // }
-
     if (val) {
       setValue("country" as Path<T>, val.label as PathValue<T, Path<T>>);
       setValue("state" as Path<T>, val.value as PathValue<T, Path<T>>);
@@ -206,7 +196,6 @@ const ShippingAddress = <T extends FieldValues>({
   return (
     <div className="w-full flex flex-col items-center px-4 py-6 md:px-6 md:py-10 gap-6 border border-[#CBCBCB] rounded-sm">
       <h1 className="w-full text-base font-semibold leading-[26px] md:text-[20px] md:font-medium md:leading-[28px] text-[#141718]">
-      
         {addressType === "billing" ? "Billing Address" : "Shipping Address"}
       </h1>
 
@@ -229,9 +218,10 @@ const ShippingAddress = <T extends FieldValues>({
           className="w-full"
           placeholder="Select a country"
           styles={{
-            control: (base,
+            control: (
+              base
               //  state
-              ) => ({
+            ) => ({
               ...base,
               minHeight: "43.6px",
               border: "1px solid #CBCBCB",
@@ -279,6 +269,15 @@ const ShippingAddress = <T extends FieldValues>({
           isMyAccountPage={isMyAccountPage}
         />
       </div>
+      {isMyAccountPage && (
+        <PhoneNumberInput
+          control={control}
+          errors={errors}
+          // fieldName="phoneNumber"
+          fieldName={"phoneNumber" as Path<T>}
+          isMyAccountPage
+        />
+      )}
 
       <div className="w-full flex items-center gap-3">
         <input

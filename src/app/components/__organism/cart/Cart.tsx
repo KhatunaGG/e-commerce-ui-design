@@ -8,15 +8,10 @@ import CartHeader from "../cartHeader/CartHeader";
 import CartSummary from "../cartSummary/CartSummary";
 import Coupons from "../coupons/Coupons";
 
-
-
 const Cart = () => {
   const path = usePathname();
   const isCartPage = path.includes("/cart-page");
   const { cartData } = useCartStore();
-
-
-
 
   return (
     <div className="w-full h-foll min-h-screen flex flex-col items-center justify-center py-20">
@@ -62,11 +57,11 @@ const Cart = () => {
 
           <div className="w-full lg:flex-1">
             <CartSummary
-              // subtotal={cartData.reduce((acc, item) => {
-              //   const discountedPrice =
-              //     item.price - (item.price * item.discount) / 100;
-              //   return acc + discountedPrice * item.purchasedQty;
-              // }, 0)}
+            // subtotal={cartData.reduce((acc, item) => {
+            //   const discountedPrice =
+            //     item.price - (item.price * item.discount) / 100;
+            //   return acc + discountedPrice * item.purchasedQty;
+            // }, 0)}
             />
           </div>
         </div>
