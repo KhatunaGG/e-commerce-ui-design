@@ -161,6 +161,7 @@ import { usePathname } from "next/navigation";
 import { useAddressStore } from "@/app/store/address.store";
 import { useShopStore } from "@/app/store/shop-page.store";
 import { useEffect } from "react";
+import { parsePhoneNumber } from "react-phone-number-input";
 
 const myAccountShippingSchema = z.object({
   streetAddress: z.string().min(1, "Street address is required"),
@@ -169,6 +170,10 @@ const myAccountShippingSchema = z.object({
   state: z.string().min(1, "State is required"),
   zipCode: z.string().min(1, "ZIP code is required"),
   differentBilling: z.boolean().optional(),
+  phoneNumber: z
+    .string()
+    .min(1, "Phone number is required")
+    .regex(/^\+[\d\s]+$/, "Enter a valid international phone number"),
 });
 
 type MyAccountShippingFormType = z.infer<typeof myAccountShippingSchema>;
@@ -189,21 +194,29 @@ const Addresses = () => {
     setAddressType,
     getAllShippingAddresses,
     addressData,
+    clearAddressData,
   } = useAddressStore();
   const path = usePathname();
   const isMyAccountPage = path.includes("/account-page");
 
+  // useEffect(() => {
+  //   getAllShippingAddresses();
+  // }, []);
+
   useEffect(() => {
+    clearAddressData();
     getAllShippingAddresses();
   }, []);
 
   console.log(addressData, "addressData");
 
   const {
-    // handleSubmit,
+    handleSubmit,
     formState: { errors },
     register,
     setValue,
+
+    control,
   } = useForm<MyAccountShippingFormType>({
     resolver: zodResolver(myAccountShippingSchema),
     defaultValues: {
@@ -226,6 +239,10 @@ const Addresses = () => {
     }
   };
 
+  const onSubmit = (data: MyAccountShippingFormType) => {
+    console.log(data); 
+  };
+
   if (!accessToken) return null;
 
   return (
@@ -238,6 +255,9 @@ const Addresses = () => {
         {Array.isArray(addressData) &&
           addressData.length > 0 &&
           addressData.map((item, i) => {
+            const formatted = item.phoneNumber
+              ? parsePhoneNumber(item.phoneNumber)?.formatInternational()
+              : item.phoneNumber;
             return (
               <div
                 key={i}
@@ -265,7 +285,8 @@ const Addresses = () => {
                     {normalizeFirstChar(currentUser?.lastName ?? "")}
                   </p>
                   <p className="font-normal text-sm leading-[22px] text-black">
-                    {item.phoneNumber}
+                    {/* {item.phoneNumber} */}
+                    {formatted}
                   </p>
                   <p className="font-normal text-sm leading-[22px] text-black  break-words">
                     {item.streetAddress}, {item.townCity}, {item.country},{" "}
@@ -277,14 +298,19 @@ const Addresses = () => {
           })}
       </div>
       {editAddress && (
-        <div className="w-full flex flex-col gap-8">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="w-full flex flex-col gap-8"
+        >
           <ShippingAddress
             register={register}
             errors={errors}
             setValue={setValue}
             isMyAccountPage={isMyAccountPage}
             addressType={addressType}
+            control={control}
           />
+
           <div className="w-full flex items-start">
             <button
               type="submit"
@@ -293,7 +319,7 @@ const Addresses = () => {
               Save changes
             </button>
           </div>
-        </div>
+        </form>
       )}
     </div>
   );
