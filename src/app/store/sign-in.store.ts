@@ -8,6 +8,7 @@ import { ErrorResponse, useHomePageStore } from "./useHomePage.store.";
 import { useProductStore } from "./product.store";
 import { useShopStore } from "./shop-page.store";
 import { useAddressStore } from "./address.store";
+import { useAccountStore } from "./account.store";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -133,6 +134,7 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
       cashedWishList: {},
     });
     useAddressStore.getState().clearAddressData();
+    useAccountStore.getState().clearAccountData();
     set({ currentUser: null, accessToken: "" });
     window.location.href = "/";
   },

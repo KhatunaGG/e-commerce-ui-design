@@ -143,7 +143,7 @@
 // export default ShippingAddress;
 
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Select, { SingleValue } from "react-select";
 import countryList, { CountryType } from "react-select-country-list";
 import { Input, PhoneNumberInput } from "../../__molecules";
@@ -155,6 +155,7 @@ import {
   Path,
   PathValue,
   Control,
+  useWatch,
 } from "react-hook-form";
 
 export type ShippingAddressPropsType<T extends FieldValues> = {
@@ -184,6 +185,31 @@ const ShippingAddress = <T extends FieldValues>({
   const [selectedCountry, setSelectedCountry] =
     useState<SingleValue<CountryType>>(null);
   const options = useMemo(() => countryList().getData(), []);
+
+  // const changeHandler = (val: SingleValue<CountryType>) => {
+  //   setSelectedCountry(val);
+  //   if (val) {
+  //     setValue("country" as Path<T>, val.label as PathValue<T, Path<T>>);
+  //     setValue("state" as Path<T>, val.value as PathValue<T, Path<T>>);
+  //   }
+  // };
+
+  const watchedCountry = useWatch<T>({ control, name: "country" as Path<T> });
+  const watchedState = useWatch<T>({ control, name: "state" as Path<T> });
+
+  useEffect(() => {
+    if (!watchedCountry && !watchedState) return;
+
+    const matched = options.find(
+      (opt: CountryType) =>
+        opt.label.toLowerCase() === watchedCountry?.toLowerCase() ||
+        opt.value.toLowerCase() === watchedState?.toLowerCase()
+    );
+
+    if (matched) {
+      setSelectedCountry(matched);
+    }
+  }, [watchedCountry, watchedState, options]);
 
   const changeHandler = (val: SingleValue<CountryType>) => {
     setSelectedCountry(val);

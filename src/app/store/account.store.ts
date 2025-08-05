@@ -31,6 +31,7 @@ export interface IUseAccountStore {
   ) => Promise<boolean>;
   handleFileChange: (file: File) => Promise<void>;
   getUsersAvatar: (id: string) => Promise<void>;
+  clearAccountData: () => void;
 }
 
 export const useAccountStore = create<IUseAccountStore>()(
@@ -210,6 +211,14 @@ export const useAccountStore = create<IUseAccountStore>()(
           });
         }
       },
+
+      clearAccountData: () =>
+        set({
+          isLoading: false,
+          axiosError: null,
+          formData: null,
+          avatar: null,
+        }),
     }),
     {
       name: "account-storage",

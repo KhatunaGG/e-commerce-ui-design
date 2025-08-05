@@ -181,7 +181,6 @@ const Complete = () => {
           <ChevronLeft />
           <h2>Back</h2>
         </Link>
-
         <CartHeader />
       </div>
 
@@ -260,11 +259,11 @@ const Complete = () => {
           </div>
         </div>
 
-        <div className="w-full flex items-center justify-center px-4 md:px-[50px] lg::px-[112.5px] ">
+        <Link className="w-full flex items-center justify-center px-4 md:px-[50px] lg::px-[112.5px] " href={"/account-page/orders"}>
           <button className="w-full bg-[#141718] rounded-[80px] md:px-10 text-white py-3 text-base font-medium leading-[28px] tracking-[-0.4px] hover:bg-gray-800 transition-colors duration-300 ease-in-out">
             Purchase history
           </button>
-        </div>
+        </Link>
       </div>
     </div>
   );
