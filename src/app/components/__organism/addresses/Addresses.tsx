@@ -158,12 +158,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ShippingAddress from "../shippingAddress/ShippingAddress";
 import { usePathname } from "next/navigation";
-import { useAddressStore } from "@/app/store/address.store";
+import { AddressDataType, useAddressStore } from "@/app/store/address.store";
 import { useShopStore } from "@/app/store/shop-page.store";
 import { useEffect } from "react";
 import { parsePhoneNumber } from "react-phone-number-input";
 
 const myAccountShippingSchema = z.object({
+  _id: z.string().optional(),
+  type: z.string().optional(),
+
   streetAddress: z.string().min(1, "Street address is required"),
   townCity: z.string().min(1, "Town/City is required"),
   country: z.string().min(1, "Country is required"),
@@ -188,13 +191,14 @@ const Addresses = () => {
   }, [initialize]);
 
   const {
-    setEditAddress,
-    editAddress,
+    setEditAddressId,
+    editAddressId,
     addressType,
     setAddressType,
     getAllShippingAddresses,
     addressData,
     clearAddressData,
+    submitEditAddress,
   } = useAddressStore();
   const path = usePathname();
   const isMyAccountPage = path.includes("/account-page");
@@ -215,11 +219,14 @@ const Addresses = () => {
     formState: { errors },
     register,
     setValue,
-
+     reset,
     control,
   } = useForm<MyAccountShippingFormType>({
     resolver: zodResolver(myAccountShippingSchema),
     defaultValues: {
+      _id: "",
+      type: "",
+
       streetAddress: "",
       townCity: "",
       country: "",
@@ -229,18 +236,58 @@ const Addresses = () => {
     },
   });
 
-  const handleEdit = (type: string) => {
-    if (editAddress && addressType === type) {
-      setEditAddress(false);
-      setAddressType("");
+  // const handleEdit = (type: string, id: string) => {
+  //   if (editAddressId === id && addressType === type) {
+  //     setEditAddressId(id);
+  //     setAddressType("");
+  //   } else {
+  //     setEditAddressId(null);
+  //     setAddressType(type);
+  //   }
+  // };
+
+  const handleEdit = (type: string, id: string) => {
+    if (editAddressId === id) {
+      // Close the form if same card clicked again
+      setEditAddressId(null);
+      setAddressType(null);
     } else {
-      setEditAddress(true);
+      // Open form and prefill
+      setEditAddressId(id);
       setAddressType(type);
+
+      const address = addressData.find((a) => a._id === id);
+      if (address) {
+        setValue("streetAddress", address.streetAddress);
+        setValue("townCity", address.townCity);
+        setValue("country", address.country);
+        setValue("state", address.state);
+        setValue("zipCode", address.zipCode);
+        setValue("phoneNumber", address.phoneNumber);
+        setValue("differentBilling", address.differentBilling ?? false);
+
+        setValue("_id", address._id);
+        setValue("type", address.type);
+      }
     }
   };
 
-  const onSubmit = (data: MyAccountShippingFormType) => {
-    console.log(data); 
+  const onSubmit = async (formData: MyAccountShippingFormType) => {
+    console.log(formData, "formData form ");
+    if (!formData._id) {
+      return;
+    }
+    const formattedData: AddressDataType = {
+      ...formData,
+      _id: formData._id || "",
+      type: formData.type || "",
+    };
+
+    const success = await submitEditAddress(formattedData);
+        if (success) {
+      reset();
+
+    }
   };
 
   if (!accessToken) return null;
@@ -268,7 +315,7 @@ const Addresses = () => {
                     {normalizeFirstChar(item.type)} Address
                   </h3>
                   <button
-                    onClick={() => handleEdit(item.type)}
+                    onClick={() => handleEdit(item.type, item._id ?? "")}
                     className="flex items-center gap-1 cursor-pointer group "
                   >
                     <div>
@@ -297,7 +344,7 @@ const Addresses = () => {
             );
           })}
       </div>
-      {editAddress && (
+      {editAddressId && (
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="w-full flex flex-col gap-8"
