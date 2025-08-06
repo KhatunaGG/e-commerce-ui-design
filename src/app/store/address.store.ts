@@ -3,6 +3,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { axiosInstance } from "../libs/axiosInstance";
 import { useSignInStore } from "./sign-in.store";
+import { ICheckoutData } from "./checkout.store";
 
 export interface ErrorResponse {
   message: string;
@@ -34,11 +35,14 @@ export interface IUseAddressStore {
   editAddressId: string | null;
   addressType: string | null;
   addressData: AddressDataType[];
+  purchasesData: ICheckoutData[];
   setEditAddressId: (id: string | null) => void;
   setAddressType: (addressType: string | null) => void;
   getAllShippingAddresses: () => Promise<void>;
   clearAddressData: () => void;
   submitEditAddress: (formData: AddressDataType) => Promise<boolean>;
+  getAllOrders: () => Promise<void>;
+  getOrderStatus: (createdAt?: string) => string;
 }
 
 export const useAddressStore = create<IUseAddressStore>()(
@@ -50,6 +54,7 @@ export const useAddressStore = create<IUseAddressStore>()(
       isLoading: false,
       axiosError: null,
       addressData: [],
+      purchasesData: [],
       clearAddressData: () => set({ addressData: [] }),
       setAddressType: (addressType) => set({ addressType }),
       setEditAddressId: (id) => set({ editAddressId: id }),
@@ -75,10 +80,7 @@ export const useAddressStore = create<IUseAddressStore>()(
       },
 
       submitEditAddress: async (formData: AddressDataType) => {
-        console.log(formData, "formData from STORE");
-
         const signInStore = useSignInStore.getState();
-
         try {
           set({ isLoading: true, axiosError: null });
           const res = await axiosInstance.patch(
@@ -91,7 +93,7 @@ export const useAddressStore = create<IUseAddressStore>()(
 
           if (res.status >= 200 && res.status <= 204) {
             set({ addressData: [] });
-            await get().getAllShippingAddresses(); 
+            await get().getAllShippingAddresses();
             set({ editAddressId: null });
             return true;
           } else {
@@ -105,6 +107,38 @@ export const useAddressStore = create<IUseAddressStore>()(
           });
           return false;
         }
+      },
+
+      getAllOrders: async () => {
+        set({ isLoading: true, axiosError: null });
+        const signInStore = useSignInStore.getState();
+        try {
+          const res = await axiosInstance.get("/purchase", {
+            headers: { Authorization: `Bearer ${signInStore.accessToken}` },
+          });
+          if (res.status >= 200 && res.status <= 204) {
+            console.log(res.data, "res.data");
+            set({
+              purchasesData: res.data,
+              isLoading: false,
+              axiosError: null,
+            });
+          }
+        } catch (e) {
+          set({
+            isLoading: false,
+            axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+          });
+        }
+      },
+      getOrderStatus: (createdAt?: string): string => {
+        if (!createdAt) return "";
+
+        const createdDate = new Date(createdAt);
+        const now = new Date(); 
+        const diffInMin = now.getTime() - createdDate.getTime();
+        const diffDays = diffInMin / (1000 * 60 * 60 * 24);
+        return diffDays >= 3 ? "Delivered" : "Processing";
       },
     }),
     {

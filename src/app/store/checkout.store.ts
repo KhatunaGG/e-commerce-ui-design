@@ -28,7 +28,6 @@ export type ICheckoutData = CheckoutType & {
   total: number;
   orderCode: string;
   createdAt?: string;
-  // presignedUrl?: string;
   presignedUrls?: string[];
 };
 
@@ -61,6 +60,7 @@ export interface IUseCheckoutStore {
     differentBilling?: boolean;
     type: string;
   }) => Promise<boolean>;
+  formatDate: (data?: string) => string;
 }
 
 export const useCheckoutStore = create<IUseCheckoutStore>()(
@@ -145,59 +145,6 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
         }
       },
 
-      // submitPurchase: async (formState) => {
-      //   const cartStore = useCartStore.getState();
-      //   const signInStore = useSignInStore.getState();
-      //   const state = get();
-      //   const roundToTwo = get().roundToTwo;
-
-      //   const presignedUrls = cartStore.cartData
-      //     .map((item) => item.presignedUrl)
-      //     .filter((url): url is string => Boolean(url));
-
-      //   const cleanedOrder = cartStore.cartData.map(
-      //     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      //     ({ presignedUrl, colors, ...rest }) => rest
-      //   );
-
-      //   const newFormState: ICheckoutData = {
-      //     ...formState,
-      //     order: cleanedOrder,
-      //     shipping: state.shippingCost,
-      //     shippingOption: state.shippingOption,
-      //     subtotal: state.subtotal,
-      //     orderCode: get().generateOrderCode(),
-      //     // total: state.shippingCost + state.subtotal,
-      //     total: roundToTwo(state.shippingCost + state.subtotal),
-      //   };
-
-      //   const localCheckoutData: ICheckoutData = {
-      //     ...newFormState,
-      //     createdAt: new Date().toISOString(),
-      //     presignedUrls: presignedUrls.length ? presignedUrls : [],
-      //   };
-      //   set({ isLoading: true, axiosError: null });
-      //   try {
-      //     const res = await axiosInstance.post("/purchase", newFormState, {
-      //       headers: { Authorization: `Bearer ${signInStore.accessToken}` },
-      //     });
-      //     if (res.status >= 200 && res.status <= 204) {
-      //       set({ checkoutData: localCheckoutData });
-      //       set({
-      //         isLoading: false,
-      //         axiosError: "",
-      //       });
-      //       console.log(state.checkoutData, " state.checkoutData");
-      //       return true;
-      //     }
-      //   } catch (e) {
-      //     set({
-      //       isLoading: false,
-      //       axiosError: handleApiError(e as AxiosError<ErrorResponse>),
-      //     });
-      //   }
-      //   return false;
-      // },
       normalizeZipCode: (str?: string): string => {
         if (!str || typeof str !== "string") return "";
         return str.trim().toUpperCase();
@@ -206,9 +153,8 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
       submitPurchase: async (formState) => {
         const cartStore = useCartStore.getState();
         const signInStore = useSignInStore.getState();
-        // const normalizeFirstChar = useShopStore.getState();
-        const {normalizeFirstChar} = useShopStore.getState()
-        const { normalizeZipCode } = get(); 
+        const { normalizeFirstChar } = useShopStore.getState();
+        const { normalizeZipCode } = get();
         const state = get();
         const roundToTwo = get().roundToTwo;
 
@@ -222,7 +168,7 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
           country: normalizeFirstChar(formState.country),
           state: normalizeFirstChar(formState.state),
           phoneNumber: normalizeFirstChar(formState.phoneNumber),
-          zipCode: normalizeZipCode(formState.zipCode), // <- all caps
+          zipCode: normalizeZipCode(formState.zipCode),
           differentBilling: formState.differentBilling,
           type: "shipping",
         };
@@ -270,6 +216,15 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
           });
         }
         return false;
+      },
+
+      formatDate: (data?: string) => {
+        if (!data) return "";
+        return new Date(data).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
       },
     }),
     {
