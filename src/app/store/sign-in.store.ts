@@ -117,14 +117,6 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
       set({ axiosError: errorMessage });
     }
   },
-
-  // logout: () => {
-  //   deleteCookie("accessToken");
-  //   useHomePageStore.getState().clearCache();
-  //   useShopPageStore.getState().clearCache();
-  //   set({ currentUser: null, accessToken: "" });
-  //   window.location.href = "/";
-  // },
   logout: () => {
     deleteCookie("accessToken");
     useHomePageStore.getState().clearCache();
