@@ -12,5 +12,6 @@ export { default as AddToCartButton } from "./addToCartButton/AddToCartButton";
 export { default as WishlistButton } from "./wishlistButton/WishlistButton";
 export { default as ShowMoreButton } from "./showMoreButton/ShowMoreButton";
 export { default as PhoneNumberInput } from "./phoneNumberInput/PhoneNumberInput";
+export { default as Pagination } from "./pagination/Pagination";
 
 
