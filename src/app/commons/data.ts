@@ -94,4 +94,4 @@ export const shippings = [
 ];
 
 
- export const accountLinks = ["account", "address", "orders", "wishlist", "logout"];
+ export const accountLinks = ["account", "address", "orders", "wishlists", "logout"];

@@ -1,3 +1,6 @@
+//
+
+//after perisit purchaseData
 import axios, { AxiosError } from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -36,11 +39,9 @@ export interface IUseAddressStore {
   addressType: string | null;
   addressData: AddressDataType[];
   purchasesData: ICheckoutData[];
-
   page: number;
   take: number;
   ordersTotalCount: number;
-
   setEditAddressId: (id: string | null) => void;
   setAddressType: (addressType: string | null) => void;
   getAllShippingAddresses: () => Promise<void>;
@@ -49,6 +50,9 @@ export interface IUseAddressStore {
   getAllOrders: () => Promise<void>;
   getOrderStatus: (createdAt?: string) => string;
   setPage: (page: number) => Promise<void>;
+
+  purchasesDataByPage: Record<number, ICheckoutData[]>;
+  clearOrdersData: () => void;
 }
 
 export const useAddressStore = create<IUseAddressStore>()(
@@ -65,11 +69,21 @@ export const useAddressStore = create<IUseAddressStore>()(
       take: 5,
       ordersTotalCount: 0,
 
+      purchasesDataByPage: {},
+
       setPage: async (page: number) => {
         set({ page });
         await get().getAllOrders();
       },
       clearAddressData: () => set({ addressData: [] }),
+      clearOrdersData: () =>
+        set({
+          purchasesDataByPage: {},
+          ordersTotalCount: 0,
+          page: 1,
+          isLoading: false,
+          axiosError: null,
+        }),
       setAddressType: (addressType) => set({ addressType }),
       setEditAddressId: (id) => set({ editAddressId: id }),
       getAllShippingAddresses: async () => {
@@ -123,32 +137,13 @@ export const useAddressStore = create<IUseAddressStore>()(
         }
       },
 
-      // getAllOrders: async () => {
-      //   set({ isLoading: true, axiosError: null });
-      //   const signInStore = useSignInStore.getState();
-      //   try {
-      //     const res = await axiosInstance.get("/purchase", {
-      //       headers: { Authorization: `Bearer ${signInStore.accessToken}` },
-      //     });
-      //     if (res.status >= 200 && res.status <= 204) {
-      //       console.log(res.data, "res.data");
-      //       set({
-      //         purchasesData: res.data,
-      //         isLoading: false,
-      //         axiosError: null,
-      //       });
-      //     }
-      //   } catch (e) {
-      //     set({
-      //       isLoading: false,
-      //       axiosError: handleApiError(e as AxiosError<ErrorResponse>),
-      //     });
-      //   }
-      // },
-
       getAllOrders: async () => {
+        const { page, purchasesDataByPage } = get();
+        if (purchasesDataByPage[page]) return;
+
         set({ isLoading: true, axiosError: null });
         const signInStore = useSignInStore.getState();
+
         try {
           const res = await axiosInstance.get(
             `/purchase?page=${get().page}&take=${get().take}`,
@@ -159,7 +154,11 @@ export const useAddressStore = create<IUseAddressStore>()(
           if (res.status >= 200 && res.status <= 204) {
             console.log(res.data, "res.data");
             set({
-              purchasesData: res.data.orders,
+              purchasesDataByPage: {
+                ...purchasesDataByPage,
+                [page]: res.data.orders,
+              },
+              // purchasesData: res.data.orders,
               isLoading: false,
               axiosError: null,
               ordersTotalCount: res.data.ordersTotalLength,
@@ -186,6 +185,11 @@ export const useAddressStore = create<IUseAddressStore>()(
       name: "address-storage",
       partialize: (state) => ({
         addressData: state.addressData,
+
+        purchasesDataByPage: state.purchasesDataByPage,
+        page: state.page,
+        take: state.take,
+        ordersTotalCount: state.ordersTotalCount,
       }),
     }
   )
