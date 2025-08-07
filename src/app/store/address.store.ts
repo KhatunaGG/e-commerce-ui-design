@@ -36,6 +36,11 @@ export interface IUseAddressStore {
   addressType: string | null;
   addressData: AddressDataType[];
   purchasesData: ICheckoutData[];
+
+  page: number;
+  take: number;
+  ordersTotalCount: number;
+
   setEditAddressId: (id: string | null) => void;
   setAddressType: (addressType: string | null) => void;
   getAllShippingAddresses: () => Promise<void>;
@@ -43,6 +48,7 @@ export interface IUseAddressStore {
   submitEditAddress: (formData: AddressDataType) => Promise<boolean>;
   getAllOrders: () => Promise<void>;
   getOrderStatus: (createdAt?: string) => string;
+  setPage: (page: number) => Promise<void>;
 }
 
 export const useAddressStore = create<IUseAddressStore>()(
@@ -55,6 +61,14 @@ export const useAddressStore = create<IUseAddressStore>()(
       axiosError: null,
       addressData: [],
       purchasesData: [],
+      page: 1,
+      take: 5,
+      ordersTotalCount: 0,
+
+      setPage: async (page: number) => {
+        set({ page });
+        await get().getAllOrders();
+      },
       clearAddressData: () => set({ addressData: [] }),
       setAddressType: (addressType) => set({ addressType }),
       setEditAddressId: (id) => set({ editAddressId: id }),
@@ -109,19 +123,46 @@ export const useAddressStore = create<IUseAddressStore>()(
         }
       },
 
+      // getAllOrders: async () => {
+      //   set({ isLoading: true, axiosError: null });
+      //   const signInStore = useSignInStore.getState();
+      //   try {
+      //     const res = await axiosInstance.get("/purchase", {
+      //       headers: { Authorization: `Bearer ${signInStore.accessToken}` },
+      //     });
+      //     if (res.status >= 200 && res.status <= 204) {
+      //       console.log(res.data, "res.data");
+      //       set({
+      //         purchasesData: res.data,
+      //         isLoading: false,
+      //         axiosError: null,
+      //       });
+      //     }
+      //   } catch (e) {
+      //     set({
+      //       isLoading: false,
+      //       axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+      //     });
+      //   }
+      // },
+
       getAllOrders: async () => {
         set({ isLoading: true, axiosError: null });
         const signInStore = useSignInStore.getState();
         try {
-          const res = await axiosInstance.get("/purchase", {
-            headers: { Authorization: `Bearer ${signInStore.accessToken}` },
-          });
+          const res = await axiosInstance.get(
+            `/purchase?page=${get().page}&take=${get().take}`,
+            {
+              headers: { Authorization: `Bearer ${signInStore.accessToken}` },
+            }
+          );
           if (res.status >= 200 && res.status <= 204) {
             console.log(res.data, "res.data");
             set({
-              purchasesData: res.data,
+              purchasesData: res.data.orders,
               isLoading: false,
               axiosError: null,
+              ordersTotalCount: res.data.ordersTotalLength,
             });
           }
         } catch (e) {
@@ -131,11 +172,11 @@ export const useAddressStore = create<IUseAddressStore>()(
           });
         }
       },
+
       getOrderStatus: (createdAt?: string): string => {
         if (!createdAt) return "";
-
         const createdDate = new Date(createdAt);
-        const now = new Date(); 
+        const now = new Date();
         const diffInMin = now.getTime() - createdDate.getTime();
         const diffDays = diffInMin / (1000 * 60 * 60 * 24);
         return diffDays >= 3 ? "Delivered" : "Processing";

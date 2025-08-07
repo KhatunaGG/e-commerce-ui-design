@@ -2,7 +2,7 @@
 import { useAddressStore } from "@/app/store/address.store";
 import { useSignInStore } from "@/app/store/sign-in.store";
 import React, { useEffect } from "react";
-import { AnimateSpin } from "../../__molecules";
+import { AnimateSpin, Pagination } from "../../__molecules";
 import { useCheckoutStore } from "@/app/store/checkout.store";
 
 const OrderSection = () => {
@@ -28,7 +28,7 @@ const OrderSection = () => {
   if (!accessToken) return null;
 
   return (
-    <section className="w-full h-full lg:px-[72px] pb-10 flex flex-col lg:gap-10">
+    <section className="w-full h-full lg:px-[72px] pb-10 flex flex-col lg:gap-10 ">
       <h2 className="font-semibold text-[20px] leading-[32px] text-black">
         Orders History
       </h2>
@@ -81,7 +81,7 @@ const OrderSection = () => {
                         {getOrderStatus(item.createdAt)}
                       </p>
                       <p className=" md:flex-1 font-normal text-sm leading-[22px] text-[#141718]">
-                        ${item.total}
+                        ${item.total.toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -95,6 +95,8 @@ const OrderSection = () => {
           </div>
         </div>
       </div>
+
+      <Pagination />
     </section>
   );
 };
