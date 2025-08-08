@@ -1,7 +1,8 @@
+import { AccountWishlist } from '@/app/components/__organism'
 import React from 'react'
 
 export default function page() {
   return (
-    <div>Wishlist</div>
+    <div><AccountWishlist /></div>
   )
 }

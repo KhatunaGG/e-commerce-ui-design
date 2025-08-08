@@ -49,6 +49,7 @@ export { default as AccountDetails } from "./accountDetails/AccountDetails"
 export { default as AccountPassword } from "./accountPassword/AccountPassword"
 export { default as Addresses } from "./addresses/Addresses"
 export { default as OrderSection } from "./orderSection/OrderSection"
+export { default as AccountWishlist } from "./accountWishlist/AccountWishlist"
 
 
 

@@ -5,38 +5,16 @@ export type AddToCartButtonPropsType = {
   params?: string;
   selectedQty?: number;
   selectedColor?: string | null;
+  isAccountWishlistPage?: boolean;
 };
 
-// const AddToCartButton = ({
-//   onClick,
-//   params,
-//   selectedQty,
-//   selectedColor,
-// }: AddToCartButtonPropsType) => {
-//   const isItemAddFromParams = params && selectedColor && selectedQty && selectedQty > 0;
-//   return (
-//     <button
-//       onClick={() => {
-//         if (params && isItemAddFromParams) {
-//           onClick?.(params, selectedColor, selectedQty);
-//         } else if (params) {
-//           onClick?.(params);
-//         }
-//       }}
-//       // onClick={onClick}
-//       className={`
-//       w-full bg-[#141718] text-white rounded-lg py-[8px] md:py-[6.29px] lg:py-[9px] text-sm md:text-base font-medium leading-[28px] tracking-[-0.4px] hover:bg-gray-800 transition-colors duration-300`}
-//     >
-//       Add to cart
-//     </button>
-//   );
-// };
 
 const AddToCartButton = ({
   onClick,
   params,
   selectedQty,
   selectedColor,
+  isAccountWishlistPage
 }: AddToCartButtonPropsType) => {
   const isValidToAdd =
     !params || 
@@ -58,7 +36,7 @@ const AddToCartButton = ({
       className={`
         w-full bg-[#141718] text-white rounded-lg py-[8px] md:py-[6.29px] lg:py-[9px]
         text-sm md:text-base font-medium leading-[28px] tracking-[-0.4px]
-        hover:bg-gray-800 transition-colors duration-300
+        hover:bg-gray-800 transition-colors duration-300 ${isAccountWishlistPage && "w-full md:flex-1"}
       `}
     >
       Add to cart

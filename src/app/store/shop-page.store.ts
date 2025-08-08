@@ -59,6 +59,10 @@ export type ProductsDataType = {
   discountTill: string;
   _id: string;
   presignedUrl: string;
+
+
+
+  color?: string;
 };
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
