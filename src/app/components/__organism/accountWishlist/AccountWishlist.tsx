@@ -37,6 +37,31 @@ const AccountWishlist = () => {
   //   loadMoreWishList();
   // };
 
+
+
+  const handleRemoveFromWishlist = async (id: string) => {
+  const { cashedWishList, wishlistData, updateProduct } = useProductStore.getState();
+
+  // Optimistically update wishlistData and cashedWishList
+  const updatedWishlistData = wishlistData.filter((p) => p._id !== id);
+
+  const updatedCache = Object.fromEntries(
+    Object.entries(cashedWishList).map(([page, products]) => [
+      page,
+      products.filter((p) => p._id !== id),
+    ])
+  );
+
+  useProductStore.setState({
+    wishlistData: updatedWishlistData,
+    cashedWishList: updatedCache,
+  });
+
+  // Call API to update the backend
+  await updateProduct(id, false);
+};
+
+
   if (isLoading && wishlistData.length === 0) {
     return <AnimateSpin />;
   }
@@ -66,7 +91,9 @@ const AccountWishlist = () => {
                   className="flex w-full items-center flex-col md:flex-row gap-4 md:gap-0   py-4 md:py-6 border-b border-b-[#E8ECEF] "
                 >
                   <div className="w-full md:w-[50%] flex gap-[10px] items-center">
-                    <div className="w-fit flex items-center ">
+                    <div
+                    onClick={() =>handleRemoveFromWishlist(item._id)}
+                    className="w-fit flex items-center ">
                       <Close />
                     </div>
                     <Link
