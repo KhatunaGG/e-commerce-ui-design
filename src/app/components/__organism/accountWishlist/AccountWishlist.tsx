@@ -1,5 +1,4 @@
 "use client";
-
 import { useProductStore } from "@/app/store/product.store";
 import { useEffect } from "react";
 import { AddToCartButton, AnimateSpin, ShowMoreButton } from "../../__molecules";
@@ -69,7 +68,7 @@ const AccountWishlist = () => {
   if (!accessToken) return null;
 
   return (
-    <div className="w-full h-full  px-8  pb-20 lg:px-[72px] flex flex-col  gap-10 ">
+    <div className="w-full h-full  px-8 lg:px-[72px] flex flex-col  gap-10 ">
       <h2 className="font-semibold text-[20px] leading-[32px] text-black">
         Your Wishlist
       </h2>
@@ -134,7 +133,7 @@ const AccountWishlist = () => {
                   </div>
 
                   <div className="hidden md:flex flex-1">
-                    ${item.price.toFixed()}
+                    ${item.price.toFixed(2)}
                   </div>
 
                   {/* <button

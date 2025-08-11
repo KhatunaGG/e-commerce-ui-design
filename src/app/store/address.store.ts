@@ -8,6 +8,7 @@ import { axiosInstance } from "../libs/axiosInstance";
 import { useSignInStore } from "./sign-in.store";
 import { ICheckoutData } from "./checkout.store";
 
+
 export interface ErrorResponse {
   message: string;
 }
@@ -42,6 +43,10 @@ export interface IUseAddressStore {
   page: number;
   take: number;
   ordersTotalCount: number;
+  isOpen: boolean;
+  selectedLabel: string;
+  setSelectedLabel: (selectedLabel: string) => void;
+  setIsOpen: (open: boolean) => void;
   setEditAddressId: (id: string | null) => void;
   setAddressType: (addressType: string | null) => void;
   getAllShippingAddresses: () => Promise<void>;
@@ -70,6 +75,11 @@ export const useAddressStore = create<IUseAddressStore>()(
       ordersTotalCount: 0,
 
       purchasesDataByPage: {},
+      isOpen: false,
+      selectedLabel: "Account",
+      setSelectedLabel: (selectedLabel) => set({selectedLabel}),
+      setIsOpen: (isOpen) => set({ isOpen }),
+
 
       setPage: async (page: number) => {
         set({ page });
