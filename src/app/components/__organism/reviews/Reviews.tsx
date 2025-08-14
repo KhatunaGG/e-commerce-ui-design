@@ -1,6 +1,7 @@
 import React from "react";
 import StarRating from "../starRating/StarRating";
-import InteractiveForm from "../interactiveForm/InteractiveForm";
+import ReviewsForm from "../reviewsForm/ReviewsForm";
+// import InteractiveForm from "../interactiveForm/InteractiveForm";
 
 export type ReviewsPropsType = {
   params: string;
@@ -23,7 +24,9 @@ const Reviews = ({ productName, params }: ReviewsPropsType) => {
       </div>
 
       {/* <ReviewsForm params={params} /> */}
-      <InteractiveForm params={params} />
+      {/* <InteractiveForm params={params} /> */}
+      <ReviewsForm params={params} />
+      
     </div>
   );
 };

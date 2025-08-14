@@ -1,21 +1,96 @@
-import React from "react";
+"use client";
 import { ArrowRight } from "../../__atoms";
 import EmojiSection from "../emojiSection/EmojiSection";
+import z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useReviewStore } from "@/app/store/review.store";
+
+// export const reviewSchema = z.object({
+//   productId: z.string().min(1, "productId is required"),
+//   text: z.string().min(1, "Please write a review"),
+//   rating: z.number().optional(),
+//   reviewOwnerId: z.string().optional(),
+//  status: z.string().min(1, "Status is required"),
+
+//   replies: z.array(
+//     z.object({
+//       replyToId: z.string().min(1, "ID is required"),
+//       replyOwnerId: z.string().min(1, "ID is required"),
+//       replyText: z.string().min(1, "Please write a review"),
+//     })
+//   ),
+// });
+
+export const reviewSchema = z.object({
+  text: z.string().min(1, "Please write a review"),
+  productId: z.string().min(1, "Product ID is required"),
+
+  // likes: z.number().optional(),
+  // reviewOwnerId: z.string().optional(),
+  // status: z.string().min(1, "Status is required"),
+  // rating: z.number().optional(),
+
+  // replies: z.array(
+  //   z.object({
+  //     replyToId: z.string().min(1, "ID is required"),
+  //     replyOwnerId: z.string().min(1, "ID is required"),
+  //     replyText: z.string().min(1, "Please write a review"),
+  //   })
+  // ),
+});
+
+export type ReviewType = z.infer<typeof reviewSchema>;
 
 const ReviewsForm = ({ params }: { params: string }) => {
+  const { submitReview, isLoading } = useReviewStore();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ReviewType>({
+    resolver: zodResolver(reviewSchema),
+    defaultValues: {
+      text: "",
+      productId: params,
+    },
+  });
+  console.log(errors)
+
+  const onSubmit = async (formData: ReviewType) => {
+    console.log("Form data:", formData);
+
+    try {
+      await submitReview(formData);
+    } catch (e) {
+      console.log(e)
+    }
+  };
+
   return (
-    <form className="w-full flex items-center  py-2 px-4 md:py-4 md:px-6 border border-[#E8ECEF] rounded-2xl mb-10 ">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-full flex items-center  py-2 px-4 md:py-4 md:px-6 border border-[#E8ECEF] rounded-2xl mb-10 "
+    >
       <div className="flex-1 resize-none outline-none  relative  group           ">
         <textarea
-          name=""
-          id=""
+          {...register("text")}
           placeholder="Share your thoughts"
           className="flex-1 resize-none outline-none w-full"
+          disabled={isLoading}
         ></textarea>
+        {errors.text && (
+          <span className="text-red-500 text-sm">{errors.text.message}</span>
+        )}
         <EmojiSection />
       </div>
+      <input type="hidden" {...register("productId")} value={params} />
 
-      <button className="w-8 h-8  md:h-auto md:w-fit bg-[#141718] rounded-full md:rounded-[80px] flex items-center justify-center md:py-[6px] md:px-10 ">
+      <button
+        type="submit"
+        disabled={isLoading}
+        className="w-8 h-8  md:h-auto md:w-fit bg-[#141718] rounded-full md:rounded-[80px] flex items-center justify-center md:py-[6px] md:px-10 "
+      >
         <span className="hidden md:inline text-white font-medium leading-[28px] tracking-[-0.4px]">
           Write Review
         </span>

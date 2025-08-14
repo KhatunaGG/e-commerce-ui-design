@@ -109,10 +109,6 @@ const AccountWishlist = () => {
                             className="object-cover w-full h-full"
                             unoptimized
                             priority={isAccountWishlistPage}
-                            // onError={(e) => {
-                            //   (e.currentTarget as HTMLImageElement).src =
-                            //     "/images/fallback.jpg";
-                            // }}
                           />
                         ) : (
                           <div className="w-full h-full bg-gray-100 flex items-center justify-center text-xs text-gray-500">

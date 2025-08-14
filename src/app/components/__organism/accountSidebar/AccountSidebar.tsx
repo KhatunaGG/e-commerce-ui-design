@@ -208,7 +208,6 @@ function AccountSidebar() {
           <div className="w-20 h-20 rounded-full flex items-center justify-center border border-black/40 relative">
             {avatar ? (
               <Image
-                // src={avatar}
                 src={avatar}
                 alt="User Avatar"
                 fill
