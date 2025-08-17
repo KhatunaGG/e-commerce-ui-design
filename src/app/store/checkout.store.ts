@@ -122,6 +122,7 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
         phoneNumber: string;
         differentBilling?: boolean;
         type: string;
+   
       }) => {
         try {
           const { accessToken } = useSignInStore.getState();
