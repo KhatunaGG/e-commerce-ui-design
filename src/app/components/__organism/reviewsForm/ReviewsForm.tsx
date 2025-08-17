@@ -25,19 +25,6 @@ import { useReviewStore } from "@/app/store/review.store";
 export const reviewSchema = z.object({
   text: z.string().min(1, "Please write a review"),
   productId: z.string().min(1, "Product ID is required"),
-
-  // likes: z.number().optional(),
-  // reviewOwnerId: z.string().optional(),
-  // status: z.string().min(1, "Status is required"),
-  // rating: z.number().optional(),
-
-  // replies: z.array(
-  //   z.object({
-  //     replyToId: z.string().min(1, "ID is required"),
-  //     replyOwnerId: z.string().min(1, "ID is required"),
-  //     replyText: z.string().min(1, "Please write a review"),
-  //   })
-  // ),
 });
 
 export type ReviewType = z.infer<typeof reviewSchema>;
@@ -47,6 +34,7 @@ const ReviewsForm = ({ params }: { params: string }) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ReviewType>({
     resolver: zodResolver(reviewSchema),
@@ -55,15 +43,15 @@ const ReviewsForm = ({ params }: { params: string }) => {
       productId: params,
     },
   });
-  console.log(errors)
 
   const onSubmit = async (formData: ReviewType) => {
-    console.log("Form data:", formData);
-
     try {
-      await submitReview(formData);
+      const success = await submitReview(formData);
+      if (success) {
+        reset();
+      }
     } catch (e) {
-      console.log(e)
+      console.error("Review submission error:", e);
     }
   };
 

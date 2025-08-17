@@ -2,6 +2,9 @@ import axios, { AxiosError } from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { ReviewType } from "../components/__organism/reviewsForm/ReviewsForm";
+import { axiosInstance } from "../libs/axiosInstance";
+import { useSignInStore } from "./sign-in.store";
+import { toast } from "react-toastify";
 
 export interface ErrorResponse {
   message: string;
@@ -20,6 +23,18 @@ export interface ReplyType {
   replyText: string;
 }
 
+export interface IQuestions {
+  questions: string;
+  questionsOwnerId: string;
+  answers: AnswerType[];
+}
+
+export interface AnswerType {
+  answersOwnerId: string;
+  questionsOwnerId: string;
+  answerText: string;
+}
+
 // Full Review object sent to backend
 export interface DbReviewType extends ReviewType {
   reviewOwnerId: string | null;
@@ -28,6 +43,7 @@ export interface DbReviewType extends ReviewType {
   rating: number;
   replies: ReplyType[];
   _id?: string;
+  questions: IQuestions[];
 }
 
 export interface IUseReviewStore {
@@ -35,10 +51,10 @@ export interface IUseReviewStore {
     text: string;
     productId: string;
   };
+  reviewData: DbReviewType[];
   isLoading: boolean;
   axiosError: string | null;
-
-  submitReview: (formData: ReviewType) => Promise<void>;
+  submitReview: (formData: ReviewType) => Promise<boolean>;
 }
 
 export const useReviewStore = create<IUseReviewStore>()(
@@ -46,32 +62,85 @@ export const useReviewStore = create<IUseReviewStore>()(
     (set) => ({
       isLoading: false,
       axiosError: null,
+      reviewData: [],
       reviewFormData: { text: "", productId: "" },
 
       submitReview: async (formData: ReviewType) => {
+        const { accessToken } = useSignInStore.getState();
         set({
           isLoading: true,
           axiosError: null,
         });
+
+        // const newFormData = {
+        //   ...formData,
+        //   reviewOwnerId: null,
+        //   likes: 0,
+        //   status: "review",
+        //   rating: 0,
+        //   replies: [
+        //     {
+        //       replyToId: "",
+        //       replyOwnerId: "",
+        //       replyText: "",
+        //     },
+        //   ],
+        //   questions: [
+        //     {
+        //       questions: "",
+        //       questionsOwnerId: "",
+        //     },
+        //   ],
+        // };
+
         const newFormData = {
           ...formData,
           reviewOwnerId: null,
           likes: 0,
           status: "review",
           rating: 0,
-          replies: {
-            replyToId: "",
-            replyOwnerId: "",
-            replyText: "",
-          },
+          replies: [
+            {
+              replyToId: "",
+              replyOwnerId: "",
+              replyText: "",
+            },
+          ],
+          questions: [
+            {
+              questions: "",
+              questionsOwnerId: "",
+              answers: [
+                {
+                  answersOwnerId: "",
+                  questionsOwnerId: "",
+                  answerText: "",
+                },
+              ],
+            },
+          ],
         };
-        console.log(newFormData, "newFormData")
+
         try {
+          const res = await axiosInstance.post(`/review`, newFormData, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          });
+          if (res.status >= 200 && res.status <= 204) {
+            toast.success("Review submitted successfully!");
+            set({ reviewData: res.data, axiosError: null, isLoading: false });
+            return true;
+          }
+          return false;
         } catch (e) {
+          const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
           set({
             isLoading: false,
-            axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+            axiosError: errorMsg,
           });
+          toast.error(errorMsg);
+          return false;
+        } finally {
+          set({ isLoading: false });
         }
       },
     }),
