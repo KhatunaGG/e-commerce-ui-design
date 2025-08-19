@@ -28,15 +28,10 @@ export interface IUseProductStore {
   pageNumber: number;
   take: number;
   wishlistDataLength: number;
-
-  // setSelectedColor: (selectedColor: string) => void;
   getProductById: (id: string) => Promise<void>;
   clearProduct: () => void;
-  // getProductColor: (color: string) => void;
   activeTab: string;
   setActiveTab: (activeTab: string) => void;
-  emojiVisible: boolean;
-  setEmojiVisible: (emojiVisible: boolean) => void;
   updateProduct: (id: string, val: boolean) => Promise<void>;
   getAllWishlist: (page: string) => Promise<void>;
   loadMoreWishList: () => void;
@@ -51,19 +46,12 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
   axiosError: null,
   selectedColor: "",
   activeTab: "Additional Info",
-  emojiVisible: false,
   wishlistData: [],
   wishListStatus: undefined,
   pageNumber: 1,
   take: 6,
   wishlistDataLength: 0,
-
-  setEmojiVisible: () =>
-    set((state) => ({ emojiVisible: !state.emojiVisible })),
-
   setActiveTab: (activeTab) => set({ activeTab }),
-  // setSelectedColor: (selectedColor) => set({ selectedColor }),
-
   getProductById: async (id) => {
     set({ isLoading: true, axiosError: null });
     const shopCash = useShopStore.getState();
@@ -90,10 +78,6 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
       });
     }
   },
-
-  // getProductColor: (color: string) => {
-  //   set({ selectedColor: color });
-  // },
 
   updateProduct: async (id: string, val: boolean) => {
     set({ isLoading: true, axiosError: null });
