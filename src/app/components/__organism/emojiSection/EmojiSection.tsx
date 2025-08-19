@@ -27,11 +27,16 @@
 import { emojis } from "@/app/commons/data";
 import React from "react";
 import { EmojiArrow } from "../../__atoms";
-import { useProductStore } from "@/app/store/product.store";
+import { useReviewStore } from "@/app/store/review.store";
 
-const EmojiSection = () => {
-  const { emojiVisible, setEmojiVisible } = useProductStore();
-  console.log(emojiVisible, "emojiVisible")
+export type EmojiSectionProps = {
+  onSelectEmoji: (emoji: string) => void;
+};
+
+const EmojiSection = ({ onSelectEmoji }: EmojiSectionProps) => {
+  const { setEmojiVisible } = useReviewStore();
+
+
   return (
     <div className="max-w-fit absolute -right-10 -top-12 md:-top-16 lg:-top-14 md:-right-[120px] lg:right-0 z-20 flex flex-col items-center justify-center opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300">
       <div
@@ -43,8 +48,9 @@ const EmojiSection = () => {
           {emojis.map((emoji, i) => {
             return (
               <button
+              type="button"
                 key={i}
-                // onClick={() => onSelectEmoji(emoji)}
+                onClick={() => onSelectEmoji(emoji)}
                 className="text-base md:text-lg lg:text-2xl hover:scale-110 transition-transform duration-150"
               >
                 {emoji}

@@ -1,7 +1,8 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import StarRating from "../starRating/StarRating";
 import ReviewsForm from "../reviewsForm/ReviewsForm";
-// import InteractiveForm from "../interactiveForm/InteractiveForm";
+import { useReviewStore } from "@/app/store/review.store";
 
 export type ReviewsPropsType = {
   params: string;
@@ -9,6 +10,14 @@ export type ReviewsPropsType = {
 };
 
 const Reviews = ({ productName, params }: ReviewsPropsType) => {
+  const { getAllReviews, reviewData } = useReviewStore();
+
+  useEffect(() => {
+    getAllReviews();
+  }, [getAllReviews]);
+
+  console.log(reviewData, "reviewData");
+
   return (
     <div className="w-full h-full ">
       <h2 className="text-[20px] md:text-[28px] font-medium leading-[28px] md:leading-[34px] tracking-[-0.6px] md-6 md:mb-[26px]  ">
@@ -22,11 +31,7 @@ const Reviews = ({ productName, params }: ReviewsPropsType) => {
           Write Review for <span className="font-semibold ">{productName}</span>
         </p>
       </div>
-
-      {/* <ReviewsForm params={params} /> */}
-      {/* <InteractiveForm params={params} /> */}
       <ReviewsForm params={params} />
-      
     </div>
   );
 };

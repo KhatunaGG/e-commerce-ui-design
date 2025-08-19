@@ -3,7 +3,6 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { ReviewType } from "../components/__organism/reviewsForm/ReviewsForm";
 import { axiosInstance } from "../libs/axiosInstance";
-import { useSignInStore } from "./sign-in.store";
 import { toast } from "react-toastify";
 
 export interface ErrorResponse {
@@ -54,47 +53,33 @@ export interface IUseReviewStore {
   reviewData: DbReviewType[];
   isLoading: boolean;
   axiosError: string | null;
-  submitReview: (formData: ReviewType) => Promise<boolean>;
+
+  emojiVisible: boolean;
+  setEmojiVisible: (emojiVisible: boolean) => void;
+  submitReview: (formData: ReviewType, accessToken: string) => Promise<boolean>;
+  getAllReviews: () => Promise<void>;
 }
 
 export const useReviewStore = create<IUseReviewStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       isLoading: false,
       axiosError: null,
       reviewData: [],
       reviewFormData: { text: "", productId: "" },
 
-      submitReview: async (formData: ReviewType) => {
-        const { accessToken } = useSignInStore.getState();
+      emojiVisible: false,
+      setEmojiVisible: () =>
+        set((state) => ({ emojiVisible: !state.emojiVisible })),
+      submitReview: async (formData: ReviewType, accessToken: string) => {
         set({
           isLoading: true,
           axiosError: null,
         });
-
-        // const newFormData = {
-        //   ...formData,
-        //   reviewOwnerId: null,
-        //   likes: 0,
-        //   status: "review",
-        //   rating: 0,
-        //   replies: [
-        //     {
-        //       replyToId: "",
-        //       replyOwnerId: "",
-        //       replyText: "",
-        //     },
-        //   ],
-        //   questions: [
-        //     {
-        //       questions: "",
-        //       questionsOwnerId: "",
-        //     },
-        //   ],
-        // };
-
         const newFormData = {
-          ...formData,
+          // ...formData,
+          reviewText: formData.text,
+          productId: formData.productId,
           reviewOwnerId: null,
           likes: 0,
           status: "review",
@@ -128,6 +113,7 @@ export const useReviewStore = create<IUseReviewStore>()(
           if (res.status >= 200 && res.status <= 204) {
             toast.success("Review submitted successfully!");
             set({ reviewData: res.data, axiosError: null, isLoading: false });
+            get().getAllReviews()
             return true;
           }
           return false;
@@ -141,6 +127,25 @@ export const useReviewStore = create<IUseReviewStore>()(
           return false;
         } finally {
           set({ isLoading: false });
+        }
+      },
+
+      getAllReviews: async () => {
+        set({ isLoading: true, axiosError: null });
+        try {
+          const res = await axiosInstance.get("/review");
+          if (res.status >= 200 && res.status <= 204) {
+            set({
+              isLoading: false,
+              axiosError: null,
+              reviewData: res.data,
+            });
+          }
+        } catch (e) {
+          set({
+            isLoading: false,
+            axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+          });
         }
       },
     }),
