@@ -48,7 +48,6 @@ export interface IUseSignInStore {
   initialize: () => void;
   logout: () => void;
   getCurrentUser: (accessToken: string | undefined) => void;
-  
 }
 
 export const useSignInStore = create<IUseSignInStore>((set) => ({
@@ -127,8 +126,8 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
       cashedWishList: {},
     });
     useAddressStore.getState().clearAddressData();
-     useAddressStore.getState().clearOrdersData(); 
-  localStorage.removeItem("address-storage");
+    useAddressStore.getState().clearOrdersData();
+    localStorage.removeItem("address-storage");
     useAccountStore.getState().clearAccountData();
     set({ currentUser: null, accessToken: "" });
     window.location.href = "/";

@@ -1,8 +1,15 @@
-import React from "react";
+"use client";
+import { useReviewStore } from "@/app/store/review.store";
 import { ChevronDown } from "../../__atoms";
 import ClientReviewsItem from "../clientReviewsItem/ClientReviewsItem";
 
 const ClientReviews = () => {
+  const { reviewData } = useReviewStore();
+
+  console.log(reviewData, "reviewData")
+
+
+  
   return (
     <section className="w-full h-full flex flex-col gap-10">
       <div className="w-full h-full flex flex-col gap-6 md:gap-0 md:flex-row  md:items-center justify-between">
@@ -25,7 +32,11 @@ const ClientReviews = () => {
         </div>
       </div>
 
-      <ClientReviewsItem />
+      {Array.isArray(reviewData) &&
+        reviewData.length > 0 &&
+        reviewData.map((review, i) => {
+          return <ClientReviewsItem key={review._id || i} {...review} />;
+        })}
     </section>
   );
 };

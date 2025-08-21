@@ -184,7 +184,6 @@ function AccountSidebar() {
     fetchAvatar();
   }, [accessToken]);
 
-
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -215,7 +214,9 @@ function AccountSidebar() {
               />
             ) : (
               <span className="text-sm text-gray-500 w-full h-full flex items-center justify-center">
-                Avatar
+                {/* Avatar */}
+                {normalizeFirstChar(currentUser?.yourName || "").charAt(0)}{" "}
+                {normalizeFirstChar(currentUser?.lastName || "").charAt(0)}
               </span>
             )}
             <div className="absolute bottom-0 right-0 cursor-pointer  w-[30px] h-[31px]">
