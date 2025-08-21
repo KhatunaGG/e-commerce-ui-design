@@ -38,12 +38,15 @@ export interface AnswerType {
 export interface DbReviewType extends ReviewType {
   reviewOwnerId: string | null;
   likes: number;
-  status: string;
+  status: "review" | "reply"; 
   rating: number;
   replies: ReplyType[];
   _id?: string;
   questions: IQuestions[];
+  reviewText: string;
+  productId: string;
 }
+
 
 export interface IUseReviewStore {
   reviewFormData: {
@@ -53,11 +56,18 @@ export interface IUseReviewStore {
   reviewData: DbReviewType[];
   isLoading: boolean;
   axiosError: string | null;
-
   emojiVisible: boolean;
+  showReply: boolean;
+  setShowReply: (showReply: boolean) => void;
+
   setEmojiVisible: (emojiVisible: boolean) => void;
   submitReview: (formData: ReviewType, accessToken: string) => Promise<boolean>;
   getAllReviews: () => Promise<void>;
+  addReplayToReview: (
+    id: string,
+    reviewOwnerId: string,
+    productId: string
+  ) => Promise<void>;
 }
 
 export const useReviewStore = create<IUseReviewStore>()(
@@ -67,8 +77,9 @@ export const useReviewStore = create<IUseReviewStore>()(
       axiosError: null,
       reviewData: [],
       reviewFormData: { text: "", productId: "" },
-
       emojiVisible: false,
+      showReply: false,
+      setShowReply: () => set((state) => ({ showReply: !state.showReply })),
       setEmojiVisible: () =>
         set((state) => ({ emojiVisible: !state.emojiVisible })),
       submitReview: async (formData: ReviewType, accessToken: string) => {
@@ -113,7 +124,7 @@ export const useReviewStore = create<IUseReviewStore>()(
           if (res.status >= 200 && res.status <= 204) {
             toast.success("Review submitted successfully!");
             set({ reviewData: res.data, axiosError: null, isLoading: false });
-            get().getAllReviews()
+            get().getAllReviews();
             return true;
           }
           return false;
@@ -147,6 +158,17 @@ export const useReviewStore = create<IUseReviewStore>()(
             axiosError: handleApiError(e as AxiosError<ErrorResponse>),
           });
         }
+      },
+
+      addReplayToReview: async (
+        id: string,
+        reviewOwnerId: string,
+        productId: string
+      ) => {
+        console.log(id, "id from store");
+        console.log(reviewOwnerId, "reviewOwnerId from store");
+        console.log(productId, "productId from store");
+        // const newReply = {};
       },
     }),
     {

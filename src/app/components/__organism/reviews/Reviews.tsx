@@ -31,7 +31,7 @@ const Reviews = ({ productName, params }: ReviewsPropsType) => {
           Write Review for <span className="font-semibold ">{productName}</span>
         </p>
       </div>
-      <ReviewsForm params={params} />
+      <ReviewsForm productId={params} status="review" />
     </div>
   );
 };
