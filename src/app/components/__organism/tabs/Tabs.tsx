@@ -83,7 +83,7 @@ export default function Tabs({ productName, params }: TapsPropsType) {
         )}
       </div>
 
-      <ClientReviews />
+      <ClientReviews params={params} />
       {/* <div className="w-full h-10 bg-violet-400"></div> */}
     </section>
   );

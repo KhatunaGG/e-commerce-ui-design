@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 import { ReviewType } from "../components/__organism/reviewsForm/ReviewsForm";
 import { axiosInstance } from "../libs/axiosInstance";
 import { toast } from "react-toastify";
+import { useSignInStore } from "./sign-in.store";
 
 export interface ErrorResponse {
   message: string;
@@ -16,10 +17,25 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   return "An unexpected error occurred";
 };
 
+
 export interface ReplyType {
-  replyToId: string;
-  replyOwnerId: string;
-  replyText: string;
+  replyToId?: string;
+  replyOwnerId?: string;
+  text: string;
+  productId: string;
+  status: string;
+
+  // replyOwnerName?: string;
+  // replyOwnerLastName?: string;
+}
+
+export interface DbReplyType extends ReplyType {
+  userName: string;
+  lastName: string;
+  filePath: string;
+  replyOwnerName: string;
+  replyOwnerLastName: string;
+
 }
 
 export interface IQuestions {
@@ -34,19 +50,19 @@ export interface AnswerType {
   answerText: string;
 }
 
-// Full Review object sent to backend
+
 export interface DbReviewType extends ReviewType {
   reviewOwnerId: string | null;
   likes: number;
-  status: "review" | "reply"; 
+  status: "review" | "reply";
   rating: number;
-  replies: ReplyType[];
+  // replies: ReplyType[];
+  replies: DbReplyType[];
   _id?: string;
   questions: IQuestions[];
   reviewText: string;
   productId: string;
 }
-
 
 export interface IUseReviewStore {
   reviewFormData: {
@@ -58,16 +74,24 @@ export interface IUseReviewStore {
   axiosError: string | null;
   emojiVisible: boolean;
   showReply: boolean;
+
+  replyOwnerName: string;
+  replyOwnerLastName: string;
+  // setReplyName: (replyName: string) => void;
+  // setReplyLastName: (replyLastName: string) => void;
+
   setShowReply: (showReply: boolean) => void;
 
   setEmojiVisible: (emojiVisible: boolean) => void;
   submitReview: (formData: ReviewType, accessToken: string) => Promise<boolean>;
   getAllReviews: () => Promise<void>;
-  addReplayToReview: (
-    id: string,
-    reviewOwnerId: string,
-    productId: string
-  ) => Promise<void>;
+  // addReplayToReview: (
+  //   replyToId: string,
+  //   reviewOwnerId: string,
+  //   replyDto: ReplyType
+  // ) => Promise<boolean>;
+
+  addReplayToReview: (formData: ReplyType) => Promise<boolean>;
 }
 
 export const useReviewStore = create<IUseReviewStore>()(
@@ -79,6 +103,10 @@ export const useReviewStore = create<IUseReviewStore>()(
       reviewFormData: { text: "", productId: "" },
       emojiVisible: false,
       showReply: false,
+
+      replyOwnerName: "",
+      replyOwnerLastName: "",
+
       setShowReply: () => set((state) => ({ showReply: !state.showReply })),
       setEmojiVisible: () =>
         set((state) => ({ emojiVisible: !state.emojiVisible })),
@@ -87,34 +115,48 @@ export const useReviewStore = create<IUseReviewStore>()(
           isLoading: true,
           axiosError: null,
         });
+        // const newFormData = {
+        //   // reviewText: formData.text,
+        //   text: formData.text,
+        //   productId: formData.productId,
+        //   reviewOwnerId: null,
+        //   likes: 0,
+        //   status: "review",
+        //   rating: 0,
+        //   replies: [
+        //     {
+        //       replyToId: "",
+        //       replyOwnerId: "",
+        //       // replyText: "",
+        //       text: "",
+        //     },
+        //   ],
+        //   questions: [
+        //     {
+        //       questions: "",
+        //       questionsOwnerId: "",
+        //       answers: [
+        //         {
+        //           answersOwnerId: "",
+        //           questionsOwnerId: "",
+        //           // answerText: "",
+        //           text: "",
+        //         },
+        //       ],
+        //     },
+        //   ],
+        // };
+
         const newFormData = {
-          // ...formData,
+          // reviewText: formData.text,
           reviewText: formData.text,
           productId: formData.productId,
           reviewOwnerId: null,
           likes: 0,
           status: "review",
           rating: 0,
-          replies: [
-            {
-              replyToId: "",
-              replyOwnerId: "",
-              replyText: "",
-            },
-          ],
-          questions: [
-            {
-              questions: "",
-              questionsOwnerId: "",
-              answers: [
-                {
-                  answersOwnerId: "",
-                  questionsOwnerId: "",
-                  answerText: "",
-                },
-              ],
-            },
-          ],
+          replies: [],
+          questions: [],
         };
 
         try {
@@ -161,14 +203,52 @@ export const useReviewStore = create<IUseReviewStore>()(
       },
 
       addReplayToReview: async (
-        id: string,
-        reviewOwnerId: string,
-        productId: string
-      ) => {
-        console.log(id, "id from store");
-        console.log(reviewOwnerId, "reviewOwnerId from store");
-        console.log(productId, "productId from store");
-        // const newReply = {};
+        // id: string,
+        // replyOwnerId: string,
+        formData: ReplyType
+      ): Promise<boolean> => {
+        const { accessToken } = useSignInStore.getState();
+        // const {currentUser} = useSignInStore.getState()
+        // console.log(formData, "formData from STORE")
+
+        if (!accessToken) {
+          toast.error("You must be signed in to reply.");
+          return false;
+        }
+
+        try {
+          const res = await axiosInstance.patch(
+            `/review/update-reply/${formData.replyToId}`,
+            // { reply: replyDto },
+            formData,
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            }
+          );
+
+          if (res.status >= 200 && res.status <= 204) {
+            toast.success("Reply added successfully!");
+
+
+            set({
+              replyOwnerName: res.data.replyOwnerName,
+              replyOwnerLastName: res.data.replyOwnerLastName,
+            });
+
+
+            await get().getAllReviews();
+            return true;
+          }
+
+          return false;
+        } catch (e) {
+          const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
+          toast.error(errorMsg);
+          set({ axiosError: errorMsg });
+          return false;
+        } finally {
+          set({ isLoading: false });
+        }
       },
     }),
     {
