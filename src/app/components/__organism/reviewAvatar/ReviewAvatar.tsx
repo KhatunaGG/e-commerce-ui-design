@@ -22,7 +22,6 @@ const ReviewAvatar = ({ avatar }: ReviewAvatar) => {
         />
       ) : (
         <span className="text-sm text-gray-500 w-full h-full flex items-center justify-center">
-          {/* Avatar */}
           {normalizeFirstChar(currentUser?.yourName || "").charAt(0)}{" "}
           {normalizeFirstChar(currentUser?.lastName || "").charAt(0)}
         </span>

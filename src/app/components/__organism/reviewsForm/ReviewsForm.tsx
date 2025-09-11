@@ -15,7 +15,6 @@ export const reviewSchema = z.object({
   productId: z.string().min(1, "Product ID is required"),
   status: z.enum(["review", "reply"]),
   reviewOwnerId: z.string().nullable().optional(),
-
   replyToId: z.string().optional(),
   replyOwnerId: z.string().optional(),
 });
@@ -109,12 +108,26 @@ const ReviewsForm = ({
       }  flex items-center py-2 px-4 md:py-4 md:px-6 border border-[#E8ECEF] rounded-2xl mb-10 `}
     >
       <div className="flex-1 resize-none outline-none relative group">
-        <textarea
+        {/* <textarea
           {...register("text")}
           placeholder="Share your thoughts"
           className="flex-1 resize-none outline-none w-full"
           disabled={isLoading}
           ref={textAreaRef}
+        /> */}
+        <textarea
+          placeholder="Share your thoughts"
+          className="flex-1 resize-none outline-none w-full"
+          disabled={isLoading}
+          {...register("text", {
+            onChange: (e) => {
+              setValue("text", e.target.value); 
+            },
+          })}
+          ref={(el) => {
+            register("text").ref(el);
+            textAreaRef.current = el;
+          }}
         />
         {errors.text && (
           <span className="text-red-500 text-sm">{errors.text.message}</span>
