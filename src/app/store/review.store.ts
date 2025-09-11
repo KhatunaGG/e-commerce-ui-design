@@ -17,16 +17,12 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   return "An unexpected error occurred";
 };
 
-
 export interface ReplyType {
   replyToId?: string;
   replyOwnerId?: string;
   text: string;
   productId: string;
   status: string;
-
-  // replyOwnerName?: string;
-  // replyOwnerLastName?: string;
 }
 
 export interface DbReplyType extends ReplyType {
@@ -35,7 +31,6 @@ export interface DbReplyType extends ReplyType {
   filePath: string;
   replyOwnerName: string;
   replyOwnerLastName: string;
-
 }
 
 export interface IQuestions {
@@ -50,13 +45,11 @@ export interface AnswerType {
   answerText: string;
 }
 
-
 export interface DbReviewType extends ReviewType {
   reviewOwnerId: string | null;
   likes: number;
   status: "review" | "reply";
   rating: number;
-  // replies: ReplyType[];
   replies: DbReplyType[];
   _id?: string;
   questions: IQuestions[];
@@ -74,23 +67,13 @@ export interface IUseReviewStore {
   axiosError: string | null;
   emojiVisible: boolean;
   showReply: boolean;
-
   replyOwnerName: string;
   replyOwnerLastName: string;
-  // setReplyName: (replyName: string) => void;
-  // setReplyLastName: (replyLastName: string) => void;
-
+  reviewLength: number;
   setShowReply: (showReply: boolean) => void;
-
   setEmojiVisible: (emojiVisible: boolean) => void;
   submitReview: (formData: ReviewType, accessToken: string) => Promise<boolean>;
   getAllReviews: () => Promise<void>;
-  // addReplayToReview: (
-  //   replyToId: string,
-  //   reviewOwnerId: string,
-  //   replyDto: ReplyType
-  // ) => Promise<boolean>;
-
   addReplayToReview: (formData: ReplyType) => Promise<boolean>;
 }
 
@@ -103,9 +86,9 @@ export const useReviewStore = create<IUseReviewStore>()(
       reviewFormData: { text: "", productId: "" },
       emojiVisible: false,
       showReply: false,
-
       replyOwnerName: "",
       replyOwnerLastName: "",
+      reviewLength: 0,
 
       setShowReply: () => set((state) => ({ showReply: !state.showReply })),
       setEmojiVisible: () =>
@@ -115,40 +98,7 @@ export const useReviewStore = create<IUseReviewStore>()(
           isLoading: true,
           axiosError: null,
         });
-        // const newFormData = {
-        //   // reviewText: formData.text,
-        //   text: formData.text,
-        //   productId: formData.productId,
-        //   reviewOwnerId: null,
-        //   likes: 0,
-        //   status: "review",
-        //   rating: 0,
-        //   replies: [
-        //     {
-        //       replyToId: "",
-        //       replyOwnerId: "",
-        //       // replyText: "",
-        //       text: "",
-        //     },
-        //   ],
-        //   questions: [
-        //     {
-        //       questions: "",
-        //       questionsOwnerId: "",
-        //       answers: [
-        //         {
-        //           answersOwnerId: "",
-        //           questionsOwnerId: "",
-        //           // answerText: "",
-        //           text: "",
-        //         },
-        //       ],
-        //     },
-        //   ],
-        // };
-
         const newFormData = {
-          // reviewText: formData.text,
           reviewText: formData.text,
           productId: formData.productId,
           reviewOwnerId: null,
@@ -165,7 +115,11 @@ export const useReviewStore = create<IUseReviewStore>()(
           });
           if (res.status >= 200 && res.status <= 204) {
             toast.success("Review submitted successfully!");
-            set({ reviewData: res.data, axiosError: null, isLoading: false });
+            set({
+              reviewData: res.data,
+              axiosError: null,
+              isLoading: false,
+            });
             get().getAllReviews();
             return true;
           }
@@ -192,6 +146,7 @@ export const useReviewStore = create<IUseReviewStore>()(
               isLoading: false,
               axiosError: null,
               reviewData: res.data,
+              reviewLength: res.data.length,
             });
           }
         } catch (e) {
@@ -202,11 +157,7 @@ export const useReviewStore = create<IUseReviewStore>()(
         }
       },
 
-      addReplayToReview: async (
-        // id: string,
-        // replyOwnerId: string,
-        formData: ReplyType
-      ): Promise<boolean> => {
+      addReplayToReview: async (formData: ReplyType): Promise<boolean> => {
         const { accessToken } = useSignInStore.getState();
         // const {currentUser} = useSignInStore.getState()
         // console.log(formData, "formData from STORE")
@@ -219,7 +170,6 @@ export const useReviewStore = create<IUseReviewStore>()(
         try {
           const res = await axiosInstance.patch(
             `/review/update-reply/${formData.replyToId}`,
-            // { reply: replyDto },
             formData,
             {
               headers: { Authorization: `Bearer ${accessToken}` },
@@ -229,12 +179,10 @@ export const useReviewStore = create<IUseReviewStore>()(
           if (res.status >= 200 && res.status <= 204) {
             toast.success("Reply added successfully!");
 
-
             set({
               replyOwnerName: res.data.replyOwnerName,
               replyOwnerLastName: res.data.replyOwnerLastName,
             });
-
 
             await get().getAllReviews();
             return true;

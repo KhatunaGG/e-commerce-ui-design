@@ -57,7 +57,7 @@ DbReviewType) => {
         </button>
       </div>
       {showReply && (
-        <div className="w-full bg-blue-400 flex flex-col">
+        <div className="w-full flex flex-col">
           <div className="w-full flex justify-end">
             <ReviewsForm
               reviewOwnerId={reviewOwnerId ?? undefined}
