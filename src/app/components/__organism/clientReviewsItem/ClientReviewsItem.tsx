@@ -21,15 +21,16 @@ const ClientReviewsItem = ({
   replies,
   // questions,
   productId,
-}: // status,
+  createdAt
+}: 
 DbReviewType) => {
   const { avatar } = useAccountStore();
   const { currentUser } = useSignInStore();
   const { normalizeFirstChar } = useShopStore();
-  const { showReply, setShowReply } = useReviewStore();
+  const { showReply, setShowReply, formatDate } = useReviewStore();
 
   return (
-    <div className={`${replies.length > 0 ? "border-0" : "border-b border-b-[#E8ECEF]"} w-full h-full flex flex-col items-center gap-4 md:gap-6 `}>
+    <div className={`${replies.length > 0 ? "border-0" : "border-b border-b-[#E8ECEF]"} w-full h-full flex flex-col items-center gap-4 md:gap-4 `}>
       <div className="w-full flex items-start justify-start gap-4 md:gap-10">
         <ReviewAvatar avatar={avatar ?? ""} />
         <div className="flex-1 flex flex-col gap-4 ">
@@ -44,6 +45,7 @@ DbReviewType) => {
       <p className="w-full pl-0 md:pl-[112px] inline font-normal text-base leading-[26px] text-[#353945]">
         {reviewText}
       </p>
+       <p className="inline w-full  text-right text-sm italic font-normal text-[#a2a5a7]">{formatDate(createdAt)}</p>
 
       <div className="w-full pt-[12px] pb-6 flex items-center justify-center md:justify-start gap-4 md:pl-[223px]">
         <button className="text-xs font-semibold leading-[20px] text-[#23262F]">

@@ -1,5 +1,4 @@
 "use client";
-import React, { useEffect } from "react";
 import StarRating from "../starRating/StarRating";
 import ReviewsForm from "../reviewsForm/ReviewsForm";
 import { useReviewStore } from "@/app/store/review.store";
@@ -10,13 +9,11 @@ export type ReviewsPropsType = {
 };
 
 const Reviews = ({ productName, params }: ReviewsPropsType) => {
-  const { getAllReviews, reviewLength } = useReviewStore();
+  const { reviewLength } = useReviewStore();
 
-  console.log(reviewLength, "reviewLength")
-
-  useEffect(() => {
-    getAllReviews();
-  }, [getAllReviews]);
+  // useEffect(() => {
+  //   getAllReviews();
+  // }, [getAllReviews]);
 
   return (
     <div className="w-full h-full">

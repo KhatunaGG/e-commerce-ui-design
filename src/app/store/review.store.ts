@@ -5,6 +5,8 @@ import { ReviewType } from "../components/__organism/reviewsForm/ReviewsForm";
 import { axiosInstance } from "../libs/axiosInstance";
 import { toast } from "react-toastify";
 import { useSignInStore } from "./sign-in.store";
+import { QuestionType } from "../components/__organism/questionForm/QuestionForm";
+
 
 export interface ErrorResponse {
   message: string;
@@ -31,18 +33,31 @@ export interface DbReplyType extends ReplyType {
   filePath: string;
   replyOwnerName: string;
   replyOwnerLastName: string;
+  createdAt: string;
 }
 
-export interface IQuestions {
-  questions: string;
-  questionsOwnerId: string;
-  answers: AnswerType[];
-}
+// export interface IQuestions {
+//   question: string;
+//   questionsOwnerId: string;
+//   answers: AnswerType[];
+
+//   productId?: string;
+//   // status?: string;
+//   status?: "question" | "answer";
+// }
+
+// export interface DbQuestions extends IQuestions {
+//   createdAt: string;
+//   _id: string;
+// }
 
 export interface AnswerType {
   answersOwnerId: string;
   questionsOwnerId: string;
   answerText: string;
+
+  productId?: string;
+  status?: string;
 }
 
 export interface DbReviewType extends ReviewType {
@@ -52,9 +67,10 @@ export interface DbReviewType extends ReviewType {
   rating: number;
   replies: DbReplyType[];
   _id?: string;
-  questions: IQuestions[];
+  // questions: IQuestions[];
   reviewText: string;
   productId: string;
+  createdAt: string;
 }
 
 export interface IUseReviewStore {
@@ -70,11 +86,18 @@ export interface IUseReviewStore {
   replyOwnerName: string;
   replyOwnerLastName: string;
   reviewLength: number;
+  questionFormData: {
+    question: string;
+    productId: string;
+  };
+  submitQuestion: (formData: QuestionType) => Promise<boolean>;
+
   setShowReply: (showReply: boolean) => void;
   setEmojiVisible: (emojiVisible: boolean) => void;
   submitReview: (formData: ReviewType, accessToken: string) => Promise<boolean>;
   getAllReviews: () => Promise<void>;
   addReplayToReview: (formData: ReplyType) => Promise<boolean>;
+  formatDate: (dateString: string | "") => string;
 }
 
 export const useReviewStore = create<IUseReviewStore>()(
@@ -90,9 +113,51 @@ export const useReviewStore = create<IUseReviewStore>()(
       replyOwnerLastName: "",
       reviewLength: 0,
 
+      questionFormData: { question: "", productId: "" },
+      submitQuestion: async (formData: QuestionType) => {
+        set({
+          isLoading: true,
+          axiosError: null,
+        });
+        const newQuestionData = {
+          question: formData.question,
+          productId: formData.productId,
+          questionsOwnerId: null,
+          status: "question",
+          answers: [],
+        };
+        console.log(newQuestionData, "newQuestionData")
+        try {
+
+
+          return true
+        }catch(e) {
+                 const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
+          set({
+            isLoading: false,
+            axiosError: errorMsg,
+          });
+          toast.error(errorMsg);
+          return false;
+        }finally {
+          set({ isLoading: false });
+        }
+     
+      },
+
       setShowReply: () => set((state) => ({ showReply: !state.showReply })),
       setEmojiVisible: () =>
         set((state) => ({ emojiVisible: !state.emojiVisible })),
+      formatDate: (dateString: string | "") => {
+        if (!dateString) return "";
+        const date = new Date(dateString);
+        return date.toLocaleDateString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+      },
+
       submitReview: async (formData: ReviewType, accessToken: string) => {
         set({
           isLoading: true,
@@ -106,7 +171,7 @@ export const useReviewStore = create<IUseReviewStore>()(
           status: "review",
           rating: 0,
           replies: [],
-          questions: [],
+          // questions: [],
         };
 
         try {
