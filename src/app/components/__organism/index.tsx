@@ -51,6 +51,9 @@ export { default as OrderSection } from "./orderSection/OrderSection"
 export { default as AccountWishlist } from "./accountWishlist/AccountWishlist"
 export { default as ReviewAvatar } from "./reviewAvatar/ReviewAvatar"
 export { default as ReplyItem } from "./replyItem/ReplyItem"
+export { default as Questions } from "./questions/Questions"
+export { default as Answers } from "./answers/Answers"
+export { default as QuestionForm } from "./questionForm/QuestionForm"
 
 
 
