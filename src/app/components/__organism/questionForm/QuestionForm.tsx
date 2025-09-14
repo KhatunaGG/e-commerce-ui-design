@@ -2,10 +2,14 @@
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSignInStore } from "@/app/store/sign-in.store";
+import { toast } from "react-toastify";
+import { useQuestionStore } from "@/app/store/question.strore";
+import { useEffect } from "react";
 
 export const questionSchema = z.object({
   question: z.string().min(1, "Question is required"),
-  questionsOwnerId: z.string().optional(),
+  questionsOwnerId: z.string().nullable().optional(),
   // answers: z.string().optional(),
   productId: z.string().min(1),
   status: z.enum(["question", "answer"]),
@@ -14,15 +18,17 @@ export const questionSchema = z.object({
 export type QuestionType = z.infer<typeof questionSchema>;
 
 export type QuestionFormPropsType = {
-  productId: string;
+  productId?: string;
 };
 
 const QuestionForm = ({ productId }: QuestionFormPropsType) => {
+  const { accessToken, initialize } = useSignInStore();
+  const { submitQuestion } = useQuestionStore();
   const {
     register,
     handleSubmit,
     formState: { errors },
-    // reset,
+    reset,
     // setValue,
   } = useForm<QuestionType>({
     resolver: zodResolver(questionSchema),
@@ -34,14 +40,27 @@ const QuestionForm = ({ productId }: QuestionFormPropsType) => {
     },
   });
 
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
+
   const onSubmit = async (formData: QuestionType) => {
-    console.log(formData, "formdata Questions");
+    console.log(formData, "formData");
+    if (!accessToken) {
+      toast.error("You must be signed in to submit.");
+      return;
+    }
+
+    if (formData.status === "question") {
+      const success = await submitQuestion(formData, accessToken);
+      if (success) reset();
+    }
   };
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="w-full bg-amber-200 flex items-center justify-between gap-4"
+      className="w-full  flex items-center justify-between gap-4"
     >
       <textarea
         {...register("question")}

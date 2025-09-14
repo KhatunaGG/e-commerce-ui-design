@@ -8,7 +8,7 @@ export type QuestionPropsType = {
 
 const Questions = ({ productId }: QuestionPropsType) => {
   return (
-    <div className="w-full bg-green-200 flex flex-col gap-10">
+    <div className="w-full bg-green-200 flex flex-col gap-6">
       <div className="w-full flex flex-col  gap-2">
         <QuestionForm productId={productId} />
         {/* <div className="w-full flex items-start ml-[20%]">
@@ -24,6 +24,8 @@ const Questions = ({ productId }: QuestionPropsType) => {
               Your Answer
             </button>
           </div>
+
+          <QuestionForm />
 
           <div className="w-[80%] ml-auto flex flex-col items-start gap-4">
             <Answers />

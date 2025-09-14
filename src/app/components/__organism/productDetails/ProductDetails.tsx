@@ -9,6 +9,7 @@ import DetailsSection from "../detailsSection/DetailsSection";
 import Tabs from "../tabs/Tabs";
 import { useShopStore } from "@/app/store/shop-page.store";
 
+
 export type ProductDetailsPropsType = {
   params: string;
 };
@@ -21,6 +22,7 @@ const ProductDetails = ({ params }: ProductDetailsPropsType) => {
   const segments = path?.split("/").filter(Boolean) || [];
   const pageSegment = segments[0] || "";
 
+
   useEffect(() => {
     getProductById(params);
     return () => {
@@ -29,6 +31,8 @@ const ProductDetails = ({ params }: ProductDetailsPropsType) => {
   }, [params, getProductById, clearProduct]);
 
   if (!productById) return <AnimateSpin />;
+
+  // if (!accessToken) return null;
 
   return (
     <section className="w-full min-h-screen md:px-[11.11%] px-[8.53%]  flex flex-col pb-10 lg:pb-[67px]">

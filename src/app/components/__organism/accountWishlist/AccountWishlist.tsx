@@ -30,8 +30,7 @@ const AccountWishlist = () => {
     getAllWishlist("1");
   }, []);
 
-  console.log(wishlistData, "wishlistData from ACCOUNT");
-
+ 
   // const handleLoadMore = () => {
   //   loadMoreWishList();
   // };

@@ -60,7 +60,7 @@ export default function Input<T extends FieldValues>({
         return "CVC code";
       case "accountname":
         return "Name";
-      case "accountlasname":
+      case "accountlastname":
         return "Last Name";
       case "displayname":
         return "Display Name";

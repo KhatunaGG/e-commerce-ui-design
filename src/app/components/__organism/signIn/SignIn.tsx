@@ -13,7 +13,7 @@ const SignIn = () => {
             href="/sign-up"
             className="text-[#38CB89] cursor-pointer inline-block transform hover:underline transition-transform duration-300 ease-in-out hover:scale-105"
           >
-            Sign up
+            Sign in
           </Link>
         </p>
       </div>
