@@ -28,6 +28,10 @@ export interface IUser {
   email: string;
   _id: string;
   lastName?: string;
+
+
+
+  questions: []
 }
 
 export interface IUseSignInStore {

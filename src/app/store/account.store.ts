@@ -70,8 +70,12 @@ export const useAccountStore = create<IUseAccountStore>()(
         for (const key of fieldsToCompare) {
           const newVal = normalizeLower(formState[key]);
           const oldVal = normalizeLower(original[key]);
+          // if (newVal && newVal !== oldVal) {
+          //   changedFields[key] = newVal;
+          // }
+
           if (newVal && newVal !== oldVal) {
-            changedFields[key] = newVal;
+            changedFields[key] = formState[key];
           }
         }
 
@@ -96,6 +100,7 @@ export const useAccountStore = create<IUseAccountStore>()(
         }
 
         const mappedPayload: Record<string, string> = {};
+
 
         if (changedFields.accountName)
           mappedPayload.yourName = changedFields.accountName;

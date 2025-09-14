@@ -11,10 +11,6 @@ export type ReviewsPropsType = {
 const Reviews = ({ productName, params }: ReviewsPropsType) => {
   const { reviewLength } = useReviewStore();
 
-  // useEffect(() => {
-  //   getAllReviews();
-  // }, [getAllReviews]);
-
   return (
     <div className="w-full h-full">
       <h2 className="text-[20px] md:text-[28px] font-medium leading-[28px] md:leading-[34px] tracking-[-0.6px] md-6 md:mb-[26px]  ">
