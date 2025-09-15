@@ -19,11 +19,17 @@ export type QuestionType = z.infer<typeof questionSchema>;
 
 export type QuestionFormPropsType = {
   productId?: string;
+
+  hasQuestionStatus?: boolean;
 };
 
-const QuestionForm = ({ productId }: QuestionFormPropsType) => {
+const QuestionForm = ({
+  productId,
+  hasQuestionStatus,
+}: QuestionFormPropsType) => {
   const { accessToken, initialize } = useSignInStore();
-  const { submitQuestion } = useQuestionStore();
+  const { submitQuestion, setShowQuestionTextarea, showQuestionTextarea } =
+    useQuestionStore();
   const {
     register,
     handleSubmit,
@@ -45,7 +51,6 @@ const QuestionForm = ({ productId }: QuestionFormPropsType) => {
   }, [initialize]);
 
   const onSubmit = async (formData: QuestionType) => {
-    console.log(formData, "formData");
     if (!accessToken) {
       toast.error("You must be signed in to submit.");
       return;
@@ -54,6 +59,7 @@ const QuestionForm = ({ productId }: QuestionFormPropsType) => {
     if (formData.status === "question") {
       const success = await submitQuestion(formData, accessToken);
       if (success) reset();
+      setShowQuestionTextarea(!showQuestionTextarea);
     }
   };
 
@@ -75,7 +81,8 @@ const QuestionForm = ({ productId }: QuestionFormPropsType) => {
         type="submit"
         className=" px-6 py-2  bg-[#141718] text-white rounded-[80px]"
       >
-        Your Question
+        {hasQuestionStatus ? "Tour Answer" : "  Your Question"}
+        {/* Your Question */}
       </button>
     </form>
   );

@@ -2,14 +2,21 @@
 import StarRating from "../starRating/StarRating";
 import ReviewsForm from "../reviewsForm/ReviewsForm";
 import { useReviewStore } from "@/app/store/review.store";
+import { useEffect } from "react";
 
 export type ReviewsPropsType = {
-  params: string;
+  productId: string;
   productName: string;
 };
 
-const Reviews = ({ productName, params }: ReviewsPropsType) => {
-  const { reviewLength } = useReviewStore();
+const Reviews = ({ productName, productId }: ReviewsPropsType) => {
+  const { reviewLength, getAllReviews, page, take } = useReviewStore();
+
+  console.log(take)
+
+    useEffect(() => {
+      getAllReviews(productId);
+    }, [getAllReviews, page, productId]);
 
   return (
     <div className="w-full h-full">
@@ -24,7 +31,7 @@ const Reviews = ({ productName, params }: ReviewsPropsType) => {
           Write Review for <span className="font-semibold ">{productName}</span>
         </p>
       </div>
-      <ReviewsForm productId={params} status="review" />
+      <ReviewsForm productId={productId} status="review" />
     </div>
   );
 };

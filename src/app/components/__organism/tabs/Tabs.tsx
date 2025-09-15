@@ -101,6 +101,8 @@ import { useShopStore } from "@/app/store/shop-page.store";
 import { useReviewStore } from "@/app/store/review.store";
 import { useEffect } from "react";
 import Questions from "../questions/Questions";
+import { useQuestionStore } from "@/app/store/question.strore";
+
 
 export type TapsPropsType = {
   params: string;
@@ -110,17 +112,32 @@ export type TapsPropsType = {
 export default function Tabs({ productName, params }: TapsPropsType) {
   const { activeTab, setActiveTab } = useProductStore();
   const { normalizeFirstChar } = useShopStore();
-  const { reviewLength, getAllReviews } = useReviewStore();
+  const { reviewLength,  getReviewsCountOnly } = useReviewStore();
+  const {
+    questionsTotalLength,
+    getQuestionsCountOnly,
+  } = useQuestionStore();
 
   const tabItems = [
     { label: "additional info", count: null },
-    { label: "questions", count: 0 }, //!!!!
+    { label: "questions", count: questionsTotalLength },
     { label: "reviews", count: reviewLength },
   ];
 
   useEffect(() => {
-    getAllReviews();
-  }, [params]);
+    getQuestionsCountOnly();
+    getReviewsCountOnly();
+  }, []);
+
+
+  // useEffect(() => {
+  //   if (activeTab === "reviews") {
+  //     getAllReviews();
+  //   } else if (activeTab === "questions") {
+  //     getAllQuestions();
+  //   }
+  // }, [activeTab]);
+
 
   return (
     <section className="w-full  py-10 flex flex-col gap-10  ">
@@ -189,7 +206,7 @@ export default function Tabs({ productName, params }: TapsPropsType) {
         )} */}
         {activeTab === "reviews" && (
           <div className="w-full h-full flex flex-col gap-6">
-            <Reviews productName={productName} params={params} />
+            <Reviews productName={productName} productId={params} />
             <ClientReviews params={params} />
           </div>
         )}
