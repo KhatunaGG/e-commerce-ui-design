@@ -162,7 +162,6 @@ export const useAddressStore = create<IUseAddressStore>()(
             }
           );
           if (res.status >= 200 && res.status <= 204) {
-            console.log(res.data, "res.data");
             set({
               purchasesDataByPage: {
                 ...purchasesDataByPage,
