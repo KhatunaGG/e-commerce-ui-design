@@ -10,20 +10,18 @@ export type ReplyItemPropsType = {
   replyOwnerName?: string;
   replyOwnerLastName?: string;
 
-
-
-   createdAt?: string;
+  createdAt?: string;
 };
 
 const ReplyItem = ({
   text,
   replyOwnerName,
   replyOwnerLastName,
-  createdAt
+  createdAt,
 }: ReplyItemPropsType) => {
   const { avatar } = useAccountStore();
   const { normalizeFirstChar } = useShopStore();
-  const {formatDate} = useReviewStore()
+  const { formatDate } = useReviewStore();
 
   return (
     <div className="w-full flex flex-col gap-2 p-2       border-b border-b-[#E8ECEF]">
@@ -36,10 +34,11 @@ const ReplyItem = ({
         <StarRating _id={""} rate={0} />
       </div>
       <div className="w-full flex flex-col items-start">
-      <p>{text}</p>
-      <p className="inline w-full  text-right text-sm italic font-normal text-[#a2a5a7]"> {formatDate(createdAt ?? "")}</p>
-
-
+        <p>{text}</p>
+        <p className="inline w-full  text-right text-sm italic font-normal text-[#a2a5a7]">
+          {" "}
+          {formatDate(createdAt ?? "")}
+        </p>
       </div>
     </div>
   );

@@ -5,29 +5,65 @@ import { axiosInstance } from "../libs/axiosInstance";
 import { toast } from "react-toastify";
 
 
-export interface AnswerType {
-  answersOwnerId: string;
-  answerToQuestionsOwnerId: string;
-  answerText: string;
 
-  productId?: string;
-  status?: string;
-}
+// export type AnswerType = {
+//   _id: string;
+//   text: string;
+//   ownerId?: string;
+//   createdAt?: string;
+// };
 
-export interface IQuestions {
-  question: string;
-  questionsOwnerId?: string | null;
-  answers?: AnswerType[];
-
-  productId?: string;
-  // status?: string;
-  status?: "question" | "answer";
-}
-
-export interface DbQuestions extends IQuestions {
-  createdAt: string;
+export type AnswerType = {
   _id: string;
+  answerText: string;
+  answerOwnerName: string;
+  answerOwnerLastName: string;
+  answersOwnerId: string;
+  createdAt: string;
+  status: "answer";
+};
+
+
+export type IQuestions = {
+  id: string;
+  text: string;
+  answers: AnswerType[];
+  status: "question" | "answer";
+  productId: string;
+  questionsOwnerId?: string;
+};
+
+// export interface DbQuestions extends IQuestions {
+//   createdAt: string;
+//   _id: string;
+// }
+
+
+export interface DbQuestions {
+  _id: string;
+  question: string;
+  questionsOwnerId?: string;
+  answers: AnswerType[];
+  status: "question";
+  productId: string;
+  createdAt: string;
 }
+
+export type QuestionInput = {
+  text: string;
+  productId: string;
+  status: "question" | "answer";
+  questionId?: string;
+  ownerId?: string;
+};
+
+export type AnswerInput = {
+  answerText: string;
+  answersOwnerId?: string;
+  questionId: string;
+  productId: string;
+  status: "answer";
+};
 
 export interface ErrorResponse {
   message: string;
@@ -49,15 +85,23 @@ export type IQuestionStoreType = {
   take: number;
   page: number;
   questionsTotalLength: number;
+  answerOwnerName: string | "";
+  answerOwnerLastName: string | null;
   setShowQuestionTextarea: (show: boolean) => void;
+  // submitQuestion: (
+  //   formData: IQuestions,
+  //   accessToken: string
+  // ) => Promise<boolean>;
   submitQuestion: (
-    formData: IQuestions,
+    formData: QuestionInput,
     accessToken: string
   ) => Promise<boolean>;
 
   getAllQuestions: (productId: string) => Promise<void>;
   getQuestionsCountOnly: () => Promise<void>;
   setPage: (page: number, productId: string) => void;
+  // submitAnswer: (data: AnswerType, token: string) => Promise<void>,
+  submitAnswer: (data: AnswerInput, token: string) => Promise<boolean>;
 };
 
 export const useQuestionStore = create<IQuestionStoreType>()(
@@ -70,6 +114,8 @@ export const useQuestionStore = create<IQuestionStoreType>()(
       take: 5,
       page: 1,
       questionsTotalLength: 0,
+      answerOwnerName: "",
+      answerOwnerLastName: "",
 
       setPage: (page: number, productId: string) => {
         set({ page });
@@ -79,13 +125,13 @@ export const useQuestionStore = create<IQuestionStoreType>()(
       setShowQuestionTextarea: (showQuestionTextarea: boolean) =>
         set({ showQuestionTextarea }),
 
-      submitQuestion: async (FormData: IQuestions, accessToken: string) => {
+      submitQuestion: async (FormData: QuestionInput, accessToken: string) => {
         set({
           isLoading: true,
           axiosError: null,
         });
         const newDormData = {
-          question: FormData.question,
+          question: FormData.text,
           productId: FormData.productId,
           questionsOwnerId: "",
           status: "question",
@@ -139,7 +185,6 @@ export const useQuestionStore = create<IQuestionStoreType>()(
               questionData: res.data.allQuestions,
               questionsTotalLength: res.data.questionsTotalLength,
             });
-            console.log(get().questionData, "questionData");
           }
         } catch (e) {
           const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
@@ -161,6 +206,36 @@ export const useQuestionStore = create<IQuestionStoreType>()(
           }
         } catch (e) {
           console.error("Failed to fetch questions count", e);
+        }
+      },
+      submitAnswer: async (data: AnswerInput, token: string) => {
+        set({ isLoading: true, axiosError: null });
+        try {
+          const res = await axiosInstance.patch(
+            `/question/${data.questionId}`,
+            data,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+          if (res.status >= 200 && res.status <= 204) {
+            set({
+              answerOwnerLastName: res.data.answerOwnerLastName,
+              answerOwnerName: res.data.answerOwnerName,
+            });
+            return true;
+          }
+          return false;
+        } catch (e) {
+          const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
+          set({
+            isLoading: false,
+            axiosError: errorMsg,
+          });
+          toast.error(errorMsg);
+          return false;
+        } finally {
+          set({ isLoading: false });
         }
       },
     }),
