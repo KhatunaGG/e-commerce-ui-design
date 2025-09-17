@@ -19,7 +19,7 @@ const Reviews = ({ productName, productId }: ReviewsPropsType) => {
     }, [getAllReviews, page, productId]);
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full  ">
       <h2 className="text-[20px] md:text-[28px] font-medium leading-[28px] md:leading-[34px] tracking-[-0.6px] md-6 md:mb-[26px]  ">
         Customer Reviews
       </h2>

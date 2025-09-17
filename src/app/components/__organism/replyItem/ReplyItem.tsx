@@ -9,7 +9,6 @@ export type ReplyItemPropsType = {
   text: string;
   replyOwnerName?: string;
   replyOwnerLastName?: string;
-
   createdAt?: string;
 };
 

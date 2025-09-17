@@ -2,17 +2,39 @@
 import { useReviewStore } from "@/app/store/review.store";
 import { ChevronDown } from "../../__atoms";
 import ClientReviewsItem from "../clientReviewsItem/ClientReviewsItem";
+import { SimplePagination } from "../../__molecules";
+import { useEffect, useState } from "react";
 
-const ClientReviews = ({ params }: { params: string }) => {
-  const { reviewData, reviewLength } = useReviewStore();
-  // console.log(reviewData, "reviewData");
+const ClientReviews = ({ productId }: { productId: string }) => {
+  const [activeReviewId, setActiveReviewId] = useState<string | null>(null);
+  const { reviewData, reviewLength, take, getAllReviews, page, setPage } =
+    useReviewStore();
+
   const reviews = Array.isArray(reviewData) ? reviewData : [];
   const filteredReviewByParams = reviews.filter(
-    (item) => item.productId === params
+    (item) => item.productId === productId
   );
 
+  useEffect(() => {
+    getAllReviews(productId);
+  }, [getAllReviews, page, productId]);
+
+  const totalPages = Math.ceil(reviewLength / take);
+
+  const handleNextPage = () => {
+    if (page < totalPages) {
+      setPage(page + 1, productId);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (page > 1) {
+      setPage(page - 1, productId);
+    }
+  };
+
   return (
-    <section className="w-full h-full flex flex-col gap-10">
+    <section className="w-full h-full flex flex-col gap-10 ">
       <div className="w-full h-full flex flex-col gap-6 md:gap-0 md:flex-row  md:items-center justify-between">
         <h2 className="font-medium text-[28px] leading-[24px] tracking-[-0.6px]">
           {reviewLength} Reviews
@@ -34,8 +56,22 @@ const ClientReviews = ({ params }: { params: string }) => {
       {Array.isArray(filteredReviewByParams) &&
         filteredReviewByParams.length > 0 &&
         filteredReviewByParams.map((review, i) => {
-          return <ClientReviewsItem key={review._id || i} {...review} />;
+          return (
+            <ClientReviewsItem
+              key={review._id || i}
+              {...review}
+              activeReviewId={activeReviewId}
+              setActiveReviewId={setActiveReviewId}
+            />
+          );
         })}
+
+      <SimplePagination
+        handlePrevPage={handlePrevPage}
+        handleNextPage={handleNextPage}
+        page={page}
+        totalPages={totalPages}
+      />
     </section>
   );
 };

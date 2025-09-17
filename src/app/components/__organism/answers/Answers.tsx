@@ -27,7 +27,7 @@ const Answers = ({
 
       <div className="w-full flex items-center justify-between ">
 
-          <p className="w-[60%] text-[#a2a5a7] font-semibold italic">
+          <p className="w-[60%] text-[#a2a5a7] text-sm font-normal italic">
             {`${normalizeFirstChar(answerOwnerName ?? "")} ${normalizeFirstChar(
               answerOwnerLastName ?? ""
             )}`}

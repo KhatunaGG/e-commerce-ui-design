@@ -4,11 +4,9 @@ import { useEffect } from "react";
 import { AnimateSpin } from "../../__molecules";
 import { ChevronRight } from "../../__atoms";
 import { usePathname } from "next/navigation";
-// import { useShopPageStore } from "@/app/store/useShopPage.store";
 import DetailsSection from "../detailsSection/DetailsSection";
 import Tabs from "../tabs/Tabs";
 import { useShopStore } from "@/app/store/shop-page.store";
-
 
 export type ProductDetailsPropsType = {
   params: string;
@@ -17,11 +15,9 @@ export type ProductDetailsPropsType = {
 const ProductDetails = ({ params }: ProductDetailsPropsType) => {
   const { getProductById, clearProduct, productById } = useProductStore();
   const { normalizeFirstChar } = useShopStore();
-  // const { normalizeFirstChar } = useShopPageStore();
   const path = usePathname();
   const segments = path?.split("/").filter(Boolean) || [];
   const pageSegment = segments[0] || "";
-
 
   useEffect(() => {
     getProductById(params);
@@ -31,8 +27,6 @@ const ProductDetails = ({ params }: ProductDetailsPropsType) => {
   }, [params, getProductById, clearProduct]);
 
   if (!productById) return <AnimateSpin />;
-
-  // if (!accessToken) return null;
 
   return (
     <section className="w-full min-h-screen md:px-[11.11%] px-[8.53%]  flex flex-col pb-10 lg:pb-[67px]">

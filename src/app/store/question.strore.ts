@@ -4,15 +4,6 @@ import { persist } from "zustand/middleware";
 import { axiosInstance } from "../libs/axiosInstance";
 import { toast } from "react-toastify";
 
-
-
-// export type AnswerType = {
-//   _id: string;
-//   text: string;
-//   ownerId?: string;
-//   createdAt?: string;
-// };
-
 export type AnswerType = {
   _id: string;
   answerText: string;
@@ -23,7 +14,6 @@ export type AnswerType = {
   status: "answer";
 };
 
-
 export type IQuestions = {
   id: string;
   text: string;
@@ -33,12 +23,6 @@ export type IQuestions = {
   questionsOwnerId?: string;
 };
 
-// export interface DbQuestions extends IQuestions {
-//   createdAt: string;
-//   _id: string;
-// }
-
-
 export interface DbQuestions {
   _id: string;
   question: string;
@@ -47,6 +31,8 @@ export interface DbQuestions {
   status: "question";
   productId: string;
   createdAt: string;
+  questionOwnerName: string;
+  questionOwnerLastName: string;
 }
 
 export type QuestionInput = {
@@ -79,7 +65,6 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
 export type IQuestionStoreType = {
   isLoading: boolean;
   axiosError: string | null;
-  // questionData: IQuestions[];
   questionData: DbQuestions[];
   showQuestionTextarea: boolean;
   take: number;
@@ -88,19 +73,13 @@ export type IQuestionStoreType = {
   answerOwnerName: string | "";
   answerOwnerLastName: string | null;
   setShowQuestionTextarea: (show: boolean) => void;
-  // submitQuestion: (
-  //   formData: IQuestions,
-  //   accessToken: string
-  // ) => Promise<boolean>;
   submitQuestion: (
     formData: QuestionInput,
     accessToken: string
   ) => Promise<boolean>;
-
   getAllQuestions: (productId: string) => Promise<void>;
   getQuestionsCountOnly: () => Promise<void>;
   setPage: (page: number, productId: string) => void;
-  // submitAnswer: (data: AnswerType, token: string) => Promise<void>,
   submitAnswer: (data: AnswerInput, token: string) => Promise<boolean>;
 };
 
@@ -145,12 +124,10 @@ export const useQuestionStore = create<IQuestionStoreType>()(
             toast.success("Question submitted successfully!");
             get().getAllQuestions(FormData.productId ?? "");
             set({
-              // questionData: res.data,
               axiosError: null,
               isLoading: false,
             });
             console.log(get().questionData, "questionData");
-
             return true;
           }
           return false;
@@ -174,9 +151,6 @@ export const useQuestionStore = create<IQuestionStoreType>()(
             `/question?page=${get().page}&take=${
               get().take
             }&productId=${productId}`
-            // {
-            //   headers: { Authorization: `Bearer ${signInStore.accessToken}` },
-            // }
           );
           if (res.status >= 200 && res.status <= 204) {
             set({
@@ -208,6 +182,7 @@ export const useQuestionStore = create<IQuestionStoreType>()(
           console.error("Failed to fetch questions count", e);
         }
       },
+
       submitAnswer: async (data: AnswerInput, token: string) => {
         set({ isLoading: true, axiosError: null });
         try {
