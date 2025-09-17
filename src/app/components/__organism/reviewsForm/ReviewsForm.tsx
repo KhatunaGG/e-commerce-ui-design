@@ -274,13 +274,6 @@ const ReviewsForm = ({
       }  flex items-center py-2 px-4 md:py-4 md:px-6 border border-[#E8ECEF] rounded-2xl mb-10 `}
     >
       <div className="flex-1 resize-none outline-none relative group">
-        {/* <textarea
-          {...register("text")}
-          placeholder="Share your thoughts"
-          className="flex-1 resize-none outline-none w-full"
-          disabled={isLoading}
-          ref={textAreaRef}
-        /> */}
         <textarea
           placeholder="Share your thoughts"
           className="flex-1 resize-none outline-none w-full"

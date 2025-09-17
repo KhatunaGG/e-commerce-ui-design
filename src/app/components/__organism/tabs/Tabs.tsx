@@ -207,7 +207,7 @@ export default function Tabs({ productName, params }: TapsPropsType) {
         {activeTab === "reviews" && (
           <div className="w-full h-full flex flex-col gap-6">
             <Reviews productName={productName} productId={params} />
-            <ClientReviews params={params} />
+            <ClientReviews productId={params} />
           </div>
         )}
       </div>

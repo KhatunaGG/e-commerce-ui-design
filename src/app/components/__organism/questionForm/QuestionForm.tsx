@@ -98,6 +98,7 @@ import { useSignInStore } from "@/app/store/sign-in.store";
 import { toast } from "react-toastify";
 import { AnswerInput, useQuestionStore } from "@/app/store/question.strore";
 import { useEffect } from "react";
+import { ArrowRight } from "../../__atoms";
 
 export const questionSchema = z.object({
   text: z.string().min(1, "Text is required"),
@@ -130,10 +131,7 @@ const QuestionForm = ({
   ownerId,
 }: QuestionFormPropsType) => {
   const { accessToken, initialize } = useSignInStore();
-  const {
-    submitQuestion,
-    submitAnswer,
-  } = useQuestionStore();
+  const { submitQuestion, submitAnswer } = useQuestionStore();
   const {
     register,
     handleSubmit,
@@ -192,8 +190,10 @@ const QuestionForm = ({
       onSubmit={handleSubmit(onSubmit)}
       // className="w-full  flex items-center justify-between gap-4"
       className={`${
-        status === "question" ? "w-full ml-0    " : "w-[80%] ml-[20%] "
-      } flex items-center justify-between gap-4 `}
+        status === "question"
+          ? "w-full ml-0    "
+          : "md:w-[80%] md:ml-[20%] sm:ml-0"
+      } flex items-center justify-between gap-4  relative`}
     >
       <textarea
         {...register("text")}
@@ -201,7 +201,9 @@ const QuestionForm = ({
         className="flex-1 p-4 resize-none overflow-hidden outline-none border border-[#f1f1f1] rounded-2xl"
       ></textarea>
       {errors.text && (
-        <p className="text-red-500 text-sm">{errors.text.message}</p>
+        <p className="absolute -bottom-6 left-0 text-red-500 text-sm">
+          {errors.text.message}
+        </p>
       )}
 
       <input type="hidden" {...register("productId")} />
@@ -215,8 +217,13 @@ const QuestionForm = ({
         type="submit"
         className=" px-6 py-2  bg-[#141718] text-white rounded-[80px]"
       >
+        <span className="hidden md:flex text-white font-medium leading-[28px] tracking-[-0.4px]">
+
         {status === "question" ? "Your Question" : "Your Answer"}
-        {/* Your Question */}
+        </span>
+        <span className="md:hidden flex">
+          <ArrowRight params={productId} />
+        </span>
       </button>
     </form>
   );

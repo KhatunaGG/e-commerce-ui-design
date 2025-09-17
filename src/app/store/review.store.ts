@@ -41,7 +41,6 @@ export interface DbReviewType extends ReviewType {
   rating: number;
   replies: DbReplyType[];
   _id?: string;
-  // questions: IQuestions[];
   reviewText: string;
   productId: string;
   createdAt: string;
@@ -62,13 +61,6 @@ export interface IUseReviewStore {
   reviewLength: number;
   take: number;
   page: number;
-
-  // questionFormData: {
-  //   question: string;
-  //   productId: string;
-  // };
-  // submitQuestion: (formData: QuestionType) => Promise<boolean>;
-
   setPage: (page: number, productId: string) => void;
   setShowReply: (showReply: boolean) => void;
   setEmojiVisible: (emojiVisible: boolean) => void;
@@ -94,40 +86,10 @@ export const useReviewStore = create<IUseReviewStore>()(
       take: 5,
       page: 1,
 
-      // questionFormData: { question: "", productId: "" },
-      // submitQuestion: async (formData: QuestionType) => {
-      //   set({
-      //     isLoading: true,
-      //     axiosError: null,
-      //   });
-      //   const newQuestionData = {
-      //     question: formData.question,
-      //     productId: formData.productId,
-      //     questionsOwnerId: null,
-      //     status: "question",
-      //     answers: [],
-      //   };
-      //   try {
-
-      //     return true
-      //   }catch(e) {
-      //            const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
-      //     set({
-      //       isLoading: false,
-      //       axiosError: errorMsg,
-      //     });
-      //     toast.error(errorMsg);
-      //     return false;
-      //   }finally {
-      //     set({ isLoading: false });
-      //   }
-
-      // },
-
-     setPage: (page: number, productId: string) => {
-  set({ page });
-  get().getAllReviews(productId);
-},
+      setPage: (page: number, productId: string) => {
+        set({ page });
+        get().getAllReviews(productId);
+      },
       setShowReply: () => set((state) => ({ showReply: !state.showReply })),
       setEmojiVisible: () =>
         set((state) => ({ emojiVisible: !state.emojiVisible })),
@@ -154,7 +116,6 @@ export const useReviewStore = create<IUseReviewStore>()(
           status: "review",
           rating: 0,
           replies: [],
-          // questions: [],
         };
 
         try {
@@ -185,30 +146,9 @@ export const useReviewStore = create<IUseReviewStore>()(
         }
       },
 
-      // getAllReviews: async () => {
-      //   set({ isLoading: true, axiosError: null });
-      //   try {
-      //     const res = await axiosInstance.get("/review");
-      //     if (res.status >= 200 && res.status <= 204) {
-      //       set({
-      //         isLoading: false,
-      //         axiosError: null,
-      //         reviewData: res.data,
-      //         reviewLength: res.data.length,
-      //       });
-      //     }
-      //   } catch (e) {
-      //     set({
-      //       isLoading: false,
-      //       axiosError: handleApiError(e as AxiosError<ErrorResponse>),
-      //     });
-      //   }
-      // },
-
       getAllReviews: async (productId: string) => {
         const { page, take } = get();
         set({ isLoading: true, axiosError: null });
-
         try {
           const res = await axiosInstance.get(
             `/review?page=${page}&take=${take}&productId=${productId}`
@@ -231,14 +171,10 @@ export const useReviewStore = create<IUseReviewStore>()(
 
       addReplayToReview: async (formData: ReplyType): Promise<boolean> => {
         const { accessToken } = useSignInStore.getState();
-        // const {currentUser} = useSignInStore.getState()
-        // console.log(formData, "formData from STORE")
-
         if (!accessToken) {
           toast.error("You must be signed in to reply.");
           return false;
         }
-
         try {
           const res = await axiosInstance.patch(
             `/review/update-reply/${formData.replyToId}`,
