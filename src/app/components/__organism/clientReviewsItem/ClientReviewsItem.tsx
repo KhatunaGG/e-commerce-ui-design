@@ -81,6 +81,7 @@ const ClientReviewsItem = ({
               productId={productId}
               status="reply"
               replyToId={_id}
+              setActiveReviewId={setActiveReviewId}
             />
           </div>
         </div>

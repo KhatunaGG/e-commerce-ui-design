@@ -55,14 +55,16 @@ export interface IUseReviewStore {
   isLoading: boolean;
   axiosError: string | null;
   emojiVisible: boolean;
-  showReply: boolean;
+
   replyOwnerName: string;
   replyOwnerLastName: string;
   reviewLength: number;
   take: number;
   page: number;
+  sortReview: "newest" | "oldest";
+  setSortReview: (order: "newest" | "oldest", productId: string) => void;
   setPage: (page: number, productId: string) => void;
-  setShowReply: (showReply: boolean) => void;
+
   setEmojiVisible: (emojiVisible: boolean) => void;
   submitReview: (formData: ReviewType, accessToken: string) => Promise<boolean>;
   getAllReviews: (productId: string) => Promise<void>;
@@ -79,18 +81,24 @@ export const useReviewStore = create<IUseReviewStore>()(
       reviewData: [],
       reviewFormData: { text: "", productId: "" },
       emojiVisible: false,
-      showReply: false,
+      // showReply: false,
       replyOwnerName: "",
       replyOwnerLastName: "",
       reviewLength: 0,
       take: 5,
       page: 1,
 
+      sortReview: "newest",
+      setSortReview: (order, productId) => {
+        set({ sortReview: order });
+        get().getAllReviews(productId);
+      },
+
       setPage: (page: number, productId: string) => {
         set({ page });
         get().getAllReviews(productId);
       },
-      setShowReply: () => set((state) => ({ showReply: !state.showReply })),
+      // setShowReply: () => set((state) => ({ showReply: !state.showReply })),
       setEmojiVisible: () =>
         set((state) => ({ emojiVisible: !state.emojiVisible })),
       formatDate: (dateString: string | "") => {
@@ -147,11 +155,12 @@ export const useReviewStore = create<IUseReviewStore>()(
       },
 
       getAllReviews: async (productId: string) => {
-        const { page, take } = get();
+        const { page, take, sortReview } = get();
         set({ isLoading: true, axiosError: null });
+        const sortParam = sortReview === "newest" ? "desc" : "asc";
         try {
           const res = await axiosInstance.get(
-            `/review?page=${page}&take=${take}&productId=${productId}`
+            `/review?page=${page}&take=${take}&productId=${productId}&sort=${sortParam}`
           );
           if (res.status >= 200 && res.status <= 204) {
             set({

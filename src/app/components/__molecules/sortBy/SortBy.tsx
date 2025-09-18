@@ -1,9 +1,7 @@
 "use client";
 import { useShopStore } from "@/app/store/shop-page.store";
-// import { useShopPageStore } from "@/app/store/useShopPage.store";
-import { ChevronDown } from "../../__atoms";
-// import { sortByOptions } from "@/app/commons/data";
 import { sortBy as sortByOptions } from "@/app/commons/data";
+import { Down } from "../../__atoms";
 
 const SortBy = () => {
   const {  setIsDroppedDown, isDroppedDown,  sortBy, setSortBy, getAllProducts  } =
@@ -27,7 +25,7 @@ const handleSortChange = async (selected: string) => {
           className="w-full font-semibold md:text-sm lg:text-base leading-[26px] text-[#121212] outline-none"
         />
         <button className="w-auto h-auto absolute right-0 top-1/2 transform -translate-y-1/2">
-          <ChevronDown styles={"pt-1"} />
+          <Down styles={"pt-1"} />
         </button>
 
         {isDroppedDown && (

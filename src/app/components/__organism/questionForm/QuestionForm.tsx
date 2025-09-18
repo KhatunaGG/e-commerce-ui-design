@@ -96,7 +96,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSignInStore } from "@/app/store/sign-in.store";
 import { toast } from "react-toastify";
-import { AnswerInput, useQuestionStore } from "@/app/store/question.strore";
+import { AnswerInput, useQuestionStore } from "@/app/store/question.store";
 import { useEffect } from "react";
 import { ArrowRight } from "../../__atoms";
 
