@@ -72,6 +72,9 @@ export type IQuestionStoreType = {
   questionsTotalLength: number;
   answerOwnerName: string | "";
   answerOwnerLastName: string | null;
+
+  sortQuestions: "newest" | "oldest";
+  setSortQuestions: (order: "newest" | "oldest", productId: string) => void;
   setShowQuestionTextarea: (show: boolean) => void;
   submitQuestion: (
     formData: QuestionInput,
@@ -95,6 +98,12 @@ export const useQuestionStore = create<IQuestionStoreType>()(
       questionsTotalLength: 0,
       answerOwnerName: "",
       answerOwnerLastName: "",
+
+      sortQuestions: "newest",
+      setSortQuestions: (order, productId) => {
+        set({ sortQuestions: order });
+        get().getAllQuestions(productId);
+      },
 
       setPage: (page: number, productId: string) => {
         set({ page });
@@ -145,12 +154,12 @@ export const useQuestionStore = create<IQuestionStoreType>()(
       },
 
       getAllQuestions: async (productId: string) => {
+        const { page, take, sortQuestions } = get();
         set({ isLoading: true, axiosError: null });
+        const sortParam = sortQuestions === "newest" ? "desc" : "asc";
         try {
           const res = await axiosInstance.get(
-            `/question?page=${get().page}&take=${
-              get().take
-            }&productId=${productId}`
+            `/question?page=${page}&take=${take}&productId=${productId}&sort=${sortParam}`
           );
           if (res.status >= 200 && res.status <= 204) {
             set({

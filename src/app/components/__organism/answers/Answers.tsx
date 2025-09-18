@@ -19,8 +19,6 @@ const Answers = ({
   const { formatDate } = useReviewStore();
   const { normalizeFirstChar } = useShopStore();
 
-  console.log(answerOwnerName, "answerOwnerName")
-  console.log(answerOwnerLastName, "answerOwnerLastName")
   return (
     <div className="w-full  flex flex-col items-start gap-4 mb-2 border-b border-b-[#E8ECEF]">
       <div className="w-full">{answerText}</div>

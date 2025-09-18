@@ -129,7 +129,7 @@ const Account = () => {
         isMyAccountPage={isMyAccountPage}
       />
 
-      <div className="w-full flex items-start">
+      <div  className="w-full flex items-start">
         <button
           type="submit"
           className="text-base py-3 px-10 font-medium leading-[28px] tracking-[-0.4px] text-white bg-[#141718] rounded-lg hover:bg-gray-800 transition-colors duration-300 ease-in-out"

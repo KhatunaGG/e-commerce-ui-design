@@ -1,0 +1,32 @@
+"use client";
+import { Down } from "../../__atoms";
+
+type SortSelectProps = {
+  value: "newest" | "oldest";
+  onChange: (value: "newest" | "oldest") => void;
+};
+
+const SortSelect = ({ value, onChange }: SortSelectProps) => {
+  return (
+    <div className="w-full relative inline-block  md:max-w-[22.85%]">
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value as "newest" | "oldest")}
+        className="appearance-none w-full  px-4  py-[14px] border border-[#E8ECEF] rounded-md text-sm outline-none"
+      >
+        <option value="newest" className="outline-none">
+          Newest
+        </option>
+        <option value="oldest" className="outline-none">
+          Oldest
+        </option>
+      </select>
+      <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+        <Down />
+      </div>
+    </div>
+  );
+};
+
+
+export default SortSelect;

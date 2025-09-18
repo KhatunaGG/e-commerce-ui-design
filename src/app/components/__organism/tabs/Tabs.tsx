@@ -93,7 +93,7 @@
 
 "use client";
 import { useProductStore } from "@/app/store/product.store";
-import { ChevronDown } from "../../__atoms";
+
 // import { useShopPageStore } from "@/app/store/useShopPage.store";
 import Reviews from "../reviews/Reviews";
 import ClientReviews from "../clientReviews/ClientReviews";
@@ -101,7 +101,8 @@ import { useShopStore } from "@/app/store/shop-page.store";
 import { useReviewStore } from "@/app/store/review.store";
 import { useEffect } from "react";
 import Questions from "../questions/Questions";
-import { useQuestionStore } from "@/app/store/question.strore";
+import { useQuestionStore } from "@/app/store/question.store";
+import { Down } from "../../__atoms";
 
 
 export type TapsPropsType = {
@@ -185,7 +186,7 @@ export default function Tabs({ productName, params }: TapsPropsType) {
                   activeTab === item.label ? "rotate-180" : "rotate-0"
                 } transform duration-300 w-auto  `}
               >
-                <ChevronDown />
+                <Down />
               </div>
             </div>
           );

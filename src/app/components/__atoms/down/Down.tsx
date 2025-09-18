@@ -1,9 +1,8 @@
-
 export type ChevronDownPropsType = {
   styles?: string;
 };
 
-const ChevronDown = ({ styles }: ChevronDownPropsType) => {
+const Down = ({ styles }: ChevronDownPropsType) => {
   return (
     <svg
       width="20"
@@ -24,4 +23,4 @@ const ChevronDown = ({ styles }: ChevronDownPropsType) => {
   );
 };
 
-export default ChevronDown;
+export default Down;

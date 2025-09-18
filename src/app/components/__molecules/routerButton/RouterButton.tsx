@@ -60,7 +60,7 @@ import { useShopStore } from "@/app/store/shop-page.store";
 import { useSignInStore } from "@/app/store/sign-in.store";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
-import { ChevronDown } from "../../__atoms";
+import { Down } from "../../__atoms";
 
 export type RouterButtonPropsType = {
   accountLinks: string[];
@@ -106,7 +106,7 @@ const RouterButton = ({ accountLinks }: RouterButtonPropsType) => {
           isOpen ? "rotate-180" : "rotate-0"
         }`}
       >
-        <ChevronDown />
+        <Down />
       </div>
       {isOpen && (
         <div className="absolute top-full left-0 right-0 z-20 mt-2 py-2 px-4 flex flex-col gap-2 rounded-lg bg-white shadow-2xl">

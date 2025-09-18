@@ -163,7 +163,7 @@
 
 
 
-//after questions
+
 "use client";
 import { ArrowRight } from "../../__atoms";
 import EmojiSection from "../emojiSection/EmojiSection";
@@ -192,6 +192,7 @@ export interface ReviewsFormProps {
   status: "review" | "reply";
   reviewOwnerId?: string;
   replyToId?: string;
+   setActiveReviewId?: (id: string | null) => void; 
 }
 
 const ReviewsForm = ({
@@ -199,14 +200,13 @@ const ReviewsForm = ({
   reviewOwnerId,
   status = "reply",
   replyToId,
+  setActiveReviewId
 }: ReviewsFormProps) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const {
     submitReview,
     isLoading,
     addReplayToReview,
-    setShowReply,
-    showReply,
   } = useReviewStore();
   const { accessToken, initialize } = useSignInStore();
 
@@ -258,7 +258,7 @@ const ReviewsForm = ({
       };
       const success = await addReplayToReview(replyData);
       if (success) reset();
-      setShowReply(!showReply);
+      setActiveReviewId?.(null);
       return;
     } else {
       const success = await submitReview(formData, accessToken);
