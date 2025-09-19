@@ -135,7 +135,7 @@ import { useEffect, useState } from "react";
 import { useShopStore } from "@/app/store/shop-page.store";
 import { SimplePagination, SortSelect } from "../../__molecules";
 import { useQuestionStore } from "@/app/store/question.store";
-
+import { useReviewStore } from "@/app/store/review.store";
 
 export type QuestionPropsType = {
   productId: string;
@@ -153,10 +153,18 @@ const Questions = ({ productId }: QuestionPropsType) => {
   const { normalizeFirstChar } = useShopStore();
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
   const { setSortQuestions, sortQuestions } = useQuestionStore();
+  const { formatDate } = useReviewStore();
+
+  // useEffect(() => {
+  //   getAllQuestions(productId);
+  // }, [getAllQuestions, page, productId]);
 
   useEffect(() => {
+  if (questionData.length === 0) {
     getAllQuestions(productId);
-  }, [getAllQuestions, page, productId]);
+  }
+}, [getAllQuestions, page, productId, questionData.length]);
+
 
   const totalPages = Math.ceil(questionsTotalLength / take);
 
@@ -200,11 +208,16 @@ const Questions = ({ productId }: QuestionPropsType) => {
                   {item.question}
                 </p>
 
-                <p className="w-[60%] text-[#a2a5a7] text-sm font-normal italic">
-                  {`${normalizeFirstChar(
-                    item.questionOwnerName ?? ""
-                  )} ${normalizeFirstChar(item.questionOwnerLastName ?? "")}`}
-                </p>
+                <div className="w-full flex items-center justify-between">
+                  <p className="w-[60%] text-[#a2a5a7] text-sm font-normal italic">
+                    {`${normalizeFirstChar(
+                      item.questionOwnerName ?? ""
+                    )} ${normalizeFirstChar(item.questionOwnerLastName ?? "")}`}
+                  </p>
+                  <p className="inline text-right text-sm italic font-normal text-[#a2a5a7] w-[40%]">
+                    {formatDate(item.createdAt)}
+                  </p>
+                </div>
 
                 <div className="flex items-start ml-[20%] w-[80%] ">
                   <button
@@ -218,7 +231,7 @@ const Questions = ({ productId }: QuestionPropsType) => {
                     Your Answer
                   </button>
                 </div>
-                <div className="w-full  bg-violet-200">
+                <div className="w-full">
                   {activeQuestionId === item._id && (
                     <QuestionForm
                       productId={productId}

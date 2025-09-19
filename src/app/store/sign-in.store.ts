@@ -9,6 +9,8 @@ import { useProductStore } from "./product.store";
 import { useShopStore } from "./shop-page.store";
 import { useAddressStore } from "./address.store";
 import { useAccountStore } from "./account.store";
+import { useQuestionStore } from "./question.store";
+import { useReviewStore } from "./review.store";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -29,9 +31,7 @@ export interface IUser {
   _id: string;
   lastName?: string;
 
-
-
-  questions: []
+  questions: [];
 }
 
 export interface IUseSignInStore {
@@ -123,6 +123,10 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
   },
   logout: () => {
     deleteCookie("accessToken");
+    useReviewStore.getState().resetReviewStore();
+    useQuestionStore.getState().resetQuestionStore();
+    localStorage.removeItem("review-store");
+    localStorage.removeItem("question-store");
     useHomePageStore.getState().clearCache();
     useShopStore.getState().clearCache();
     useProductStore.getState().clearWishlist();
