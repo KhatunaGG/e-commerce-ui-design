@@ -72,7 +72,6 @@ export type IQuestionStoreType = {
   questionsTotalLength: number;
   answerOwnerName: string | "";
   answerOwnerLastName: string | null;
-
   sortQuestions: "newest" | "oldest";
   setSortQuestions: (order: "newest" | "oldest", productId: string) => void;
   setShowQuestionTextarea: (show: boolean) => void;
@@ -84,6 +83,7 @@ export type IQuestionStoreType = {
   getQuestionsCountOnly: () => Promise<void>;
   setPage: (page: number, productId: string) => void;
   submitAnswer: (data: AnswerInput, token: string) => Promise<boolean>;
+  resetQuestionStore: () => void;
 };
 
 export const useQuestionStore = create<IQuestionStoreType>()(
@@ -222,10 +222,29 @@ export const useQuestionStore = create<IQuestionStoreType>()(
           set({ isLoading: false });
         }
       },
+      resetQuestionStore: () => {
+  set({
+    questionData: [],
+    answerOwnerName: "",
+    answerOwnerLastName: "",
+    page: 1,
+    take: 5,
+    sortQuestions: "newest", // or whatever default you use
+    axiosError: null,
+    isLoading: false,
+  });
+}
+
     }),
     {
       name: "question-store",
-      partialize: () => ({}),
+      partialize: (state) => ({
+        page: state.page,
+        take: state.take,
+        sortQuestions: state.sortQuestions,
+        answerOwnerName: state.answerOwnerName,
+        answerOwnerLastName: state.answerOwnerLastName,
+      }),
     }
   )
 );

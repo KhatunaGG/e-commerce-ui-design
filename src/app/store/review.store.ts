@@ -71,6 +71,7 @@ export interface IUseReviewStore {
   addReplayToReview: (formData: ReplyType) => Promise<boolean>;
   formatDate: (dateString: string | "") => string;
   getReviewsCountOnly: () => Promise<void>;
+  resetReviewStore: () => void;
 }
 
 export const useReviewStore = create<IUseReviewStore>()(
@@ -223,11 +224,33 @@ export const useReviewStore = create<IUseReviewStore>()(
           console.error("Failed to fetch reviews count", e);
         }
       },
+
+      resetReviewStore: () => {
+  set({
+    reviewFormData: { text: "", productId: "" },
+    reviewData: [],
+    emojiVisible: false,
+    replyOwnerName: "",
+    replyOwnerLastName: "",
+    reviewLength: 0,
+    page: 1,
+    take: 5,
+    sortReview: "newest",
+    axiosError: null,
+    isLoading: false,
+  });
+}
+
     }),
     {
       name: "review-store",
       partialize: (state) => ({
         reviewFormData: state.reviewFormData,
+        page: state.page,
+        take: state.take,
+        sortReview: state.sortReview,
+        replyOwnerName: state.replyOwnerName,
+        replyOwnerLastName: state.replyOwnerLastName,
       }),
     }
   )
