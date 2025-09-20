@@ -43,7 +43,7 @@ const Label = ({
     >
       <div className="text-[#141718] w-full gap-1 flex flex-col items-start pt-1  md:pt-1">
         {/* <div className="text-sm text-yellow-500">★★★★★</div> */}
-        <StarRating rate={rate} _id={_id} />
+        <StarRating rating={rate} productId={_id} />
         <p className="text-sm md:text-base font-semibold leading-[16px] md:leading-[26px]">
           {normalizeFirstChar(productName)}
         </p>

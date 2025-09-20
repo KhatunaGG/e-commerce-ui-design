@@ -15,6 +15,8 @@ import ReplyItem from "../replyItem/ReplyItem";
 export type ClientReviewsItemPropsType = {
   activeReviewId: string | null;
   setActiveReviewId: React.Dispatch<React.SetStateAction<string | null>>;
+  rating: number;
+  onRate: (score: number) => Promise<boolean>;
 };
 
 const ClientReviewsItem = ({
@@ -28,12 +30,23 @@ const ClientReviewsItem = ({
   productId,
   createdAt,
   activeReviewId,
+  onRate,
   setActiveReviewId,
+  ratedBy,
 }: DbReviewType & ClientReviewsItemPropsType) => {
   const { avatar } = useAccountStore();
   const { currentUser } = useSignInStore();
   const { normalizeFirstChar } = useShopStore();
   const { formatDate } = useReviewStore();
+
+  const calculateAverageRating = () => {
+    if (!ratedBy || ratedBy.length === 0) return 0;
+
+    const totalSum = ratedBy.reduce((sum, rated) => sum + rated.rating, 0);
+    return Math.round((totalSum / ratedBy.length) * 10) / 10;
+  };
+
+  const averageRating = calculateAverageRating();
 
   return (
     <div
@@ -43,12 +56,12 @@ const ClientReviewsItem = ({
     >
       <div className="w-full flex items-start justify-start gap-4 md:gap-10">
         <ReviewAvatar avatar={avatar ?? ""} />
-        <div className="flex-1 flex flex-col gap-4 ">
+        <div className="flex-1 flex flex-col gap-4      bg-green-200">
           <h2 className="text-[20px] font-semibold leading-[32px] text-[#141718]">
             {normalizeFirstChar(currentUser?.yourName ?? "")}{" "}
             {normalizeFirstChar(currentUser?.lastName ?? "")}
           </h2>
-          <StarRating _id={""} rate={0} />
+          <StarRating productId={productId} rating={averageRating} onRate={onRate} />
         </div>
       </div>
 
