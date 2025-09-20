@@ -30,7 +30,7 @@ const ReplyItem = ({
           {normalizeFirstChar(replyOwnerName ?? "")} {""}
           {normalizeFirstChar(replyOwnerLastName ?? "")}
         </h2>
-        <StarRating _id={""} rate={0} />
+        <StarRating productId={""} rating={0} />
       </div>
       <div className="w-full flex flex-col items-start">
         <p>{text}</p>

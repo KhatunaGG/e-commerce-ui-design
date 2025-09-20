@@ -7,6 +7,7 @@ import { AddToCartButton, WishlistButton } from "../../__molecules";
 import { ProductsDataType, useShopStore } from "@/app/store/shop-page.store";
 import { useCartStore } from "@/app/store/cart.store";
 import Counter from "../counter/Counter";
+import { useReviewStore } from "@/app/store/review.store";
 
 export type DetailsSectionPropsType = {
   productById: ProductsDataType;
@@ -15,6 +16,9 @@ export type DetailsSectionPropsType = {
 
 const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
   const { calculateDiscount } = useShopStore();
+  const {totalRating} = useReviewStore()
+
+
   const {
     setSelectedQty,
     setSelectedColor,
@@ -61,7 +65,13 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
       <div className="w-full lg:flex-1 flex flex-col">
         <div className="w-full flex flex-col gap-4 pb-6">
           <div className="flex items-center justify-start gap-[10px]">
-            <StarRating _id={""} rate={0} />
+            <StarRating productId={params} 
+
+          rating={0}
+          totalRating={totalRating}
+          readOnly
+            
+            />
             <p className="font-xs font-normal leading-[20px] text-[#141718]">
               <span>{11}</span>Reviews
             </p>

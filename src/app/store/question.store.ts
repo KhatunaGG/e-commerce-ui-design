@@ -136,7 +136,7 @@ export const useQuestionStore = create<IQuestionStoreType>()(
               axiosError: null,
               isLoading: false,
             });
-            console.log(get().questionData, "questionData");
+
             return true;
           }
           return false;

@@ -10,13 +10,15 @@ export type ReviewsPropsType = {
 };
 
 const Reviews = ({ productName, productId }: ReviewsPropsType) => {
-  const { reviewLength, getAllReviews, page, take } = useReviewStore();
+  const { reviewLength, getAllReviews, page, totalRating } =
+    useReviewStore();
 
-  console.log(take)
+  useEffect(() => {
+    getAllReviews(productId);
+  }, [getAllReviews, page, productId, reviewLength]);
 
-    useEffect(() => {
-      getAllReviews(productId);
-    }, [getAllReviews, page, productId]);
+  // console.log(totalRating, "totalRating");
+  // console.log(reviewData, "totalRating");
 
   return (
     <div className="w-full h-full  ">
@@ -24,7 +26,13 @@ const Reviews = ({ productName, productId }: ReviewsPropsType) => {
         Customer Reviews
       </h2>
       <div className="w-full flex gap-2 items-center mb-2">
-        <StarRating _id={""} rate={0} /> <span> ({reviewLength})</span>
+        <StarRating
+          productId={productId}
+          rating={0}
+          totalRating={totalRating}
+          readOnly
+        />{" "}
+        <span>{reviewLength || 0}</span> Reviews
       </div>
       <div className="w-full flex items-center justify-start gap-2 mb-[30px]">
         <p className="text-sm md:text-base leading-[22px] md:leading-[26px]">

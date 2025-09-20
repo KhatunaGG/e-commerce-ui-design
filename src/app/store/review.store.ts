@@ -25,6 +25,11 @@ export interface ReplyType {
   status: string;
 }
 
+export type RateType = {
+  rating: number;
+  ratedById: string;
+};
+
 export interface DbReplyType extends ReplyType {
   userName: string;
   lastName: string;
@@ -44,9 +49,11 @@ export interface DbReviewType extends ReviewType {
   reviewText: string;
   productId: string;
   createdAt: string;
+  ratedBy: RateType[];
 }
 
 export interface IUseReviewStore {
+  rating: number;
   reviewFormData: {
     text: string;
     productId: string;
@@ -62,6 +69,7 @@ export interface IUseReviewStore {
   take: number;
   page: number;
   sortReview: "newest" | "oldest";
+  totalRating: number;
   setSortReview: (order: "newest" | "oldest", productId: string) => void;
   setPage: (page: number, productId: string) => void;
 
@@ -72,11 +80,14 @@ export interface IUseReviewStore {
   formatDate: (dateString: string | "") => string;
   getReviewsCountOnly: () => Promise<void>;
   resetReviewStore: () => void;
+  // updateReviewRating: (score: number, reviewId: string) => Promise<void>;
+  updateReviewRating: (score: number, reviewId: string) => Promise<boolean>;
 }
 
 export const useReviewStore = create<IUseReviewStore>()(
   persist(
     (set, get) => ({
+      rating: 0,
       isLoading: false,
       axiosError: null,
       reviewData: [],
@@ -88,6 +99,7 @@ export const useReviewStore = create<IUseReviewStore>()(
       reviewLength: 0,
       take: 5,
       page: 1,
+      totalRating: 0,
 
       sortReview: "newest",
       setSortReview: (order, productId) => {
@@ -125,6 +137,7 @@ export const useReviewStore = create<IUseReviewStore>()(
           status: "review",
           rating: 0,
           replies: [],
+          ratedBy: [],
         };
 
         try {
@@ -169,6 +182,9 @@ export const useReviewStore = create<IUseReviewStore>()(
               axiosError: null,
               reviewData: res.data.reviews,
               reviewLength: res.data.reviewsTotalLength,
+
+
+              totalRating: res.data.totalRating || 0, 
             });
           }
         } catch (e) {
@@ -226,21 +242,75 @@ export const useReviewStore = create<IUseReviewStore>()(
       },
 
       resetReviewStore: () => {
-  set({
-    reviewFormData: { text: "", productId: "" },
-    reviewData: [],
-    emojiVisible: false,
-    replyOwnerName: "",
-    replyOwnerLastName: "",
-    reviewLength: 0,
-    page: 1,
-    take: 5,
-    sortReview: "newest",
-    axiosError: null,
-    isLoading: false,
-  });
-}
+        set({
+          reviewFormData: { text: "", productId: "" },
+          reviewData: [],
+          emojiVisible: false,
+          replyOwnerName: "",
+          replyOwnerLastName: "",
+          reviewLength: 0,
+          page: 1,
+          take: 5,
+          sortReview: "newest",
+          axiosError: null,
+          isLoading: false,
+        });
+      },
 
+      updateReviewRating: async (
+        score: number,
+        reviewId: string
+      ): Promise<boolean> => {
+        const { accessToken } = useSignInStore.getState();
+
+        if (!accessToken) {
+          toast.error("You must be signed in to rate a review.");
+          return false;
+        }
+
+        try {
+          const res = await axiosInstance.patch(
+            `/review/update-rate/${reviewId}`,
+            { rating: score },
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            }
+          );
+
+          if (res.status >= 200 && res.status <= 204) {
+            const updatedReview = res.data.review;
+            const totalRating = res.data.totalRating;
+
+            set((state) => ({
+              rating: updatedReview.rating,
+              totalRating,
+              reviewData: state.reviewData.map((review) =>
+                review._id === updatedReview._id ? updatedReview : review
+              ),
+            }));
+            console.log(res.data.review, "res.data.reviews")
+            console.log(res.data.totalRating, "res.data.totalRating")
+
+            // set({
+            //   isLoading: false,
+            //   axiosError: null,
+            //   reviewData: res.data.reviews,
+            //   reviewLength: res.data.reviewsTotalLength,
+            //   totalRating: res.data.totalRating, 
+            // });
+
+            toast.success("Rating updated successfully!");
+            return true;
+          }
+
+          return false;
+        } catch (e) {
+          const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
+          toast.error(errorMsg);
+          set({ axiosError: errorMsg });
+          return false;
+        }
+      },
     }),
     {
       name: "review-store",
