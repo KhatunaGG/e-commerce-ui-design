@@ -255,6 +255,10 @@ const ReviewsForm = ({
         text: formData.text,
         productId: formData.productId,
         status: formData.status,
+
+
+        
+         ratedBy: [],
       };
       const success = await addReplayToReview(replyData);
       if (success) reset();

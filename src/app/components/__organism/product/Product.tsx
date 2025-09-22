@@ -1,6 +1,9 @@
+"use client"
 import Image from "next/image";
 import { AddToCartButton, Label } from "../../__molecules";
 import { useCartStore } from "@/app/store/cart.store";
+import { useEffect, useState } from "react";
+import { useProductStore } from "@/app/store/product.store";
 
 export type ProductPropsType = {
   sortByTwoHorizontally?: boolean;
@@ -9,7 +12,7 @@ export type ProductPropsType = {
   image?: string;
   productName: string;
   price: number;
-  rate: number;
+  rating: number;
   details: string;
   _id: string;
   wishlist: boolean;
@@ -23,13 +26,23 @@ const Product = ({
   image,
   productName,
   price,
-  rate,
+  // rating,
   details,
   _id,
   params,
   wishlist,
 }: ProductPropsType) => {
   const addProductToCart = useCartStore((state) => state.addProductToCart);
+  const getAverageRating = useProductStore((state) => state.getAverageRating);
+  const [averageRating, setAverageRating] = useState<number>(0);
+
+  useEffect(() => {
+    const fetchRating = async () => {
+      const rating = await getAverageRating(_id);
+      setAverageRating(rating || 0);
+    };
+    fetchRating();
+  }, [_id, getAverageRating]);
 
   return (
     <>
@@ -75,10 +88,20 @@ const Product = ({
         )}
       </div>
       {!params && (
+        // <Label
+        //   productName={productName}
+        //   price={price}
+        //      rating={ratings[item._id] || 0}
+        //   discount={discount}
+        //   details={details}
+        //   _id={_id}
+        //   newProduct={newProduct}
+        //   wishlist={wishlist}
+        // />
         <Label
           productName={productName}
           price={price}
-          rate={rate}
+          rating={averageRating}
           discount={discount}
           details={details}
           _id={_id}

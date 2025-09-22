@@ -3,13 +3,27 @@ import { useAccountStore } from "@/app/store/account.store";
 import ReviewAvatar from "../reviewAvatar/ReviewAvatar";
 import StarRating from "../starRating/StarRating";
 import { useShopStore } from "@/app/store/shop-page.store";
-import { useReviewStore } from "@/app/store/review.store";
+import {
+  RateType,
+  useReviewStore,
+} from "@/app/store/review.store";
 
 export type ReplyItemPropsType = {
   text: string;
   replyOwnerName?: string;
   replyOwnerLastName?: string;
   createdAt?: string;
+  ratedBy: RateType[];
+  _id: string;
+  productId: string;
+  updateReplyRating: (
+    score: number,
+    replyId: string,
+    productId: string,
+    reviewId: string
+  ) => Promise<boolean>;
+  reviewId?: string;
+  rating?: number;
 };
 
 const ReplyItem = ({
@@ -17,10 +31,19 @@ const ReplyItem = ({
   replyOwnerName,
   replyOwnerLastName,
   createdAt,
+  // ratedBy,
+  _id,
+  productId,
+  updateReplyRating,
+  reviewId,
+ rating
 }: ReplyItemPropsType) => {
   const { avatar } = useAccountStore();
   const { normalizeFirstChar } = useShopStore();
   const { formatDate } = useReviewStore();
+  // console.log(ratedBy, "ratedBy from ReplyItem");
+
+
 
   return (
     <div className="w-full flex flex-col gap-2 p-2       border-b border-b-[#E8ECEF]">
@@ -30,7 +53,34 @@ const ReplyItem = ({
           {normalizeFirstChar(replyOwnerName ?? "")} {""}
           {normalizeFirstChar(replyOwnerLastName ?? "")}
         </h2>
-        <StarRating productId={""} rating={0} />
+        <StarRating
+          productId={_id}
+          rating={rating ?? 0}
+          onReplyRating={(score: number) =>
+            updateReplyRating(score, _id, productId, reviewId ?? "")
+          }
+        />
+
+        {/* <StarRating
+  productId={_id}
+  rating={rating ?? 0}
+  onReplyRating={(score: number) => {
+    console.log("⬇️ Star clicked for reply:");
+    console.log("score:", score);
+    console.log("replyId (_id):", _id);
+    console.log("productId:", productId);
+    console.log("reviewId:", reviewId);
+    return updateReplyRating(score, _id, productId, reviewId ?? "");
+  }}
+/> */}
+
+
+
+
+
+
+
+
       </div>
       <div className="w-full flex flex-col items-start">
         <p>{text}</p>

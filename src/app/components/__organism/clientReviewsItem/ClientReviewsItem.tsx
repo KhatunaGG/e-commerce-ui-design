@@ -37,15 +37,13 @@ const ClientReviewsItem = ({
   const { avatar } = useAccountStore();
   const { currentUser } = useSignInStore();
   const { normalizeFirstChar } = useShopStore();
-  const { formatDate } = useReviewStore();
+  const { formatDate, updateReplyRating } = useReviewStore();
 
   const calculateAverageRating = () => {
     if (!ratedBy || ratedBy.length === 0) return 0;
-
     const totalSum = ratedBy.reduce((sum, rated) => sum + rated.rating, 0);
     return Math.round((totalSum / ratedBy.length) * 10) / 10;
   };
-
   const averageRating = calculateAverageRating();
 
   return (
@@ -61,7 +59,11 @@ const ClientReviewsItem = ({
             {normalizeFirstChar(currentUser?.yourName ?? "")}{" "}
             {normalizeFirstChar(currentUser?.lastName ?? "")}
           </h2>
-          <StarRating productId={productId} rating={averageRating} onRate={onRate} />
+          <StarRating
+            productId={productId}
+            rating={averageRating}
+            onRate={onRate}
+          />
         </div>
       </div>
 
@@ -103,12 +105,17 @@ const ClientReviewsItem = ({
       <div className=" w-full md:w-[73%] flex flex-col pb-6">
         {replies.length > 0 &&
           replies.map((reply: DbReplyType, i: number) => {
+            console.log(reply, "replay form MAP")
             return (
               <div
                 key={i}
                 className="w-full flex flex-col gap-8  p-2          "
               >
-                <ReplyItem {...reply} />
+                <ReplyItem
+                  {...reply}
+                  updateReplyRating={updateReplyRating}
+                  reviewId={_id}
+                />
               </div>
             );
           })}

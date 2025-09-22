@@ -44,7 +44,7 @@ const Wishlist = () => {
                     discount={item.discount}
                     productName={item.productName}
                     price={item.price}
-                    rate={0}
+                    rating={0}
                     details={item.details}
                     _id={item._id}
                     newProduct={item.new}
@@ -70,7 +70,7 @@ const Wishlist = () => {
                   discount={item.discount}
                   productName={item.productName}
                   price={item.price}
-                  rate={0}
+                  rating={0}
                   details={item.details}
                   _id={item._id}
                   newProduct={item.new}
