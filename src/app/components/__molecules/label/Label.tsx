@@ -1,16 +1,16 @@
 "use client";
 import { useShopStore } from "@/app/store/shop-page.store";
-// import { useShopPageStore } from "@/app/store/useShopPage.store";
 import { StarRating } from "../../__organism";
 import AddToCartButton from "../addToCartButton/AddToCartButton";
 import WishlistButton from "../wishlistButton/WishlistButton";
 import { usePathname } from "next/navigation";
 import { useCartStore } from "@/app/store/cart.store";
 
+
 export type LabelPropsType = {
   productName: string;
   price: number;
-  rate: number;
+  rating: number;
   discount: number;
   details: string | "";
   _id: string;
@@ -20,7 +20,7 @@ export type LabelPropsType = {
 
 const Label = ({
   productName,
-  rate,
+  rating,
   discount,
   price,
   details,
@@ -34,6 +34,7 @@ const Label = ({
     calculateDiscount,
   } = useShopStore();
   const addProductToCart = useCartStore((state) => state.addProductToCart);
+  console.log(rating, "rating form Label");
 
   return (
     <div
@@ -43,7 +44,19 @@ const Label = ({
     >
       <div className="text-[#141718] w-full gap-1 flex flex-col items-start pt-1  md:pt-1">
         {/* <div className="text-sm text-yellow-500">★★★★★</div> */}
-        <StarRating rating={rate} productId={_id} />
+        {/* <StarRating
+          productId={_id}
+          rating={rating}
+          readOnly
+        /> */}
+
+        <StarRating
+          rating={rating}
+          totalRating={rating}
+          readOnly={true}
+          productId={_id}
+        />
+
         <p className="text-sm md:text-base font-semibold leading-[16px] md:leading-[26px]">
           {normalizeFirstChar(productName)}
         </p>

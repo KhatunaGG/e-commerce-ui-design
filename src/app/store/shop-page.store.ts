@@ -46,7 +46,13 @@ export type ProductsDataType = {
   components: string[];
   new: boolean;
   discount: number;
-  rate: number;
+
+
+  // rate: number;
+  rating: number;
+
+
+
   category: string[];
   price: number;
   colors: string[];

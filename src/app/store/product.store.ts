@@ -37,6 +37,7 @@ export interface IUseProductStore {
   loadMoreWishList: () => void;
   clearWishlist: () => void;
   setWishlistDataFromCache: (page: string) => void;
+  getAverageRating: (productId: string) => Promise<number>;
 }
 
 export const useProductStore = create<IUseProductStore>((set, get) => ({
@@ -216,6 +217,20 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
         isLoading: false,
         axiosError: handleApiError(e as AxiosError<ErrorResponse>),
       });
+    }
+  },
+  getAverageRating: async (productId: string) => {
+    try {
+      const res = await axiosInstance.get(
+        `/review/average-rating/${productId}`
+      );
+      if (res.status >= 200 && res.status <= 204) {
+        console.log(res.data.averageRating, "res.data.averageRating")
+        return res.data.averageRating;
+      }
+    } catch (e) {
+      console.error("Error fetching average rating", e);
+      return 0;
     }
   },
   clearProduct: () => set({ productById: null }),

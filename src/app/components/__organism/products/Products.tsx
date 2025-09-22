@@ -51,7 +51,7 @@ const Products = () => {
                     productName={product.productName}
                     sortByTwoHorizontally={sortByTwoHorizontally}
                     price={product.price}
-                    rate={product.rate}
+                    rating={product.rating}
                     details={product.details}
                     _id={product._id}
                     wishlist={product.wishlist}

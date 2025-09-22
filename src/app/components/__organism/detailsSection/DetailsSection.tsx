@@ -16,8 +16,7 @@ export type DetailsSectionPropsType = {
 
 const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
   const { calculateDiscount } = useShopStore();
-  const {totalRating} = useReviewStore()
-
+  const { totalRating, reviewLength } = useReviewStore();
 
   const {
     setSelectedQty,
@@ -38,7 +37,7 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
               image={productById.presignedUrl}
               productName={productById.productName}
               price={productById.price}
-              rate={productById.rate}
+              rating={productById.rating}
               details={productById.details}
               _id={productById._id}
               params={params}
@@ -65,15 +64,14 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
       <div className="w-full lg:flex-1 flex flex-col">
         <div className="w-full flex flex-col gap-4 pb-6">
           <div className="flex items-center justify-start gap-[10px]">
-            <StarRating productId={params} 
-
-          rating={0}
-          totalRating={totalRating}
-          readOnly
-            
+            <StarRating
+              productId={params}
+              rating={0}
+              totalRating={totalRating}
+              readOnly
             />
             <p className="font-xs font-normal leading-[20px] text-[#141718]">
-              <span>{11}</span>Reviews
+              <span>{reviewLength}</span>Reviews
             </p>
           </div>
           <h1 className="text-[#141718] text-[40px] font-medium leading-[44px] tracking-[-0.4px]">

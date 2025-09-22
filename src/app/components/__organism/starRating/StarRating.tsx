@@ -172,10 +172,15 @@ import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
 export type StarRatingPropsType = {
   productId: string;
-  rating: number; // used for interactive mode
+  rating: number;
   onRate?: (score: number) => Promise<boolean>;
-  totalRating?: number; // used for readonly
+  totalRating?: number; 
   readOnly?: boolean;
+
+
+
+  //  onReplyRating?: (score: number, replyId: string) => Promise<boolean>
+    onReplyRating?: (score: number) => Promise<boolean>;
 };
 
 const StarRating = ({
@@ -183,7 +188,9 @@ const StarRating = ({
   rating,
   onRate,
   readOnly = false,
-  totalRating = 0
+  totalRating = 0,
+
+  onReplyRating
 }: StarRatingPropsType) => {
   const [hovered, setHovered] = useState<number | null>(null);
   const [selected, setSelected] = useState<number>(rating);
@@ -192,26 +199,48 @@ const StarRating = ({
     setSelected(rating);
   }, [rating]);
 
-  const handleClick = async (index: number) => {
-    if (readOnly || !onRate) return;
+  // const handleClick = async (index: number) => {
+  //   if (readOnly || !onRate) return;
+
+  //   const score = index + 1;
+  //   const success = await onRate(score);
+  //   if (success) {
+  //     setSelected(score);
+  //   }
+  // };
+
+
+    const handleClick = async (index: number) => {
+    if (readOnly) return;
 
     const score = index + 1;
-    const success = await onRate(score);
+
+    // Prefer reply rating if it's provided, otherwise use regular rating
+    const success = onReplyRating
+      ? await onReplyRating(score)
+      : onRate
+      ? await onRate(score)
+      : false;
+
     if (success) {
       setSelected(score);
     }
   };
 
-  // Fix the value rendering logic
-  const valueToRender = readOnly 
-    ? totalRating 
-    : (hovered !== null ? hovered + 1 : selected);
+  // const valueToRender = readOnly 
+  //   ? totalRating 
+  //   : (hovered !== null ? hovered + 1 : selected);
+
+   const valueToRender = readOnly
+    ? totalRating
+    : hovered !== null
+    ? hovered + 1
+    : selected;
 
   return (
     <div className="flex items-center">
       {Array.from({ length: 5 }, (_, i) => {
         let icon;
-        // Use the valueToRender for determining which star to show
         if (valueToRender >= i + 1) {
           icon = <FaStar className="text-yellow-500" />;
         } else if (valueToRender >= i + 0.5) {

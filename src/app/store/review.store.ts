@@ -23,6 +23,8 @@ export interface ReplyType {
   text: string;
   productId: string;
   status: string;
+
+  ratedBy: RateType[];
 }
 
 export type RateType = {
@@ -37,6 +39,9 @@ export interface DbReplyType extends ReplyType {
   replyOwnerName: string;
   replyOwnerLastName: string;
   createdAt: string;
+
+  ratedBy: RateType[];
+  _id: string;
 }
 
 export interface DbReviewType extends ReviewType {
@@ -82,6 +87,13 @@ export interface IUseReviewStore {
   resetReviewStore: () => void;
   // updateReviewRating: (score: number, reviewId: string) => Promise<void>;
   updateReviewRating: (score: number, reviewId: string) => Promise<boolean>;
+
+  updateReplyRating: (
+    score: number,
+    replyId: string,
+    productId: string,
+    reviewId: string
+  ) => Promise<boolean>;
 }
 
 export const useReviewStore = create<IUseReviewStore>()(
@@ -183,8 +195,7 @@ export const useReviewStore = create<IUseReviewStore>()(
               reviewData: res.data.reviews,
               reviewLength: res.data.reviewsTotalLength,
 
-
-              totalRating: res.data.totalRating || 0, 
+              totalRating: res.data.totalRating || 0,
             });
           }
         } catch (e) {
@@ -288,21 +299,74 @@ export const useReviewStore = create<IUseReviewStore>()(
                 review._id === updatedReview._id ? updatedReview : review
               ),
             }));
-            console.log(res.data.review, "res.data.reviews")
-            console.log(res.data.totalRating, "res.data.totalRating")
-
             // set({
             //   isLoading: false,
             //   axiosError: null,
             //   reviewData: res.data.reviews,
             //   reviewLength: res.data.reviewsTotalLength,
-            //   totalRating: res.data.totalRating, 
+            //   totalRating: res.data.totalRating,
             // });
 
             toast.success("Rating updated successfully!");
             return true;
           }
 
+          return false;
+        } catch (e) {
+          const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
+          toast.error(errorMsg);
+          set({ axiosError: errorMsg });
+          return false;
+        }
+      },
+
+      updateReplyRating: async (
+        score: number,
+        replyId: string,
+        productId: string,
+        reviewId: string
+      ) => {
+        const { accessToken } = useSignInStore.getState();
+
+        set({
+          isLoading: true,
+          axiosError: null,
+        });
+
+        console.log(score, "score");
+        console.log(replyId, "replyId");
+        console.log(productId, "productId");
+        console.log(reviewId, "reviewId");
+
+        try {
+          const res = await axiosInstance.patch(
+            `/review/update-reply-rate?productId=${productId}&reviewId=${reviewId}&replyId=${replyId}`,
+            { rating: score },
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+          if (res.status >= 200 && res.status <= 204) {
+            const updatedReply = res.data.updatedReply;
+            const reviewId = res.data.reviewId;
+
+            set((state) => ({
+              reviewData: state.reviewData.map((review) => {
+                if (review._id !== reviewId) return review;
+                return {
+                  ...review,
+                  replies: review.replies.map((reply) =>
+                    reply._id === updatedReply._id ? updatedReply : reply
+                  ),
+                };
+              }),
+            }));
+
+            toast.success("Reply rating updated!");
+            return true;
+          }
           return false;
         } catch (e) {
           const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
