@@ -98,17 +98,9 @@ const ClientReviews = ({ productId }: { productId: string }) => {
     setPage,
     sortReview,
     setSortReview,
-    updateReviewRating
+    updateReviewRating,
   } = useReviewStore();
   const [activeReviewId, setActiveReviewId] = useState<string | null>(null);
-  // console.log(reviewData, "reviewData")
-
-
-    
-  // const handleRate = (score: number) => {
-  //   updateReviewRating(score, productId);
-  // };
-
 
   useEffect(() => {
     getAllReviews(productId);
@@ -148,7 +140,7 @@ const ClientReviews = ({ productId }: { productId: string }) => {
             {...review}
             activeReviewId={activeReviewId}
             setActiveReviewId={setActiveReviewId}
-                rating={review.rating}
+            rating={review.rating}
             onRate={(score: number) => updateReviewRating(score, review._id!)}
           />
         ))}

@@ -3,10 +3,7 @@ import { useAccountStore } from "@/app/store/account.store";
 import ReviewAvatar from "../reviewAvatar/ReviewAvatar";
 import StarRating from "../starRating/StarRating";
 import { useShopStore } from "@/app/store/shop-page.store";
-import {
-  RateType,
-  useReviewStore,
-} from "@/app/store/review.store";
+import { RateType, useReviewStore } from "@/app/store/review.store";
 
 export type ReplyItemPropsType = {
   text: string;
@@ -36,14 +33,11 @@ const ReplyItem = ({
   productId,
   updateReplyRating,
   reviewId,
- rating
+  rating,
 }: ReplyItemPropsType) => {
   const { avatar } = useAccountStore();
   const { normalizeFirstChar } = useShopStore();
   const { formatDate } = useReviewStore();
-  // console.log(ratedBy, "ratedBy from ReplyItem");
-
-
 
   return (
     <div className="w-full flex flex-col gap-2 p-2       border-b border-b-[#E8ECEF]">
@@ -73,14 +67,6 @@ const ReplyItem = ({
     return updateReplyRating(score, _id, productId, reviewId ?? "");
   }}
 /> */}
-
-
-
-
-
-
-
-
       </div>
       <div className="w-full flex flex-col items-start">
         <p>{text}</p>

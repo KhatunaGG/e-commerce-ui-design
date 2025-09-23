@@ -21,12 +21,10 @@ export type ClientReviewsItemPropsType = {
 
 const ClientReviewsItem = ({
   reviewText,
-  // rating,
   _id,
-  // likes,
+  likes,
   reviewOwnerId,
   replies,
-  // questions,
   productId,
   createdAt,
   activeReviewId,
@@ -37,7 +35,7 @@ const ClientReviewsItem = ({
   const { avatar } = useAccountStore();
   const { currentUser } = useSignInStore();
   const { normalizeFirstChar } = useShopStore();
-  const { formatDate, updateReplyRating } = useReviewStore();
+  const { formatDate, updateReplyRating, likeReview } = useReviewStore();
 
   const calculateAverageRating = () => {
     if (!ratedBy || ratedBy.length === 0) return 0;
@@ -45,6 +43,18 @@ const ClientReviewsItem = ({
     return Math.round((totalSum / ratedBy.length) * 10) / 10;
   };
   const averageRating = calculateAverageRating();
+
+  const isLiked = currentUser?._id
+    ? likes.some((like) => like.likedById === currentUser._id)
+    : false;
+
+  const likesCount = likes.reduce((sum, count) => (sum += count.like), 0);
+  console.log(likesCount, "likesCount");
+
+  const handleLike = async () => {
+    if (!_id || !currentUser?._id) return;
+    await likeReview(_id, currentUser._id);
+  };
 
   return (
     <div
@@ -54,7 +64,7 @@ const ClientReviewsItem = ({
     >
       <div className="w-full flex items-start justify-start gap-4 md:gap-10">
         <ReviewAvatar avatar={avatar ?? ""} />
-        <div className="flex-1 flex flex-col gap-4      bg-green-200">
+        <div className="flex-1 flex flex-col gap-4 ">
           <h2 className="text-[20px] font-semibold leading-[32px] text-[#141718]">
             {normalizeFirstChar(currentUser?.yourName ?? "")}{" "}
             {normalizeFirstChar(currentUser?.lastName ?? "")}
@@ -75,8 +85,13 @@ const ClientReviewsItem = ({
       </p>
 
       <div className="w-full pt-[12px] pb-6 flex items-center justify-center md:justify-start gap-4 md:pl-[223px]">
-        <button className="text-xs font-semibold leading-[20px] text-[#23262F]">
-          Likes
+        <button
+          onClick={handleLike}
+          className={`text-xs font-semibold leading-[20px] ${
+            isLiked ? "text-blue-600" : "text-[#23262F]"
+          }`}
+        >
+          {isLiked ? "Liked" : "Like"} ({likesCount})
         </button>
         <button
           onClick={() => {
@@ -105,7 +120,6 @@ const ClientReviewsItem = ({
       <div className=" w-full md:w-[73%] flex flex-col pb-6">
         {replies.length > 0 &&
           replies.map((reply: DbReplyType, i: number) => {
-            console.log(reply, "replay form MAP")
             return (
               <div
                 key={i}
