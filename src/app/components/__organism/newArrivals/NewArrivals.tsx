@@ -138,7 +138,6 @@ const NewArrivals = ({ images }: { images: ProductsDataType[] }) => {
     fetchRatings();
   }, [images, getAverageRating]);
 
-  console.log(ratings, "ratings")
 
   const handleMoreProducts = () => {
     if (swiperRef.current && swiperRef.current.swiper) {

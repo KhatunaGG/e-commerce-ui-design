@@ -23,13 +23,17 @@ export interface ReplyType {
   text: string;
   productId: string;
   status: string;
-
   ratedBy: RateType[];
 }
 
 export type RateType = {
   rating: number;
   ratedById: string;
+};
+
+export type LikeType = {
+  like: number;
+  likedById: string;
 };
 
 export interface DbReplyType extends ReplyType {
@@ -39,14 +43,13 @@ export interface DbReplyType extends ReplyType {
   replyOwnerName: string;
   replyOwnerLastName: string;
   createdAt: string;
-
   ratedBy: RateType[];
   _id: string;
 }
 
 export interface DbReviewType extends ReviewType {
   reviewOwnerId: string | null;
-  likes: number;
+  likes: LikeType[];
   status: "review" | "reply";
   rating: number;
   replies: DbReplyType[];
@@ -67,7 +70,6 @@ export interface IUseReviewStore {
   isLoading: boolean;
   axiosError: string | null;
   emojiVisible: boolean;
-
   replyOwnerName: string;
   replyOwnerLastName: string;
   reviewLength: number;
@@ -75,9 +77,9 @@ export interface IUseReviewStore {
   page: number;
   sortReview: "newest" | "oldest";
   totalRating: number;
+  likes: LikeType[];
   setSortReview: (order: "newest" | "oldest", productId: string) => void;
   setPage: (page: number, productId: string) => void;
-
   setEmojiVisible: (emojiVisible: boolean) => void;
   submitReview: (formData: ReviewType, accessToken: string) => Promise<boolean>;
   getAllReviews: (productId: string) => Promise<void>;
@@ -85,15 +87,14 @@ export interface IUseReviewStore {
   formatDate: (dateString: string | "") => string;
   getReviewsCountOnly: () => Promise<void>;
   resetReviewStore: () => void;
-  // updateReviewRating: (score: number, reviewId: string) => Promise<void>;
   updateReviewRating: (score: number, reviewId: string) => Promise<boolean>;
-
   updateReplyRating: (
     score: number,
     replyId: string,
     productId: string,
     reviewId: string
   ) => Promise<boolean>;
+  likeReview: (reviewId: string, userId: string) => Promise<void>;
 }
 
 export const useReviewStore = create<IUseReviewStore>()(
@@ -105,15 +106,15 @@ export const useReviewStore = create<IUseReviewStore>()(
       reviewData: [],
       reviewFormData: { text: "", productId: "" },
       emojiVisible: false,
-      // showReply: false,
       replyOwnerName: "",
       replyOwnerLastName: "",
       reviewLength: 0,
       take: 5,
       page: 1,
       totalRating: 0,
-
       sortReview: "newest",
+      likes: [],
+
       setSortReview: (order, productId) => {
         set({ sortReview: order });
         get().getAllReviews(productId);
@@ -123,7 +124,6 @@ export const useReviewStore = create<IUseReviewStore>()(
         set({ page });
         get().getAllReviews(productId);
       },
-      // setShowReply: () => set((state) => ({ showReply: !state.showReply })),
       setEmojiVisible: () =>
         set((state) => ({ emojiVisible: !state.emojiVisible })),
       formatDate: (dateString: string | "") => {
@@ -145,11 +145,11 @@ export const useReviewStore = create<IUseReviewStore>()(
           reviewText: formData.text,
           productId: formData.productId,
           reviewOwnerId: null,
-          likes: 0,
           status: "review",
           rating: 0,
           replies: [],
           ratedBy: [],
+          likes: [],
         };
 
         try {
@@ -299,18 +299,9 @@ export const useReviewStore = create<IUseReviewStore>()(
                 review._id === updatedReview._id ? updatedReview : review
               ),
             }));
-            // set({
-            //   isLoading: false,
-            //   axiosError: null,
-            //   reviewData: res.data.reviews,
-            //   reviewLength: res.data.reviewsTotalLength,
-            //   totalRating: res.data.totalRating,
-            // });
-
             toast.success("Rating updated successfully!");
             return true;
           }
-
           return false;
         } catch (e) {
           const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
@@ -332,12 +323,6 @@ export const useReviewStore = create<IUseReviewStore>()(
           isLoading: true,
           axiosError: null,
         });
-
-        console.log(score, "score");
-        console.log(replyId, "replyId");
-        console.log(productId, "productId");
-        console.log(reviewId, "reviewId");
-
         try {
           const res = await axiosInstance.patch(
             `/review/update-reply-rate?productId=${productId}&reviewId=${reviewId}&replyId=${replyId}`,
@@ -363,7 +348,6 @@ export const useReviewStore = create<IUseReviewStore>()(
                 };
               }),
             }));
-
             toast.success("Reply rating updated!");
             return true;
           }
@@ -373,6 +357,62 @@ export const useReviewStore = create<IUseReviewStore>()(
           toast.error(errorMsg);
           set({ axiosError: errorMsg });
           return false;
+        }
+      },
+
+      likeReview: async (reviewId: string, userId: string) => {
+        set((state) => {
+          const updatedReviewData: DbReviewType[] = state.reviewData.map(
+            (review) => {
+              if (review._id !== reviewId) return review;
+              const currentLikes = Array.isArray(review.likes)
+                ? review.likes
+                : [];
+
+              const alreadyLiked = currentLikes.some(
+                (like) => like.likedById === userId
+              );
+
+              let updatedLikes: LikeType[];
+              if (alreadyLiked) {
+                updatedLikes = currentLikes.filter(
+                  (like) => like.likedById !== userId
+                );
+              } else {
+                updatedLikes = [
+                  ...currentLikes,
+                  { likedById: userId, like: 1 },
+                ];
+              }
+              return { ...review, likes: updatedLikes };
+            }
+          );
+          return {
+            reviewData: updatedReviewData,
+          };
+        });
+        const { accessToken } = useSignInStore.getState();
+        set({
+          isLoading: true,
+          axiosError: null,
+        });
+        try {
+          const res = await axiosInstance.patch(
+            `/review/${reviewId}/like`,
+            { userId },
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+          if (res.status >= 0 && res.status <= 204) {
+            set({ isLoading: false, axiosError: null });
+          }
+        } catch (e) {
+          const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
+          toast.error(errorMsg);
+          set({ axiosError: errorMsg, isLoading: false });
         }
       },
     }),

@@ -121,7 +121,7 @@
 //           disabled={isLoading}
 //           {...register("text", {
 //             onChange: (e) => {
-//               setValue("text", e.target.value); 
+//               setValue("text", e.target.value);
 //             },
 //           })}
 //           ref={(el) => {
@@ -161,9 +161,6 @@
 
 // export default ReviewsForm;
 
-
-
-
 "use client";
 import { ArrowRight } from "../../__atoms";
 import EmojiSection from "../emojiSection/EmojiSection";
@@ -192,7 +189,7 @@ export interface ReviewsFormProps {
   status: "review" | "reply";
   reviewOwnerId?: string;
   replyToId?: string;
-   setActiveReviewId?: (id: string | null) => void; 
+  setActiveReviewId?: (id: string | null) => void;
 }
 
 const ReviewsForm = ({
@@ -200,14 +197,10 @@ const ReviewsForm = ({
   reviewOwnerId,
   status = "reply",
   replyToId,
-  setActiveReviewId
+  setActiveReviewId,
 }: ReviewsFormProps) => {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-  const {
-    submitReview,
-    isLoading,
-    addReplayToReview,
-  } = useReviewStore();
+  const { submitReview, isLoading, addReplayToReview } = useReviewStore();
   const { accessToken, initialize } = useSignInStore();
 
   useEffect(() => {
@@ -255,10 +248,7 @@ const ReviewsForm = ({
         text: formData.text,
         productId: formData.productId,
         status: formData.status,
-
-
-        
-         ratedBy: [],
+        ratedBy: [],
       };
       const success = await addReplayToReview(replyData);
       if (success) reset();
@@ -284,7 +274,7 @@ const ReviewsForm = ({
           disabled={isLoading}
           {...register("text", {
             onChange: (e) => {
-              setValue("text", e.target.value); 
+              setValue("text", e.target.value);
             },
           })}
           ref={(el) => {

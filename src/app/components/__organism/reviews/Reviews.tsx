@@ -17,8 +17,6 @@ const Reviews = ({ productName, productId }: ReviewsPropsType) => {
     getAllReviews(productId);
   }, [getAllReviews, page, productId, reviewLength]);
 
-  // console.log(totalRating, "totalRating");
-  // console.log(reviewData, "totalRating");
 
   return (
     <div className="w-full h-full  ">
