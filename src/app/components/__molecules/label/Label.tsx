@@ -34,7 +34,8 @@ const Label = ({
     calculateDiscount,
   } = useShopStore();
   const addProductToCart = useCartStore((state) => state.addProductToCart);
-  console.log(rating, "rating form Label");
+
+  
 
   return (
     <div
@@ -43,13 +44,6 @@ const Label = ({
       } w-full flex flex-col gap-2 lg:gap-4 `}
     >
       <div className="text-[#141718] w-full gap-1 flex flex-col items-start pt-1  md:pt-1">
-        {/* <div className="text-sm text-yellow-500">★★★★★</div> */}
-        {/* <StarRating
-          productId={_id}
-          rating={rating}
-          readOnly
-        /> */}
-
         <StarRating
           rating={rating}
           totalRating={rating}

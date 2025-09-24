@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import Product from "../product/Product";
 import StarRating from "../starRating/StarRating";
@@ -8,6 +9,8 @@ import { ProductsDataType, useShopStore } from "@/app/store/shop-page.store";
 import { useCartStore } from "@/app/store/cart.store";
 import Counter from "../counter/Counter";
 import { useReviewStore } from "@/app/store/review.store";
+import { useEffect, useState } from "react";
+import { useProductStore } from "@/app/store/product.store";
 
 export type DetailsSectionPropsType = {
   productById: ProductsDataType;
@@ -17,6 +20,18 @@ export type DetailsSectionPropsType = {
 const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
   const { calculateDiscount } = useShopStore();
   const { totalRating, reviewLength } = useReviewStore();
+  const { getAverageRating, averageRatings } = useProductStore();
+  const [isRatingLoaded, setIsRatingLoaded] = useState(false);
+
+  useEffect(() => {
+    const fetchRating = async () => {
+      await getAverageRating(params);
+      setIsRatingLoaded(true);
+    };
+    fetchRating();
+  }, [params, getAverageRating]);
+
+  const averageRating = averageRatings[params];
 
   const {
     setSelectedQty,
@@ -64,12 +79,23 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
       <div className="w-full lg:flex-1 flex flex-col">
         <div className="w-full flex flex-col gap-4 pb-6">
           <div className="flex items-center justify-start gap-[10px]">
-            <StarRating
+            {/* <StarRating
               productId={params}
-              rating={0}
+              rating={averageRating || 0}
               totalRating={totalRating}
               readOnly
-            />
+            /> */}
+            {isRatingLoaded ? (
+              <StarRating
+                productId={params}
+                rating={averageRating || 0}
+                totalRating={totalRating}
+                readOnly
+              />
+            ) : (
+              <p>Loading rating...</p>
+            )}
+
             <p className="font-xs font-normal leading-[20px] text-[#141718]">
               <span>{reviewLength}</span>Reviews
             </p>
@@ -77,7 +103,6 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
           <h1 className="text-[#141718] text-[40px] font-medium leading-[44px] tracking-[-0.4px]">
             {productById.productName}
           </h1>
-
           <p className="text-[#6C7275] text-base  font-semibold leading-[22px] ">
             {productById.details}
           </p>
@@ -92,9 +117,7 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
             </p>
           </div>
         </div>
-
         <OfferTill till={productById.discountTill} />
-
         <div className="py-6 flex lex-col gap-6">
           <div className="flex flex-col items-start justify-start gap-2">
             <p className="text-base font-semibold leading-[26px] text-[#6C7275]">
@@ -105,29 +128,21 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
             </p>
           </div>
         </div>
-
         <ColorSection
           colors={productById.colors}
           setSelectedColor={setSelectedColor}
           selectedColor={selectedColor}
         />
-
         <div className="w-full py-8  border-b  border-b-[#e9e9ea] flex flex-col gap-6">
           <div className="w-full flex items-center justify-center gap-2 md:gap-6">
             <Counter
-              // setSelectedQty={setSelectedQty}
-              // selectedQty={selectedQty}
               id={params}
               color={selectedColor}
               quantity={selectedQty}
               onChange={(newQty: number) => setSelectedQty(Math.max(1, newQty))}
               show={true}
             />
-
-            <WishlistButton
-              params={params}
-              //  wishlist={productById.wishlist}
-            />
+            <WishlistButton params={params} />
           </div>
           <AddToCartButton
             params={params}
@@ -142,24 +157,3 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
 };
 
 export default DetailsSection;
-
-{
-  /* <div className="w-[29.67%] bg-[#F5F5F5] py-4 px-4 flex items-center justify-center gap-3  md:gap-6 ">
-              <button
-                onClick={() => {
-                  if (selectedQty < 0) return;
-                  setSelectedQty(selectedQty - 1);
-                }}
-                className="w-[20px] h-[20px] cursor-pointer"
-              >
-                <Minus />
-              </button>
-              <p>{selectedQty > 0 ? selectedQty : 0}</p>
-              <button
-                onClick={() => setSelectedQty(selectedQty + 1)}
-                className="w-[20px] h-[20px] cursor-pointer"
-              >
-                <Add />
-              </button>
-            </div> */
-}

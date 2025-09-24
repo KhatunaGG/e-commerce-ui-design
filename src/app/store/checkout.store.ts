@@ -36,7 +36,6 @@ export interface IUseCheckoutStore {
   axiosError: string | null;
   formData: CheckoutType | null;
   checkoutData: ICheckoutData | null;
-
   subtotal: number;
   shippingCost: number;
   shippingOption: string;

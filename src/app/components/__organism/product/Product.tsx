@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import { AddToCartButton, Label } from "../../__molecules";
 import { useCartStore } from "@/app/store/cart.store";
@@ -88,16 +88,6 @@ const Product = ({
         )}
       </div>
       {!params && (
-        // <Label
-        //   productName={productName}
-        //   price={price}
-        //      rating={ratings[item._id] || 0}
-        //   discount={discount}
-        //   details={details}
-        //   _id={_id}
-        //   newProduct={newProduct}
-        //   wishlist={wishlist}
-        // />
         <Label
           productName={productName}
           price={price}
