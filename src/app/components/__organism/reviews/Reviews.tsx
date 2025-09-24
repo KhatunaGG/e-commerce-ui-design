@@ -3,6 +3,7 @@ import StarRating from "../starRating/StarRating";
 import ReviewsForm from "../reviewsForm/ReviewsForm";
 import { useReviewStore } from "@/app/store/review.store";
 import { useEffect } from "react";
+import { useProductStore } from "@/app/store/product.store";
 
 export type ReviewsPropsType = {
   productId: string;
@@ -10,13 +11,19 @@ export type ReviewsPropsType = {
 };
 
 const Reviews = ({ productName, productId }: ReviewsPropsType) => {
-  const { reviewLength, getAllReviews, page, totalRating } =
-    useReviewStore();
+  const { reviewLength, getAllReviews, page, totalRating } = useReviewStore();
+  const { getAverageRating, averageRatings } = useProductStore();
+
+  useEffect(() => {
+    getAllReviews(productId);
+    getAverageRating(productId);
+  }, [getAllReviews, getAverageRating, page, productId]);
+
+  const averageRating = averageRatings[productId];
 
   useEffect(() => {
     getAllReviews(productId);
   }, [getAllReviews, page, productId, reviewLength]);
-
 
   return (
     <div className="w-full h-full  ">
@@ -24,9 +31,15 @@ const Reviews = ({ productName, productId }: ReviewsPropsType) => {
         Customer Reviews
       </h2>
       <div className="w-full flex gap-2 items-center mb-2">
-        <StarRating
+        {/* <StarRating
           productId={productId}
           rating={0}
+          totalRating={totalRating}
+          readOnly
+        />{" "} */}
+        <StarRating
+          productId={productId}
+          rating={averageRating ?? 0}
           totalRating={totalRating}
           readOnly
         />{" "}

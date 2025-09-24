@@ -142,7 +142,7 @@ export default function Tabs({ productName, params }: TapsPropsType) {
 
   return (
     <section className="w-full  py-10 flex flex-col gap-10  ">
-      <div className="hidden w-full md:flex gap-20         mb-2">
+      <div className="hidden w-full md:flex gap-20 mb-2">
         {tabItems.map((item, i) => {
           // const count = item. === "questions" || item === "reviews";
           return (

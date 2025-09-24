@@ -29,8 +29,6 @@ export interface IUseHomePageStore {
   isLoading: boolean;
   axiosError: string | null;
   currentPage: string;
-
-  // Actions
   setCurrentPage: (page: string) => void;
   getAllImages: (page: string) => Promise<void>;
   setCachedImagesByPage: (cachedImages: Record<string, IImageData[]>) => void;

@@ -4,9 +4,7 @@ import { Heart } from "../../__atoms";
 
 const WishlistButton = ({ params }: { params?: string }) => {
   const { updateProduct, productById } = useProductStore();
-
   const wishlist = productById?.wishlist ?? false;
-
   return (
     <button
       onClick={() => updateProduct(params ?? "", !wishlist)}

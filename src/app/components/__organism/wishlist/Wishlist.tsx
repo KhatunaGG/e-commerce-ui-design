@@ -9,21 +9,18 @@ import Link from "next/link";
 const Wishlist = () => {
   const path = usePathname();
   const isWishlistPage = path.includes("wishlist");
-  const { wishlistData, clearWishlist, setWishlistDataFromCache } = useProductStore();
-
-
+  const { wishlistData, clearWishlist, setWishlistDataFromCache } =
+    useProductStore();
   const page = useMemo(
     () => path?.split("/").filter(Boolean).pop() || "home",
     [path]
   );
+  // console.log(wishlistData, "wishlistData from WISHLIST");
 
-  console.log(wishlistData, "wishlistData from WISHLIST")
-  
-    useEffect(() => {
+  useEffect(() => {
     clearWishlist();
     setWishlistDataFromCache(page);
-  }, [page,                clearWishlist, setWishlistDataFromCache]);
-
+  }, [page, clearWishlist, setWishlistDataFromCache]);
 
   return (
     <section className="w-full min-h-screen md:px-[11.11%] px-[8.53%] py-8 flex flex-col items-start gap-10">
