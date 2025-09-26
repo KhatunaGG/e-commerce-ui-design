@@ -29,7 +29,7 @@ const Shop = () => {
     sortByTwoHorizontally,
   } = useShopStore();
 
-  const {getProductsFromCacheOrApi} = useShopStore()
+  const { getProductsFromCacheOrApi } = useShopStore();
 
   useEffect(() => {
     if (!page) return;
@@ -39,7 +39,13 @@ const Shop = () => {
 
     getAllImages(page);
     getProductsFromCacheOrApi();
-  }, [page,              clearHomePageData, clearShopPageData, getAllImages, getProductsFromCacheOrApi]);
+  }, [
+    page,
+    clearHomePageData,
+    clearShopPageData,
+    getAllImages,
+    getProductsFromCacheOrApi,
+  ]);
 
   if (homeLoading || shopLoading) return <AnimateSpin />;
 
@@ -47,6 +53,8 @@ const Shop = () => {
     imagesData.filter((img) => img.componentUsage?.includes("banner")) || [];
   const isResorted =
     sortedByFour || sortByTwoVertically || sortByTwoHorizontally;
+
+  console.log(imagesData, "imagesData  form SHOP");
 
   return (
     <section className="w-full min-h-screen">
