@@ -54,6 +54,7 @@ export { default as ReplyItem } from "./replyItem/ReplyItem"
 export { default as Questions } from "./questions/Questions"
 export { default as Answers } from "./answers/Answers"
 export { default as QuestionForm } from "./questionForm/QuestionForm"
+export { default as Blog } from "./blog/Blog"
 
 
 

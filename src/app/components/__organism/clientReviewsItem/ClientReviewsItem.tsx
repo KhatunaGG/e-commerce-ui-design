@@ -88,7 +88,7 @@ const ClientReviewsItem = ({
         <button
           onClick={handleLike}
           className={`text-xs font-semibold leading-[20px] ${
-            isLiked ? "text-blue-600" : "text-[#23262F]"
+            isLiked ? "text-blue-600" : "text-[#23262F] cursor-pointer"
           }`}
         >
           {isLiked ? "Liked" : "Like"} ({likesCount})

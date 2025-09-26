@@ -18,7 +18,7 @@ export interface IImageData {
   imageName: string;
   url: string;
   componentUsage: string[];
-  page: string[];
+  pages: string[];
   presignedUrl: string;
   title?: string;
 }
