@@ -30,7 +30,7 @@ const Products = () => {
     <section className="w-full flex flex-col gap-10 lg:gap-20 ">
       <div className="w-full lg:flex-1 flex flex-col gap-8 md:gap-10">
         <FilterOptions />
-        <section
+        <div
           className={`
           ${resortedStyles} 
         w-full  grid  h-full gap-y-4 gap-x-2 md:gap-y-6 md:gap-x-6`}
@@ -59,7 +59,7 @@ const Products = () => {
                 </div>
               </Link>
             ))}
-        </section>
+        </div>
       </div>
 
       <div className="w-ful flex items-center justify-center">

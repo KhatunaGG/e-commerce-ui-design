@@ -143,6 +143,7 @@ export interface IUseShopStore {
     priceRange: string | null,
     sortBy: string
   ) => string;
+      handleIconClick: (icon: string) => void;
 }
 
 export const useShopStore = create<IUseShopStore>((set, get) => ({
@@ -194,7 +195,7 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
 
   setRating: (rating: number) => set({ rating }),
 
-  // handleRate: (rate, id) => {}, // !!!!!!!!!!!!!!
+ 
   calculateDiscount: (price?: number, discount?: number): string => {
     if (typeof price !== "number") return "-";
     if (!discount || discount <= 0) return `$${price.toFixed(2)}`;
@@ -243,6 +244,31 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
       sortByTwoVertically: false,
       sortByTwoHorizontally: v,
     }),
+
+
+    handleIconClick: (icon: string) => {
+  const {
+    setsSortedByFour,
+    setSortByTwoVertically,
+    setSortByTwoHorizontally,
+    resetAllByIconsSort,
+  } = get();
+
+  switch (icon) {
+    case "SecondFilterIcon":
+      setsSortedByFour(true);
+      break;
+    case "ThirdFilterIcon":
+      setSortByTwoVertically(true);
+      break;
+    case "FourthFilterIcon":
+      setSortByTwoHorizontally(true);
+      break;
+    default:
+      resetAllByIconsSort();
+  }
+},
+
   setSelected: (selected) => set({ selected }),
   setIsDroppedDown: (isDroppedDown) => set({ isDroppedDown }),
   handleSelect: (value) => {

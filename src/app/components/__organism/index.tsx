@@ -55,6 +55,9 @@ export { default as Questions } from "./questions/Questions"
 export { default as Answers } from "./answers/Answers"
 export { default as QuestionForm } from "./questionForm/QuestionForm"
 export { default as Blog } from "./blog/Blog"
+export { default as SortByIcons } from "./sortByIcons/SortByIcons"
+export { default as BlogList } from "./blogList/BlogList"
+export { default as Overlay } from "./overlay/Overlay"
 
 
 

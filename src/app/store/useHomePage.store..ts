@@ -43,29 +43,69 @@ export const useHomePageStore = create<IUseHomePageStore>((set, get) => ({
   axiosError: null,
   currentPage: "",
 
-  setCurrentPage: async (page: string) => {
-    const state = get();
-    if (state.currentPage === page) {
-      return;
-    }
-    const cachedImages = state.cachedImagesByPage[page];
-    if (cachedImages && cachedImages.length > 0) {
-      set({
-        currentPage: page,
-        imagesData: cachedImages,
-        axiosError: null,
-        isLoading: false,
-      });
-    } else {
-      set({
-        currentPage: page,
-        imagesData: [],
-        axiosError: null,
-        isLoading: true,
-      });
-      await get().getAllImages(page);
-    }
-  },
+  // setCurrentPage: async (page: string) => {
+  //   const state = get();
+  //   if (state.currentPage === page) {
+  //     return;
+  //   }
+  //   const cachedImages = state.cachedImagesByPage[page];
+  //   if (cachedImages && cachedImages.length > 0) {
+  //     set({
+  //       currentPage: page,
+  //       imagesData: cachedImages,
+  //       axiosError: null,
+  //       isLoading: false,
+  //     });
+  //   } else {
+  //     set({
+  //       currentPage: page,
+  //       imagesData: [],
+  //       axiosError: null,
+  //       isLoading: true,
+  //     });
+  //     await get().getAllImages(page);
+  //   }
+  // },
+
+
+
+
+
+
+// Modified setCurrentPage function in your store
+setCurrentPage: async (page: string) => {
+  const state = get();
+  
+  // Always update the current page
+  set({ currentPage: page });
+  
+  const cachedImages = state.cachedImagesByPage[page];
+  if (cachedImages && cachedImages.length > 0) {
+    set({
+      imagesData: cachedImages,
+      axiosError: null,
+      isLoading: false,
+    });
+  } else {
+    // Set loading state and fetch images
+    set({
+      imagesData: [],
+      axiosError: null,
+      isLoading: true,
+    });
+    await get().getAllImages(page);
+  }
+},
+
+
+
+
+
+
+
+
+
+
 
   getAllImages: async (page: string) => {
     const state = get();
