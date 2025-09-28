@@ -48,14 +48,11 @@ export const useAccountStore = create<IUseAccountStore>()(
         accessToken: string
       ): Promise<boolean> => {
         const original = get().formData;
-
         if (!original) {
           set({ axiosError: "Original form data not found." });
           return false;
         }
-
         set({ isLoading: true, axiosError: null });
-
         const normalizeLower = (value?: string) =>
           value?.trim().toLowerCase() ?? "";
 
@@ -100,7 +97,6 @@ export const useAccountStore = create<IUseAccountStore>()(
         }
 
         const mappedPayload: Record<string, string> = {};
-
 
         if (changedFields.accountName)
           mappedPayload.yourName = changedFields.accountName;

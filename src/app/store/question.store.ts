@@ -223,18 +223,17 @@ export const useQuestionStore = create<IQuestionStoreType>()(
         }
       },
       resetQuestionStore: () => {
-  set({
-    questionData: [],
-    answerOwnerName: "",
-    answerOwnerLastName: "",
-    page: 1,
-    take: 5,
-    sortQuestions: "newest", // or whatever default you use
-    axiosError: null,
-    isLoading: false,
-  });
-}
-
+        set({
+          questionData: [],
+          answerOwnerName: "",
+          answerOwnerLastName: "",
+          page: 1,
+          take: 5,
+          sortQuestions: "newest", // or whatever default you use
+          axiosError: null,
+          isLoading: false,
+        });
+      },
     }),
     {
       name: "question-store",

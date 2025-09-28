@@ -54,7 +54,7 @@ const Shop = () => {
   const isResorted =
     sortedByFour || sortByTwoVertically || sortByTwoHorizontally;
 
-  console.log(imagesData, "imagesData  form SHOP");
+
 
   return (
     <section className="w-full min-h-screen">

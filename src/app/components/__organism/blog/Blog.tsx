@@ -49,10 +49,11 @@ import { useShopStore } from "@/app/store/shop-page.store";
 import { sortIcons } from "@/app/commons/data";
 import BlogList from "../blogList/BlogList";
 import Overlay from "../overlay/Overlay";
+import { useBlogStore } from "@/app/store/blog.store";
 
 const Blog = () => {
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
-  const {
+   const {
     imagesData,
     setCurrentPage,
     getAllImages,
@@ -60,12 +61,16 @@ const Blog = () => {
     clearCurrentPageData,
   } = useHomePageStore();
   const { handleIconClick } = useShopStore();
+  const { showOverlay, toggleOverlay } = useBlogStore();
 
   const pathName = usePathname();
+   const isBlogPage = pathName.includes("blog");
   const page = useMemo(
     () => pathName?.split("/").pop() || "default",
     [pathName]
   );
+
+  
   useEffect(() => {
     if (!page) return;
     clearCurrentPageData();
@@ -79,15 +84,28 @@ const Blog = () => {
       (img.pages?.includes(page) || img.pages?.includes("blog"))
   );
   const hasValidBanner = bannerImages.length > 0;
+
+
+  
   return (
     <section className="w-full min-h-screen bg-green-200 flex flex-col relative">
-      <Overlay />
+      {showOverlay && <Overlay isBlogPage={isBlogPage} />}
+
       {!isLoading && hasValidBanner && <Banner images={bannerImages} />}
       <div className="w-full md:px-[11.11%] px-[8.53%] flex flex-col bg-red-200 pt-8 md:pt-6 pb-10">
         <div className="NAV w-full py-[9px] flex items-center justify-between">
-          <h2 className="text-sm font-semibold leading-[22px] text-[#121212]">
-            All Blog
-          </h2>
+          <div className="w-fit flex items-center gap-6">
+            <h2 className="text-sm font-semibold leading-[22px] text-[#121212]">
+              All Blog
+            </h2>
+            <button
+              onClick={toggleOverlay}
+              className="text-sm font-semibold leading-[22px] text-[#121212] px-2"
+            >
+              Create your blog
+            </button>
+          </div>
+
           <SortByIcons
             sortIcons={sortIcons}
             activeIcon={activeIcon}
