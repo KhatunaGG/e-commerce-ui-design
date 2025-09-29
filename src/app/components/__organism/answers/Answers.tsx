@@ -22,9 +22,7 @@ const Answers = ({
   return (
     <div className="w-full  flex flex-col items-start gap-4 mb-2 border-b border-b-[#E8ECEF]">
       <div className="w-full">{answerText}</div>
-
       <div className="w-full flex items-center justify-between ">
-
           <p className="w-[60%] text-[#a2a5a7] text-sm font-normal italic">
             {`${normalizeFirstChar(answerOwnerName ?? "")} ${normalizeFirstChar(
               answerOwnerLastName ?? ""
