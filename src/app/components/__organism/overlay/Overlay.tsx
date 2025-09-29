@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef } from "react";
 import { toast } from "react-toastify";
+import { useSignInStore } from "@/app/store/sign-in.store";
 
 export const blogSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -21,14 +22,15 @@ export type overlayProps = {
 };
 
 const Overlay = ({ isBlogPage }: overlayProps) => {
-  const { setShowOverlay } = useBlogStore();
+  const { setShowOverlay, createBlog } = useBlogStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const { initialize, accessToken } = useSignInStore();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    // reset,
+    reset,
   } = useForm<BlogType>({
     resolver: zodResolver(blogSchema),
     defaultValues: {
@@ -40,30 +42,33 @@ const Overlay = ({ isBlogPage }: overlayProps) => {
   });
 
   const onSubmit = async (formData: BlogType) => {
-    console.log("helio");
+    await initialize();
+    if (!accessToken) {
+      toast.error("You must be signed in to create a blog.");
+      return;
+    }
     const file = fileInputRef.current?.files?.[0];
     if (!file) {
       toast.error("Please upload a file.");
       return;
     }
-    console.log(fileInputRef.current, "fileInputRef.current");
-    console.log(formData, file, "formData with file");
-
-    //   try {
-    //   const success = await createBlog(formData, file);
-    //   if (success) {
-    //     reset();
-    //     if (fileInputRef.current) fileInputRef.current.value = "";
-    //     setShowOverlay(false);
-    //     toast.success("Blog created successfully!");
-    //   } else {
-    //     toast.error("Failed to create blog. Please try again.");
-    //   }
-    // } catch (error) {
-    //   console.error("Error creating blog:", error);
-    //   toast.error("An error occurred while creating the blog.");
-    // }
+    console.log(file, "file from Overlay");
+    try {
+      const success = await createBlog(formData, file, accessToken);
+      if (success) {
+        reset();
+        if (fileInputRef.current) fileInputRef.current.value = "";
+        setShowOverlay(false);
+        toast.success("Blog created successfully!");
+      } else {
+        toast.error("Failed to create blog. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error creating blog:", error);
+      toast.error("An error occurred while creating the blog.");
+    }
   };
+
 
   return (
     <section className="fixed inset-0 bg-black/50 w-full h-full z-20">
