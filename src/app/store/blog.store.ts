@@ -22,6 +22,11 @@ export interface IBlogStore {
   isLoading: boolean;
   axiosError: string | null;
   showOverlay: boolean;
+  blogsData: DbBlogType[];
+  take: number;
+  page: number;
+  blogsTotalLength: number;
+  sortBlogs: "newest" | "oldest";
   setShowOverlay: (val: boolean) => void;
   toggleOverlay: () => void;
   createBlog: (
@@ -30,6 +35,7 @@ export interface IBlogStore {
     accessToken: string
   ) => Promise<boolean>;
   getFilePathFromAwsS3: (file: File) => Promise<string>;
+  getAllBlogs: () => Promise<void>;
 }
 
 export type DbBlogType = {
@@ -50,6 +56,11 @@ export const useBlogStore = create<IBlogStore>()(
       isLoading: false,
       showOverlay: false,
       axiosError: null,
+      blogsData: [],
+      take: 5,
+      page: 1,
+      sortBlogs: "newest",
+      blogsTotalLength: 0,
       setShowOverlay: (val) => set({ showOverlay: val }),
       toggleOverlay: () => set({ showOverlay: !get().showOverlay }),
 
@@ -57,12 +68,6 @@ export const useBlogStore = create<IBlogStore>()(
         console.log(file, "file form Store");
         const signInStore = useSignInStore.getState();
         const { accessToken } = signInStore;
-        // if (!file || !accessToken) return "";
-        // if (!file.type.startsWith("image/")) {
-        //   set({ axiosError: "Only image files are allowed." });
-        //   return "";
-        // }
-
         if (!file) {
           set({ axiosError: "File is missing" });
           return null;
@@ -105,6 +110,7 @@ export const useBlogStore = create<IBlogStore>()(
         set({ isLoading: true, axiosError: null });
         try {
           const filePathFromAwsS3 = await get().getFilePathFromAwsS3(file);
+          console.log(filePathFromAwsS3, "filePathFromAwsS3");
           if (!filePathFromAwsS3) {
             set({
               isLoading: false,
@@ -126,13 +132,14 @@ export const useBlogStore = create<IBlogStore>()(
           //           const signInStore = useSignInStore.getState();
           // const { accessToken } = signInStore;
 
-          const res = await axiosInstance.post("blog/create", updatedFormData, {
+          const res = await axiosInstance.post("blog/", updatedFormData, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           });
 
           if (res.status >= 200 && res.status <= 204) {
+            await get().getAllBlogs();
             set({ isLoading: false });
             return true;
           }
@@ -146,9 +153,37 @@ export const useBlogStore = create<IBlogStore>()(
         }
         return false;
       },
+
+      getAllBlogs: async () => {
+        const { take, page } = get();
+        set({ isLoading: true, axiosError: null });
+        const sortParam = get().sortBlogs === "newest" ? "desc" : "asc";
+        try {
+          const res = await axiosInstance.get(
+            `/blog?page=${page}&take=${take}&sort=${sortParam}`
+          );
+          if (res.status >= 200 && res.status <= 204) {
+            set({
+              axiosError: null,
+              isLoading: false,
+              // blogsData: res.data.blogs,
+              blogsData: res.data.updatedBlogs,
+              blogsTotalLength: res.data.totalCount,
+            });
+          }
+        } catch (e) {
+          set({
+            isLoading: false,
+            axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+          });
+        }
+      },
     }),
     {
       name: "blog-store",
     }
   )
 );
+
+// "e-commerce-ui-design/3769015037148722"
+//

@@ -24,7 +24,7 @@ export type overlayProps = {
 const Overlay = ({ isBlogPage }: overlayProps) => {
   const { setShowOverlay, createBlog } = useBlogStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  const { initialize, accessToken } = useSignInStore();
+  const { initialize } = useSignInStore();
 
   const {
     register,
@@ -42,11 +42,18 @@ const Overlay = ({ isBlogPage }: overlayProps) => {
   });
 
   const onSubmit = async (formData: BlogType) => {
-    await initialize();
-    if (!accessToken) {
-      toast.error("You must be signed in to create a blog.");
-      return;
-    }
+  await initialize();
+
+  // ✅ Fetch fresh token from store after initialize
+  const updatedAccessToken = useSignInStore.getState().accessToken;
+
+  if (!updatedAccessToken) {
+    toast.error("You must be signed in to create a blog.");
+    return;
+  }
+
+
+
     const file = fileInputRef.current?.files?.[0];
     if (!file) {
       toast.error("Please upload a file.");
@@ -54,7 +61,7 @@ const Overlay = ({ isBlogPage }: overlayProps) => {
     }
     console.log(file, "file from Overlay");
     try {
-      const success = await createBlog(formData, file, accessToken);
+      const success = await createBlog(formData, file, updatedAccessToken);
       if (success) {
         reset();
         if (fileInputRef.current) fileInputRef.current.value = "";
