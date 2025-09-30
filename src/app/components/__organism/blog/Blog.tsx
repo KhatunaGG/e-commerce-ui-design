@@ -50,10 +50,11 @@ import { sortIcons } from "@/app/commons/data";
 import BlogList from "../blogList/BlogList";
 import Overlay from "../overlay/Overlay";
 import { useBlogStore } from "@/app/store/blog.store";
+import { SortBy } from "../../__molecules";
 
 const Blog = () => {
   const [activeIcon, setActiveIcon] = useState<string | null>(null);
-   const {
+  const {
     imagesData,
     setCurrentPage,
     getAllImages,
@@ -64,13 +65,12 @@ const Blog = () => {
   const { showOverlay, toggleOverlay } = useBlogStore();
 
   const pathName = usePathname();
-   const isBlogPage = pathName.includes("blog");
+  const isBlogPage = pathName.includes("blog");
   const page = useMemo(
     () => pathName?.split("/").pop() || "default",
     [pathName]
   );
 
-  
   useEffect(() => {
     if (!page) return;
     clearCurrentPageData();
@@ -85,8 +85,6 @@ const Blog = () => {
   );
   const hasValidBanner = bannerImages.length > 0;
 
-
-  
   return (
     <section className="w-full min-h-screen bg-green-200 flex flex-col relative">
       {showOverlay && <Overlay isBlogPage={isBlogPage} />}
@@ -106,12 +104,24 @@ const Blog = () => {
             </button>
           </div>
 
-          <SortByIcons
-            sortIcons={sortIcons}
-            activeIcon={activeIcon}
-            setActiveIcon={setActiveIcon}
-            onIconClick={handleIconClick}
-          />
+          <div className="flex items-center gap-8">
+            <div className="justify-end items-start hidden lg:flex">
+              <SortBy isBlogPage={isBlogPage} />
+            </div>
+
+            <SortByIcons
+              sortIcons={sortIcons}
+              activeIcon={activeIcon}
+              setActiveIcon={setActiveIcon}
+              onIconClick={handleIconClick}
+
+
+               isBlogPage={isBlogPage}
+            />
+          </div>
+        </div>
+        <div className="flex lg:justify-end items-center gap-1  lg:hidden">
+          <SortBy isBlogPage={isBlogPage} />
         </div>
         <BlogList />
       </div>
