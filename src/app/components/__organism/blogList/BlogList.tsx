@@ -3,40 +3,21 @@ import { useBlogStore } from "@/app/store/blog.store";
 import { useShopStore } from "@/app/store/shop-page.store";
 import { useEffect } from "react";
 import BlogListItem from "../blogListItem/BlogListItem";
+import { ShowMoreButton } from "../../__molecules";
 
 const BlogList = () => {
-  const {
-   
-    sortByTwoVertically,
-    sortByTwoHorizontally,
-    // handleIconClick,
-  } = useShopStore();
+  const { sortByTwoVertically, sortByTwoHorizontally } = useShopStore();
   const { blogsData, getAllBlogs } = useBlogStore();
-  // const { getAllBlogs } = useBlogStore.getState();
 
   useEffect(() => {
     getAllBlogs();
   }, []);
 
-  console.log(blogsData, "blogsData");
-
-  // const resortedStyles =
-  //  sortedByFour
-  //   ? "grid-cols-2  lg:grid-cols-4"
-  //   : sortByTwoVertically
-  //   ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-  //   : sortByTwoHorizontally
-  //   ? "grid-cols-1  lg:grid-cols-2"
-  //   : "grid-cols-1  lg:grid-cols-3";
-
-      const resortedStyles =
- 
-    sortByTwoVertically
+  const resortedStyles = sortByTwoVertically
     ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
     : sortByTwoHorizontally
     ? "grid-cols-1  lg:grid-cols-2"
     : "grid-cols-1  lg:grid-cols-3";
-
 
   return (
     <div className="w-full flex flex-col gap-10 lg:gap-20">
@@ -48,15 +29,25 @@ const BlogList = () => {
         >
           {Array.isArray(blogsData) && blogsData.length > 0 ? (
             blogsData.map((blog) => {
-              return <BlogListItem key={blog._id} {...blog} />;
+              return (
+                <BlogListItem
+                  key={blog._id}
+                  {...blog}
+                  sortByTwoHorizontally={sortByTwoHorizontally}
+                />
+              );
             })
           ) : (
-            <div className="w-full h-full text-red-600">No blogs</div>
+            <div className="w-full h-full text-red-600 flex items-center justify-center">
+              No blogs
+            </div>
           )}
         </div>
       </div>
 
-      <button>Show More</button>
+      <div className="w-full flex items-center justify-center">
+        <ShowMoreButton isBlogPage />
+      </div>
     </div>
   );
 };

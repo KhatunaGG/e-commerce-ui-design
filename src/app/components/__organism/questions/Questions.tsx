@@ -25,9 +25,6 @@ const Questions = ({ productId }: QuestionPropsType) => {
   const { setSortQuestions, sortQuestions } = useQuestionStore();
   const { formatDate } = useReviewStore();
 
-  // useEffect(() => {
-  //   getAllQuestions(productId);
-  // }, [getAllQuestions, page, productId]);
 
   useEffect(() => {
     if (questionData.length === 0) {
