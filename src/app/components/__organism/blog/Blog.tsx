@@ -86,11 +86,11 @@ const Blog = () => {
   const hasValidBanner = bannerImages.length > 0;
 
   return (
-    <section className="w-full min-h-screen bg-green-200 flex flex-col relative">
+    <section className="w-full min-h-screen flex flex-col relative">
       {showOverlay && <Overlay isBlogPage={isBlogPage} />}
 
       {!isLoading && hasValidBanner && <Banner images={bannerImages} />}
-      <div className="w-full md:px-[11.11%] px-[8.53%] flex flex-col bg-red-200 pt-8 md:pt-6 pb-10">
+      <div className="w-full md:px-[11.11%] px-[8.53%] flex flex-col pt-8 md:pt-6 pb-10">
         <div className="NAV w-full py-[9px] flex items-center justify-between">
           <div className="w-fit flex items-center gap-6">
             <h2 className="text-sm font-semibold leading-[22px] text-[#121212]">

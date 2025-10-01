@@ -11,6 +11,8 @@ import { useAddressStore } from "./address.store";
 import { useAccountStore } from "./account.store";
 import { useQuestionStore } from "./question.store";
 import { useReviewStore } from "./review.store";
+import { useBlogStore } from "./blog.store";
+import { useCartStore } from "./cart.store";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -121,23 +123,58 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
       set({ axiosError: errorMessage });
     }
   },
+  // logout: () => {
+  //   deleteCookie("accessToken");
+  //   useBlogStore.getState().resetBlogs();
+  //   localStorage.removeItem("blog-store");
+
+  //   useReviewStore.getState().resetReviewStore();
+  //   localStorage.removeItem("review-store");
+
+  //   useQuestionStore.getState().resetQuestionStore();
+  //   localStorage.removeItem("question-store");
+
+  //   useHomePageStore.getState().clearCache();
+  //   useShopStore.getState().clearCache();
+
+  //   // localStorage.removeItem("review-store");
+  //   // localStorage.removeItem("question-store");
+  //   useProductStore.getState().clearWishlist();
+  //   useProductStore.setState({
+  //     cashedWishList: {},
+  //   });
+
+  //   useAddressStore.getState().clearAddressData();
+  //   useAddressStore.getState().clearOrdersData();
+  //   localStorage.removeItem("address-storage");
+  //   useAccountStore.getState().clearAccountData();
+  //   localStorage.removeItem("account-storage");
+
+  //   useCartStore.getState().resetCartStore();
+  //   localStorage.removeItem("cartData-store");
+  //   localStorage.clear();
+  //   set({ currentUser: null, accessToken: "" });
+  //   window.location.href = "/";
+  // },
+
   logout: () => {
     deleteCookie("accessToken");
+    useBlogStore.getState().resetBlogs();
     useReviewStore.getState().resetReviewStore();
     useQuestionStore.getState().resetQuestionStore();
-    localStorage.removeItem("review-store");
-    localStorage.removeItem("question-store");
     useHomePageStore.getState().clearCache();
     useShopStore.getState().clearCache();
     useProductStore.getState().clearWishlist();
-    useProductStore.setState({
-      cashedWishList: {},
-    });
+    useProductStore.setState({ cashedWishList: {} });
     useAddressStore.getState().clearAddressData();
     useAddressStore.getState().clearOrdersData();
-    localStorage.removeItem("address-storage");
     useAccountStore.getState().clearAccountData();
+    useCartStore.getState().resetCartStore();
+
+    localStorage.clear();
+
     set({ currentUser: null, accessToken: "" });
+
     window.location.href = "/";
   },
 }));
