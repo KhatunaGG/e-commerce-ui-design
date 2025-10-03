@@ -220,6 +220,8 @@ export interface IBlogStore {
   cacheKey: string;
   cachedBlogsData: Record<string, { blogs: DbBlogType[]; totalCount: number }>;
   // getCacheKey: (page: number, take: number, sort: string) => string;
+
+  setSortBlogs: (order: "newest" | "oldest") => void;
   setPage: (newPage: number) => void;
 
   setShowOverlay: (val: boolean) => void;
@@ -260,10 +262,19 @@ export const useBlogStore = create<IBlogStore>()(
       page: 1,
       sortBlogs: "newest",
       blogsTotalLength: 0,
-
       cacheKey: "",
       cachedBlogsData: {},
-      // getCacheKey: (page, take, sort) => `${page}-${take}-${sort}`,
+
+      setSortBlogs: (order: "newest" | "oldest") => {
+         set({ 
+          sortBlogs: order,
+          blogsData: [],
+          page: 1,
+          cacheKey: "",
+          blogsTotalLength: 0
+        });
+        get().getAllBlogs();
+      },
 
       setPage: (newPage) => set({ page: newPage }),
       setShowOverlay: (val) => set({ showOverlay: val }),
@@ -289,7 +300,6 @@ export const useBlogStore = create<IBlogStore>()(
         try {
           const formData = new FormData();
           formData.append("file", file);
-          console.log(formData, "formdata from Store");
           const res = await axiosInstance.patch("blog/upload-file", formData, {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -327,7 +337,6 @@ export const useBlogStore = create<IBlogStore>()(
           const updatedFormData = {
             ...formData,
             filePath: filePathFromAwsS3,
-
             authorFName: "",
             authorLName: "",
             articles: [],
@@ -340,21 +349,25 @@ export const useBlogStore = create<IBlogStore>()(
           });
 
           if (res.status >= 200 && res.status <= 204) {
-            get().clearBlogsCache();
+            // get().clearBlogsCache();
 
-            set({
+            // set({
+            //   cachedBlogsData: {},
+            //   page: 1,
+            //   sortBlogs: "newest",
+            //   blogsData: [],
+            // });
+
+             set({
               cachedBlogsData: {},
               page: 1,
               sortBlogs: "newest",
               blogsData: [],
+              blogsTotalLength: 0,
+              cacheKey: "",
             });
 
-            // set((state) => ({
-            //   ...state,
-            //   page: 1,
-            //   cachedBlogsData: {},
-            //   blogsData: [],
-            // }));
+    
 
             await get().getAllBlogs();
 
@@ -372,60 +385,22 @@ export const useBlogStore = create<IBlogStore>()(
         return false;
       },
 
-      // getAllBlogs: async () => {
-      //   const { take, page, sortBlogs, cachedBlogsData } = get();
-      //   console.log(take, "take from STORE")
-      //   const sortParam = sortBlogs === "newest" ? "desc" : "asc";
-      //   const cacheKey = getCacheKey(page, take, sortParam);
-      //   if (cachedBlogsData[cacheKey]) {
-      //     console.log("Using cached data!");
-      //     set({
-      //       blogsData: cachedBlogsData[cacheKey].blogs,
-      //       blogsTotalLength: cachedBlogsData[cacheKey].totalCount,
-      //       cacheKey,
-      //     });
-      //     return;
-      //   }
-      //   set({ isLoading: true, axiosError: null });
-      //   try {
-      //     const res = await axiosInstance.get(
-      //       `/blog?page=${page}&take=${take}&sort=${sortParam}`
-      //     );
-      //     if (res.status >= 200 && res.status <= 204) {
-      //       set({
-      //         axiosError: null,
-      //         isLoading: false,
-      //         blogsData: res.data.updatedBlogs,
-      //         blogsTotalLength: res.data.totalCount,
-      //         cacheKey,
-      //         cachedBlogsData: {
-      //           ...cachedBlogsData,
-      //           [cacheKey]: {
-      //             blogs: res.data.updatedBlogs,
-      //             totalCount: res.data.totalCount,
-      //           },
-      //         },
-      //       });
-      //     }
-      //   } catch (e) {
-      //     set({
-      //       axiosError: handleApiError(e as AxiosError<ErrorResponse>),
-      //       isLoading: false,
-      //     });
-      //   }
-      // },
-
-      getAllBlogs: async () => {
+   getAllBlogs: async () => {
         const { take, page, sortBlogs, blogsData, cachedBlogsData } = get();
-
-        // Determine which page to fetch
         const pageToFetch = blogsData.length === 0 ? 1 : page + 1;
+        console.log('pageToFetch', pageToFetch)
         const sortParam = sortBlogs === "newest" ? "desc" : "asc";
+        console.log('sortParam', sortParam)
         const cacheKey = getCacheKey(pageToFetch, take, sortParam);
-
+        console.log('cacheKey', cacheKey)
+        
+        console.log('Fetching:', { currentBlogsLength: blogsData.length });
+       console.log(cachedBlogsData, "cachedBlogsData")
         // Check cache
         if (cachedBlogsData[cacheKey]) {
           const cached = cachedBlogsData[cacheKey];
+          console.log('cached', cached)
+
           set({
             blogsData:
               blogsData.length === 0
@@ -437,6 +412,10 @@ export const useBlogStore = create<IBlogStore>()(
           });
           return;
         }
+        console.log('blogsData', blogsData)
+        console.log('blogsTotalLength', get().blogsTotalLength)
+        console.log('cacheKey', cacheKey)
+        console.log('pageToFetch', pageToFetch)
 
         set({ isLoading: true, axiosError: null });
 
@@ -447,12 +426,19 @@ export const useBlogStore = create<IBlogStore>()(
 
           if (res.status >= 200 && res.status <= 204) {
             const newBlogs = res.data.updatedBlogs;
-            const totalCount = res.data.totalCount;
+            const blogsTotalLength = res.data.totalCount;
+            
+            console.log('Received blogs:', { 
+              count: newBlogs.length, 
+               blogsTotalLength: blogsTotalLength,
+              firstBlogDate: newBlogs[0]?.createdAt,
+              lastBlogDate: newBlogs[newBlogs.length - 1]?.createdAt
+            });
 
             set({
               blogsData:
                 blogsData.length === 0 ? newBlogs : [...blogsData, ...newBlogs],
-              blogsTotalLength: totalCount,
+              blogsTotalLength: blogsTotalLength,
               isLoading: false,
               page: pageToFetch,
               cacheKey,
@@ -460,10 +446,22 @@ export const useBlogStore = create<IBlogStore>()(
                 ...cachedBlogsData,
                 [cacheKey]: {
                   blogs: newBlogs,
-                  totalCount,
+                  totalCount: blogsTotalLength,
                 },
               },
             });
+            console.log('blogsData', blogsData);
+            console.log('blogsTotalLength', blogsTotalLength)
+            console.log('page', page);
+            console.log(cachedBlogsData, "cachedBlogsData")
+      
+
+
+
+
+
+      ;
+
           }
         } catch (e) {
           set({
@@ -473,6 +471,7 @@ export const useBlogStore = create<IBlogStore>()(
         }
       },
 
+
       clearBlogsCache: () => set({ cachedBlogsData: {}, page: 1 }),
 
       resetBlogs: () => {
@@ -481,6 +480,7 @@ export const useBlogStore = create<IBlogStore>()(
           blogsData: [],
           blogsTotalLength: 0,
           cacheKey: "",
+          sortBlogs: "newest",
           isLoading: false,
           axiosError: null,
           cachedBlogsData: {},
@@ -493,8 +493,8 @@ export const useBlogStore = create<IBlogStore>()(
       partialize: (state) => ({
         showOverlay: state.showOverlay,
         take: state.take,
-        page: state.page,
-        sortBlogs: state.sortBlogs,
+        // page: state.page,
+        // sortBlogs: state.sortBlogs,
       }),
       // partialize: (state) => {
       //   // Exclude cachedBlogsData from persistence
@@ -505,6 +505,3 @@ export const useBlogStore = create<IBlogStore>()(
     }
   )
 );
-
-// "e-commerce-ui-design/3769015037148722"
-//

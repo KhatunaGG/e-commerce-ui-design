@@ -111,9 +111,11 @@ const NewArrivals = ({ images }: { images: ProductsDataType[] }) => {
           </div>
         </div>
       </div>
+
       <MoreButton
         handleMoreProducts={handleMoreProducts}
         styleClass="flex md:hidden mt-6"
+        label="More Products"
       />
     </section>
   );

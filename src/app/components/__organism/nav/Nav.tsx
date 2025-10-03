@@ -78,7 +78,9 @@ const Nav = () => {
           <div className="w-6 h-6 flex items-center justify-center mb-[3px] md:mb-0 md:hidden">
             <Burger />
           </div>
-          <Logo />
+          <Link href={"/"}>
+            <Logo />
+          </Link>
         </div>
 
         <div className="hidden md:flex items-center md:gap-6 lg:gap-10 text-sm font-medium text-[#6C7275]">
@@ -95,11 +97,9 @@ const Nav = () => {
             Contact Us
           </NavLink>
           <div className="hidden lg:flex">
-
-
-          <NavLink href="/blog" isActive={path === "/blog"}>
-            Our Blog
-          </NavLink>
+            <NavLink href="/blog" isActive={path === "/blog"}>
+              Our Blog
+            </NavLink>
           </div>
         </div>
 

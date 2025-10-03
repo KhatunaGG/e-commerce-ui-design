@@ -11,7 +11,6 @@ const Products = () => {
     sortByTwoVertically,
     sortByTwoHorizontally,
     isLoading,
-    // productsData,
   } = useShopStore();
 
   const { productsData } = useShopStore();
@@ -26,6 +25,7 @@ const Products = () => {
 
   if (isLoading) return <AnimateSpin />;
 
+
   return (
     <section className="w-full flex flex-col gap-10 lg:gap-20 ">
       <div className="w-full lg:flex-1 flex flex-col gap-8 md:gap-10">
@@ -38,7 +38,11 @@ const Products = () => {
           {Array.isArray(productsData) &&
             productsData.length > 0 &&
             productsData.map((product) => (
-              <Link key={product._id} href={`/shop/${product._id}`}>
+              <Link
+                // key={`${product._id}-${product.productName}`}
+                key={product._id}
+                href={`/shop/${product._id}`}
+              >
                 <div
                   className={`${
                     sortByTwoHorizontally ? "flex-row" : "flex-col"
