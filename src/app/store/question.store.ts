@@ -229,7 +229,7 @@ export const useQuestionStore = create<IQuestionStoreType>()(
           answerOwnerLastName: "",
           page: 1,
           take: 5,
-          sortQuestions: "newest", // or whatever default you use
+          sortQuestions: "newest", 
           axiosError: null,
           isLoading: false,
         });

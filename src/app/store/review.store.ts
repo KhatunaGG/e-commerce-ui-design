@@ -194,7 +194,6 @@ export const useReviewStore = create<IUseReviewStore>()(
               axiosError: null,
               reviewData: res.data.reviews,
               reviewLength: res.data.reviewsTotalLength,
-
               totalRating: res.data.totalRating || 0,
             });
           }
@@ -361,141 +360,68 @@ export const useReviewStore = create<IUseReviewStore>()(
       },
 
 
+      likeReview: async (reviewId: string, userId: string) => {
+        const state = get();
+        const { reviewData } = state;
+        const { accessToken } = useSignInStore.getState();
 
+        if (!accessToken) {
+          toast.error("You must be signed in to like a review.");
+          return;
+        }
+        const review = reviewData.find((review) => review._id === reviewId);
+        if (!review) {
+          toast.error("Review not found.");
+          return;
+        }
+        const currentLikes = Array.isArray(review.likes) ? review.likes : [];
+        const alreadyLiked = currentLikes.some(
+          (like) => like.likedById === userId
+        );
+        set((state) => {
+          const updatedReviewData = state.reviewData.map((r) => {
+            if (r._id !== reviewId) return r;
+            let updatedLikes: LikeType[] = [];
+            if (alreadyLiked) {
+              updatedLikes = r.likes.filter(
+                (like) => like.likedById !== userId
+              );
+            } else {
+              updatedLikes = [...r.likes, { likedById: userId, like: 1 }];
+            }
+            return { ...r, likes: updatedLikes };
+          });
+          return {
+            reviewData: updatedReviewData,
+          };
+        });
 
+        set({
+          isLoading: true,
+          axiosError: null,
+        });
 
-      // likeReview: async (reviewId: string, userId: string) => {
-      //   set((state) => {
-      //     const updatedReviewData: DbReviewType[] = state.reviewData.map(
-      //       (review) => {
-      //         if (review._id !== reviewId) return review;
-      //         const currentLikes = Array.isArray(review.likes)
-      //           ? review.likes
-      //           : [];
+        try {
+          const res = await axiosInstance.patch(
+            `/review/${reviewId}/like`,
+            { userId },
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
 
-      //         const alreadyLiked = currentLikes.some(
-      //           (like) => like.likedById === userId
-      //         );
-
-      //         let updatedLikes: LikeType[];
-      //         if (alreadyLiked) {
-      //           updatedLikes = currentLikes.filter(
-      //             (like) => like.likedById !== userId
-      //           );
-      //         } else {
-      //           updatedLikes = [
-      //             ...currentLikes,
-      //             { likedById: userId, like: 1 },
-      //           ];
-      //         }
-      //         return { ...review, likes: updatedLikes };
-      //       }
-      //     );
-      //     return {
-      //       reviewData: updatedReviewData,
-      //     };
-      //   });
-      //   const { accessToken } = useSignInStore.getState();
-      //   set({
-      //     isLoading: true,
-      //     axiosError: null,
-      //   });
-      //   try {
-      //     const res = await axiosInstance.patch(
-      //       `/review/${reviewId}/like`,
-      //       { userId },
-      //       {
-      //         headers: {
-      //           Authorization: `Bearer ${accessToken}`,
-      //         },
-      //       }
-      //     );
-      //     if (res.status >= 0 && res.status <= 204) {
-      //       set({ isLoading: false, axiosError: null });
-      //     }
-      //   } catch (e) {
-      //     const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
-      //     toast.error(errorMsg);
-      //     set({ axiosError: errorMsg, isLoading: false });
-      //   }
-      // },
-
-    likeReview: async (reviewId: string, userId: string) => {
-  const state = get();
-  const { reviewData } = state;
-  const { accessToken } = useSignInStore.getState();
-
-  if (!accessToken) {
-    toast.error("You must be signed in to like a review.");
-    return;
-  }
-
-  const review = reviewData.find((review) => review._id === reviewId);
-  if (!review) {
-    toast.error("Review not found.");
-    return;
-  }
-
-  const currentLikes = Array.isArray(review.likes) ? review.likes : [];
-  const alreadyLiked = currentLikes.some(
-    (like) => like.likedById === userId
-  );
-
-  // 1. Optimistically update the local store first
-  set((state) => {
-    const updatedReviewData = state.reviewData.map((r) => {
-      if (r._id !== reviewId) return r;
-      let updatedLikes: LikeType[] = [];
-
-      if (alreadyLiked) {
-        updatedLikes = r.likes.filter((like) => like.likedById !== userId);
-      } else {
-        updatedLikes = [...r.likes, { likedById: userId, like: 1 }];
-      }
-
-      return { ...r, likes: updatedLikes };
-    });
-
-    return {
-      reviewData: updatedReviewData,
-    };
-  });
-
-  // 2. Send request to server
-  set({
-    isLoading: true,
-    axiosError: null,
-  });
-
-  try {
-    const res = await axiosInstance.patch(
-      `/review/${reviewId}/like`,
-      { userId },
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    if (res.status >= 200 && res.status <= 204) {
-      toast.success(alreadyLiked ? "Review unliked." : "Review liked!");
-      set({ isLoading: false });
-    }
-  } catch (e) {
-    const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
-    toast.error(errorMsg);
-    set({ axiosError: errorMsg, isLoading: false });
-  }
-}
-
-
-
-
-
-
-
-
+          if (res.status >= 200 && res.status <= 204) {
+            toast.success(alreadyLiked ? "Review unliked." : "Review liked!");
+            set({ isLoading: false });
+          }
+        } catch (e) {
+          const errorMsg = handleApiError(e as AxiosError<ErrorResponse>);
+          toast.error(errorMsg);
+          set({ axiosError: errorMsg, isLoading: false });
+        }
+      },
     }),
     {
       name: "review-store",

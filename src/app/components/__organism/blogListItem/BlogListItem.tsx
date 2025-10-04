@@ -81,7 +81,7 @@ const BlogListItem = ({
   _id,
   createdAt,
 }: BlogListItemProps) => {
-   const { formatDate } = useReviewStore();
+  const { formatDate } = useReviewStore();
   return (
     <Link
       href={""}
@@ -90,7 +90,7 @@ const BlogListItem = ({
         sortByTwoHorizontally
           ? "flex-row  md:items-center md:justify-center"
           : "flex-col"
-      } w-full flex items-center flex-col gap-6`}
+      } w-full flex items-center flex-col gap-6 `}
     >
       <div className="relative w-[312px] h-[283px] md:w-[283px] md:h-[255px] lg:w-[387px] lg:h-[325px]">
         <Image

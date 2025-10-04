@@ -47,11 +47,8 @@ export type ProductsDataType = {
   new: boolean;
   discount: number;
 
-
   // rate: number;
   rating: number;
-
-
 
   category: string[];
   price: number;
@@ -65,8 +62,6 @@ export type ProductsDataType = {
   discountTill: string;
   _id: string;
   presignedUrl: string;
-
-
 
   color?: string;
 };
@@ -143,7 +138,7 @@ export interface IUseShopStore {
     priceRange: string | null,
     sortBy: string
   ) => string;
-      handleIconClick: (icon: string) => void;
+  handleIconClick: (icon: string) => void;
 }
 
 export const useShopStore = create<IUseShopStore>((set, get) => ({
@@ -173,29 +168,33 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
   productsDataLengthByKey: 0,
   productsDataTotalLength: 0,
   cachedProductsDataTotalLength: 0,
-  setSortBy: async (sortBy: string) => {
+
+  setSortBy: (sortValue: string) => {
     set({
-      sortBy,
+      sortBy: sortValue,
       pageNumber: 1,
       productsData: [],
-
-      productsDataTotalLength: 0, 
       productsDataLengthByKey: 0,
+      productsDataTotalLength: 0,
     });
-    await get().getAllProducts(false);
+    get().getAllProducts(false);
   },
-  setFilters: (filters: FiltersType) => {
+
+  setFilters: (filters) => {
     set({
       filters,
       pageNumber: 1,
+      productsData: [],
+      productsDataLengthByKey: 0,
+      productsDataTotalLength: 0,
     });
+    get().getAllProducts(false);
   },
 
   setPageNumber: (pageNumber: number) => set({ pageNumber }),
 
   setRating: (rating: number) => set({ rating }),
 
- 
   calculateDiscount: (price?: number, discount?: number): string => {
     if (typeof price !== "number") return "-";
     if (!discount || discount <= 0) return `$${price.toFixed(2)}`;
@@ -245,29 +244,28 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
       sortByTwoHorizontally: v,
     }),
 
+  handleIconClick: (icon: string) => {
+    const {
+      setsSortedByFour,
+      setSortByTwoVertically,
+      setSortByTwoHorizontally,
+      resetAllByIconsSort,
+    } = get();
 
-    handleIconClick: (icon: string) => {
-  const {
-    setsSortedByFour,
-    setSortByTwoVertically,
-    setSortByTwoHorizontally,
-    resetAllByIconsSort,
-  } = get();
-
-  switch (icon) {
-    case "SecondFilterIcon":
-      setsSortedByFour(true);
-      break;
-    case "ThirdFilterIcon":
-      setSortByTwoVertically(true);
-      break;
-    case "FourthFilterIcon":
-      setSortByTwoHorizontally(true);
-      break;
-    default:
-      resetAllByIconsSort();
-  }
-},
+    switch (icon) {
+      case "SecondFilterIcon":
+        setsSortedByFour(true);
+        break;
+      case "ThirdFilterIcon":
+        setSortByTwoVertically(true);
+        break;
+      case "FourthFilterIcon":
+        setSortByTwoHorizontally(true);
+        break;
+      default:
+        resetAllByIconsSort();
+    }
+  },
 
   setSelected: (selected) => set({ selected }),
   setIsDroppedDown: (isDroppedDown) => set({ isDroppedDown }),
@@ -282,17 +280,12 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
     });
   },
 
-  // normalizeFirstChar: (str?: string): string => {
-  //   if (!str) return "";
-  //   return str.charAt(0).toUpperCase() + str.slice(1);
-  // },
-
   normalizeFirstChar: (str?: string): string => {
-  if (!str || typeof str !== "string") return "";
-  const trimmed = str.trim();
-  if (!trimmed) return "";
-  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
-},
+    if (!str || typeof str !== "string") return "";
+    const trimmed = str.trim();
+    if (!trimmed) return "";
+    return trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+  },
 
   applyFilters: async (filters: FiltersType) => {
     set({
@@ -364,10 +357,6 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
 
   getProductsFromCacheOrApi: async () => {
     await get().getAllProducts(false);
-    // console.log(
-    //   get().cachedProductsData,
-    //   "cachedProductsData ->>> from getProductsFromCacheOrApi"
-    // );
   },
 
   hasMoreProducts: () => {
@@ -391,6 +380,98 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
     return mapping[sortValue] || "";
   },
 
+  // getAllProducts: async (isLoadMore = false) => {
+  //   const state = get();
+  //   const {
+  //     pageNumber,
+  //     take,
+  //     filters,
+  //     sortBy,
+  //     mapSortValueToBackend,
+  //     buildCacheKey,
+  //   } = state;
+  //   const currentPage = isLoadMore ? pageNumber : 1;
+
+  //   const backendSortValue = mapSortValueToBackend(sortBy);
+  //   const cacheKey = buildCacheKey(
+  //     currentPage,
+  //     take,
+  //     filters.category,
+  //     filters.priceRange,
+  //     backendSortValue
+  //   );
+  //   const cachedData = state.cachedProductsData[cacheKey];
+  //   const cachedDataLength = state.cachedDataLengthByKey?.[cacheKey];
+
+  //   if (cachedData && cachedData.length > 0) {
+  //     if (isLoadMore) {
+  //       set({
+  //         productsData: [...state.productsData, ...cachedData],
+  //         productsDataLengthByKey:
+  //           state.productsDataLengthByKey + cachedData.length,
+  //         isLoadingMore: false,
+  //         axiosError: null,
+  //       });
+  //     } else {
+  //       set({
+  //         productsData: cachedData,
+  //         productsDataLengthByKey: cachedDataLength || cachedData.length,
+  //         isLoading: false,
+  //         axiosError: null,
+  //       });
+  //     }
+  //     // console.log(`Loaded page ${currentPage} from cache`);
+  //     return;
+  //   }
+
+  //   if (isLoadMore) {
+  //     set({ isLoadingMore: true, axiosError: null });
+  //   } else {
+  //     set({ isLoading: true, axiosError: null });
+  //   }
+
+  //   try {
+  //     const query = `/product?${cacheKey}`;
+  //     const res = await axiosInstance.get(query);
+
+  //     if (res.status >= 200 && res.status <= 204) {
+  //       const newProducts = res.data.data;
+  //       const filteredTotalLength = res.data.productsDataLength;
+
+  //       set((prev) => ({
+  //         productsData: isLoadMore
+  //           ? [...prev.productsData, ...newProducts]
+  //           : newProducts,
+  //         productsDataLengthByKey: isLoadMore
+  //           ? prev.productsDataLengthByKey + newProducts.length
+  //           : newProducts.length,
+  //         productsDataTotalLength: filteredTotalLength,
+  //         isLoading: false,
+  //         isLoadingMore: false,
+  //         axiosError: null,
+  //         cachedProductsData: {
+  //           ...prev.cachedProductsData,
+  //           [cacheKey]: newProducts,
+  //         },
+  //         cachedDataLengthByKey: {
+  //           ...prev.cachedDataLengthByKey,
+  //           [cacheKey]: newProducts.length,
+  //         },
+  //       }));
+
+  //       // console.log(get().productsData, "productsData");
+  //       // console.log(get().cachedProductsData, "cachedProductsData");
+  //     }
+  //   } catch (e) {
+  //     set({
+  //       axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+  //       isLoading: false,
+  //       isLoadingMore: false,
+  //       productsData: isLoadMore ? get().productsData : [],
+  //     });
+  //   }
+  // },
+
   getAllProducts: async (isLoadMore = false) => {
     const state = get();
     const {
@@ -411,15 +492,23 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
       filters.priceRange,
       backendSortValue
     );
+
     const cachedData = state.cachedProductsData[cacheKey];
     const cachedDataLength = state.cachedDataLengthByKey?.[cacheKey];
 
     if (cachedData && cachedData.length > 0) {
+      console.log("✅ Loading from cache:", cachedData.length, "products");
       if (isLoadMore) {
+        const existingIds = new Set(
+          state.productsData.map((p: ProductsDataType) => p._id)
+        );
+        const uniqueCachedData = cachedData.filter(
+          (p: ProductsDataType) => !existingIds.has(p._id)
+        );
         set({
-          productsData: [...state.productsData, ...cachedData],
+          productsData: [...state.productsData, ...uniqueCachedData],
           productsDataLengthByKey:
-            state.productsDataLengthByKey + cachedData.length,
+            state.productsDataLengthByKey + uniqueCachedData.length,
           isLoadingMore: false,
           axiosError: null,
         });
@@ -431,7 +520,6 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
           axiosError: null,
         });
       }
-      // console.log(`Loaded page ${currentPage} from cache`);
       return;
     }
 
@@ -447,14 +535,20 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
 
       if (res.status >= 200 && res.status <= 204) {
         const newProducts = res.data.data;
-        const filteredTotalLength = res.data.productsDataLength; 
+        const filteredTotalLength = res.data.productsDataLength;
 
+        const existingIds = new Set(
+          state.productsData.map((p: ProductsDataType) => p._id)
+        );
+        const uniqueNewProducts = isLoadMore
+          ? newProducts.filter((p: ProductsDataType) => !existingIds.has(p._id))
+          : newProducts;
         set((prev) => ({
           productsData: isLoadMore
-            ? [...prev.productsData, ...newProducts] 
+            ? [...prev.productsData, ...uniqueNewProducts]
             : newProducts,
           productsDataLengthByKey: isLoadMore
-            ? prev.productsDataLengthByKey + newProducts.length
+            ? prev.productsDataLengthByKey + uniqueNewProducts.length
             : newProducts.length,
           productsDataTotalLength: filteredTotalLength,
           isLoading: false,
@@ -469,42 +563,49 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
             [cacheKey]: newProducts.length,
           },
         }));
-
-
-        // console.log(get().productsData, "productsData");
-        // console.log(get().cachedProductsData, "cachedProductsData");
       }
     } catch (e) {
       set({
         axiosError: handleApiError(e as AxiosError<ErrorResponse>),
         isLoading: false,
         isLoadingMore: false,
-        productsData: isLoadMore ? get().productsData : [], 
+        productsData: isLoadMore ? get().productsData : [],
       });
     }
   },
 
+  // loadMoreProducts: async () => {
+  //   const state = get();
+  //   if (!get().hasMoreProducts()) {
+  //     console.log("No more products to load");
+  //     return;
+  //   }
+
+  //   if (state.isLoadingMore) {
+  //     console.log("Already loading more products");
+  //     return;
+  //   }
+
+  //   const nextPage = state.pageNumber + 1;
+  //   set({ pageNumber: nextPage });
+  //   await get().getAllProducts(true);
+  // },
+
   loadMoreProducts: async () => {
     const state = get();
     if (!get().hasMoreProducts()) {
-      console.log("No more products to load");
+      // console.log("No more products to load");
       return;
     }
 
     if (state.isLoadingMore) {
-      console.log("Already loading more products");
+      // console.log("Already loading more products");
       return;
     }
-
     const nextPage = state.pageNumber + 1;
-    set({ pageNumber: nextPage });
+    set({ pageNumber: nextPage, isLoadingMore: true });
     await get().getAllProducts(true);
-    // console.log(
-    //   get().cachedProductsData,
-    //   "cachedProductsData ->>> from loadMoreProducts"
-    // );
   },
-
   clearCache: () => {
     set({
       productsData: [],

@@ -4,11 +4,13 @@ import { Down } from "../../__atoms";
 type SortSelectProps = {
   value: "newest" | "oldest";
   onChange: (value: "newest" | "oldest") => void;
+  isBlogPage?: boolean;
 };
 
-const SortSelect = ({ value, onChange }: SortSelectProps) => {
+const SortSelect = ({ value, onChange, isBlogPage }: SortSelectProps) => {
   return (
-    <div className="w-full relative inline-block  md:max-w-[22.85%]">
+    // <div className="w-full relative inline-block  md:max-w-[22.85%] bg-yellow-200">
+    <div className={`${isBlogPage ? "w-full md:w-[40%] lg:w-[20%]": "w-full  md:max-w-[22.85%]"}  relative inline-block `}>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as "newest" | "oldest")}

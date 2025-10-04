@@ -25,7 +25,7 @@ const BlogList = () => {
         <div
           className={`
           ${resortedStyles} 
-        w-full grid h-full gap-y-4 gap-x-2 md:gap-y-6 md:gap-x-6`}
+        w-full grid h-full gap-y-4 gap-x-2 md:gap-y-6 md:gap-x-6 `}
         >
           {Array.isArray(blogsData) && blogsData.length > 0 ? (
             blogsData.map((blog) => {
