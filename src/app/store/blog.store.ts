@@ -216,14 +216,14 @@ export interface IBlogStore {
   page: number;
   blogsTotalLength: number;
   sortBlogs: "newest" | "oldest";
-
+  blogsForArticle: DbBlogType[];
   cacheKey: string;
   cachedBlogsData: Record<string, { blogs: DbBlogType[]; totalCount: number }>;
   // getCacheKey: (page: number, take: number, sort: string) => string;
 
   setSortBlogs: (order: "newest" | "oldest") => void;
   setPage: (newPage: number) => void;
-
+  getFirstThreeBlogs: () => Promise<void>;
   setShowOverlay: (val: boolean) => void;
   toggleOverlay: () => void;
   createBlog: (
@@ -246,6 +246,9 @@ export type DbBlogType = {
   authorId: "";
   _id: string;
   createdAt: string;
+
+
+    presignedUrl?: string;
 };
 
 const getCacheKey = (page: number, take: number, sort: string) =>
@@ -264,14 +267,15 @@ export const useBlogStore = create<IBlogStore>()(
       blogsTotalLength: 0,
       cacheKey: "",
       cachedBlogsData: {},
+      blogsForArticle: [],
 
       setSortBlogs: (order: "newest" | "oldest") => {
-         set({ 
+        set({
           sortBlogs: order,
           blogsData: [],
           page: 1,
           cacheKey: "",
-          blogsTotalLength: 0
+          blogsTotalLength: 0,
         });
         get().getAllBlogs();
       },
@@ -358,7 +362,7 @@ export const useBlogStore = create<IBlogStore>()(
             //   blogsData: [],
             // });
 
-             set({
+            set({
               cachedBlogsData: {},
               page: 1,
               sortBlogs: "newest",
@@ -366,8 +370,6 @@ export const useBlogStore = create<IBlogStore>()(
               blogsTotalLength: 0,
               cacheKey: "",
             });
-
-    
 
             await get().getAllBlogs();
 
@@ -385,21 +387,21 @@ export const useBlogStore = create<IBlogStore>()(
         return false;
       },
 
-   getAllBlogs: async () => {
+      getAllBlogs: async () => {
         const { take, page, sortBlogs, blogsData, cachedBlogsData } = get();
         const pageToFetch = blogsData.length === 0 ? 1 : page + 1;
-        console.log('pageToFetch', pageToFetch)
+        console.log("pageToFetch", pageToFetch);
         const sortParam = sortBlogs === "newest" ? "desc" : "asc";
-        console.log('sortParam', sortParam)
+        console.log("sortParam", sortParam);
         const cacheKey = getCacheKey(pageToFetch, take, sortParam);
-        console.log('cacheKey', cacheKey)
-        
-        console.log('Fetching:', { currentBlogsLength: blogsData.length });
-       console.log(cachedBlogsData, "cachedBlogsData")
+        console.log("cacheKey", cacheKey);
+
+        console.log("Fetching:", { currentBlogsLength: blogsData.length });
+        console.log(cachedBlogsData, "cachedBlogsData");
         // Check cache
         if (cachedBlogsData[cacheKey]) {
           const cached = cachedBlogsData[cacheKey];
-          console.log('cached', cached)
+          console.log("cached", cached);
 
           set({
             blogsData:
@@ -412,10 +414,10 @@ export const useBlogStore = create<IBlogStore>()(
           });
           return;
         }
-        console.log('blogsData', blogsData)
-        console.log('blogsTotalLength', get().blogsTotalLength)
-        console.log('cacheKey', cacheKey)
-        console.log('pageToFetch', pageToFetch)
+        console.log("blogsData", blogsData);
+        console.log("blogsTotalLength", get().blogsTotalLength);
+        console.log("cacheKey", cacheKey);
+        console.log("pageToFetch", pageToFetch);
 
         set({ isLoading: true, axiosError: null });
 
@@ -427,12 +429,12 @@ export const useBlogStore = create<IBlogStore>()(
           if (res.status >= 200 && res.status <= 204) {
             const newBlogs = res.data.updatedBlogs;
             const blogsTotalLength = res.data.totalCount;
-            
-            console.log('Received blogs:', { 
-              count: newBlogs.length, 
-               blogsTotalLength: blogsTotalLength,
+
+            console.log("Received blogs:", {
+              count: newBlogs.length,
+              blogsTotalLength: blogsTotalLength,
               firstBlogDate: newBlogs[0]?.createdAt,
-              lastBlogDate: newBlogs[newBlogs.length - 1]?.createdAt
+              lastBlogDate: newBlogs[newBlogs.length - 1]?.createdAt,
             });
 
             set({
@@ -450,18 +452,10 @@ export const useBlogStore = create<IBlogStore>()(
                 },
               },
             });
-            console.log('blogsData', blogsData);
-            console.log('blogsTotalLength', blogsTotalLength)
-            console.log('page', page);
-            console.log(cachedBlogsData, "cachedBlogsData")
-      
-
-
-
-
-
-      ;
-
+            console.log("blogsData", blogsData);
+            console.log("blogsTotalLength", blogsTotalLength);
+            console.log("page", page);
+            console.log(cachedBlogsData, "cachedBlogsData");
           }
         } catch (e) {
           set({
@@ -470,7 +464,6 @@ export const useBlogStore = create<IBlogStore>()(
           });
         }
       },
-
 
       clearBlogsCache: () => set({ cachedBlogsData: {}, page: 1 }),
 
@@ -485,6 +478,55 @@ export const useBlogStore = create<IBlogStore>()(
           axiosError: null,
           cachedBlogsData: {},
         });
+      },
+
+      getFirstThreeBlogs: async () => {
+        set({ isLoading: true, axiosError: null });
+        try {
+          const res = await axiosInstance.get("/blog/get-for-articles");
+
+          console.log("Raw response:", res); // Log the full response
+          console.log("Response data:", res.data); // Log just the data
+          console.log("Response status:", res.status); // Log the status
+
+          if (res.status >= 200 && res.status <= 204) {
+            const blogs = res.data;
+
+            // Check if blogs is an array
+            if (!Array.isArray(blogs)) {
+              console.error("Blogs is not an array:", blogs);
+              set({
+                blogsForArticle: [],
+                isLoading: false,
+                axiosError: "Invalid response format",
+              });
+              return;
+            }
+
+            console.log("Number of blogs fetched:", blogs.length);
+            console.log("First blog:", blogs[0]);
+
+            set({
+              blogsForArticle: blogs,
+              isLoading: false,
+              axiosError: null,
+            });
+          } else {
+            console.error("Unexpected status code:", res.status);
+            set({
+              blogsForArticle: [],
+              isLoading: false,
+              axiosError: `Unexpected status: ${res.status}`,
+            });
+          }
+        } catch (e) {
+          console.error("Error fetching blogs for articles:", e);
+          set({
+            isLoading: false,
+            axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+            blogsForArticle: [], // Add this to ensure it's always an array
+          });
+        }
       },
     }),
 

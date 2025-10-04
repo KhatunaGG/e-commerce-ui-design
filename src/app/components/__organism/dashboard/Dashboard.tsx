@@ -63,11 +63,6 @@ const Dashboard = () => {
     );
   }, [imagesData]);
 
-  const articleImages = useMemo(() => {
-    if (!imagesData || !Array.isArray(imagesData)) return [];
-    return imagesData.filter((img) => img.componentUsage?.includes("article"));
-  }, [imagesData]);
-
   if (isLoading) {
     return <AnimateSpin />;
   }
@@ -89,7 +84,7 @@ const Dashboard = () => {
         <NewArrivals images={newArrivalProducts} />
         <Info />
         <SaleOffer images={saleOfferImages} />
-        <Articles images={articleImages} />
+        <Articles />
       </div>
     </section>
   );
