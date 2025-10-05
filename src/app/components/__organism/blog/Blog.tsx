@@ -136,6 +136,7 @@ const Blog = () => {
     [pathName]
   );
 
+
   useEffect(() => {
     if (!page) return;
     clearCurrentPageData();
@@ -185,7 +186,7 @@ const Blog = () => {
           </div>
         </div>
 
-        <BlogList />
+        <BlogList page={page} />
       </div>
     </section>
   );

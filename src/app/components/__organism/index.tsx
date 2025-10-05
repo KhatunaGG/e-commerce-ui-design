@@ -59,6 +59,7 @@ export { default as SortByIcons } from "./sortByIcons/SortByIcons"
 export { default as BlogList } from "./blogList/BlogList"
 export { default as Overlay } from "./overlay/Overlay"
 export { default as BlogListItem } from "./blogListItem/BlogListItem"
+export { default as UserBlogItems } from "./userBlogItems/UserBlogItems"
 
 
 

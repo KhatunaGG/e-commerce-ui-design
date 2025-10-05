@@ -5,7 +5,11 @@ import { useEffect } from "react";
 import BlogListItem from "../blogListItem/BlogListItem";
 import { ShowMoreButton } from "../../__molecules";
 
-const BlogList = () => {
+export type BlogListProps = {
+  page: string;
+};
+
+const BlogList = ({ page }: BlogListProps) => {
   const { sortByTwoVertically, sortByTwoHorizontally } = useShopStore();
   const { blogsData, getAllBlogs } = useBlogStore();
 
@@ -34,6 +38,8 @@ const BlogList = () => {
                   key={blog._id}
                   {...blog}
                   sortByTwoHorizontally={sortByTwoHorizontally}
+
+                  page={page}
                 />
               );
             })
