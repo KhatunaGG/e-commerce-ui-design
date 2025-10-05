@@ -68,6 +68,9 @@ export type BlogListItemProps = {
   createdAt: string;
 
   sortByTwoHorizontally: boolean;
+
+
+  page: string;
 };
 
 const BlogListItem = ({
@@ -80,11 +83,20 @@ const BlogListItem = ({
   //   authorId,
   _id,
   createdAt,
+
+
+  page
 }: BlogListItemProps) => {
   const { formatDate } = useReviewStore();
+
+  console.log('page', page)
+
+
+
+
   return (
     <Link
-      href={""}
+      href={`/${page}/${_id}`}
       key={_id}
       className={`${
         sortByTwoHorizontally

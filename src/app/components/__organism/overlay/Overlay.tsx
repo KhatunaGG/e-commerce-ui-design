@@ -18,10 +18,11 @@ export const blogSchema = z.object({
 export type BlogType = z.infer<typeof blogSchema>;
 
 export type overlayProps = {
-  isBlogPage: boolean;
+  isBlogPage?: boolean;
+  blogId?: string;
 };
 
-const Overlay = ({ isBlogPage }: overlayProps) => {
+const Overlay = ({ isBlogPage, blogId }: overlayProps) => {
   const { setShowOverlay, createBlog } = useBlogStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { initialize } = useSignInStore();
@@ -42,17 +43,13 @@ const Overlay = ({ isBlogPage }: overlayProps) => {
   });
 
   const onSubmit = async (formData: BlogType) => {
-  await initialize();
+    await initialize();
+   const updatedAccessToken = useSignInStore.getState().accessToken;
 
-  // ✅ Fetch fresh token from store after initialize
-  const updatedAccessToken = useSignInStore.getState().accessToken;
-
-  if (!updatedAccessToken) {
-    toast.error("You must be signed in to create a blog.");
-    return;
-  }
-
-
+    if (!updatedAccessToken) {
+      toast.error("You must be signed in to create a blog.");
+      return;
+    }
 
     const file = fileInputRef.current?.files?.[0];
     if (!file) {
@@ -76,13 +73,12 @@ const Overlay = ({ isBlogPage }: overlayProps) => {
     }
   };
 
-
   return (
     <section className="fixed inset-0 bg-black/50 w-full h-full z-20">
       <div className="w-full h-screen flex items-center justify-center">
         <div className="w-[83%] md:w-[77%] lg:w-[50%]  rounded-lg bg-white p-8 shadow-2xl">
           <div className="w-full flex items-center justify-end">
-            <Close isBlogPage={isBlogPage} setShowOverlay={setShowOverlay} />
+            <Close isBlogPage={isBlogPage} setShowOverlay={setShowOverlay} blogId={blogId} />
           </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
@@ -93,7 +89,7 @@ const Overlay = ({ isBlogPage }: overlayProps) => {
                 htmlFor="title"
                 className="text-sm font-semibold leading-[22px] text-[#121212]"
               >
-                Blog title
+                {blogId ? "Article title" : "Blog title"}
               </label>
               <input
                 {...register("title")}
