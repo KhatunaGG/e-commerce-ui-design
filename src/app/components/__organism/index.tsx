@@ -60,6 +60,7 @@ export { default as BlogList } from "./blogList/BlogList"
 export { default as Overlay } from "./overlay/Overlay"
 export { default as BlogListItem } from "./blogListItem/BlogListItem"
 export { default as UserBlogItems } from "./userBlogItems/UserBlogItems"
+export { default as Article } from "./article/Article"
 
 
 

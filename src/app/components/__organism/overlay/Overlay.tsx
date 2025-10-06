@@ -9,7 +9,8 @@ import { toast } from "react-toastify";
 import { useSignInStore } from "@/app/store/sign-in.store";
 
 export const blogSchema = z.object({
-  title: z.string().min(1, "Title is required"),
+  // title: z.string().min(1, "Title is required"),
+  title: z.string().optional(),
   filepath: z.string().optional(),
   context: z.string().optional(),
   articleTitle: z.string().optional(),
@@ -42,30 +43,75 @@ const Overlay = ({ isBlogPage, blogId }: overlayProps) => {
     },
   });
 
+  // const onSubmit = async (formData: BlogType) => {
+  //   await initialize();
+  //  const updatedAccessToken = useSignInStore.getState().accessToken;
+
+  //   if (!updatedAccessToken) {
+  //     toast.error("You must be signed in to proceed.");
+  //     return;
+  //   }
+
+  //   const file = fileInputRef.current?.files?.[0];
+  //   if (!file) {
+  //     toast.error("Please upload a file.");
+  //     return;
+  //   }
+  //   console.log(file, "file from Overlay");
+  //   try {
+  //     const success = await createBlog(formData, file, updatedAccessToken);
+  //     if (success) {
+  //       reset();
+  //       if (fileInputRef.current) fileInputRef.current.value = "";
+  //       setShowOverlay(false);
+  //       toast.success("Blog created successfully!");
+  //     } else {
+  //       toast.error("Failed to create blog. Please try again.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error creating blog:", error);
+  //     toast.error("An error occurred while creating the blog.");
+  //   }
+  // };
+
   const onSubmit = async (formData: BlogType) => {
     await initialize();
-   const updatedAccessToken = useSignInStore.getState().accessToken;
+    const updatedAccessToken = useSignInStore.getState().accessToken;
 
     if (!updatedAccessToken) {
-      toast.error("You must be signed in to create a blog.");
+      toast.error("You must be signed in to proceed.");
       return;
     }
 
-    const file = fileInputRef.current?.files?.[0];
-    if (!file) {
-      toast.error("Please upload a file.");
+    const files = fileInputRef.current?.files
+      ? Array.from(fileInputRef.current.files)
+      : [];
+    if (!files.length) {
+      toast.error("Please upload at least one file.");
       return;
     }
-    console.log(file, "file from Overlay");
+
     try {
-      const success = await createBlog(formData, file, updatedAccessToken);
+      let success = false;
+      if (blogId) {
+        success = await useBlogStore
+          .getState()
+          .createArticle(blogId, formData, files, updatedAccessToken);
+      } else {
+        success = await createBlog(formData, files[0], updatedAccessToken);
+      }
+
       if (success) {
         reset();
         if (fileInputRef.current) fileInputRef.current.value = "";
         setShowOverlay(false);
-        toast.success("Blog created successfully!");
+        toast.success(
+          blogId
+            ? "Article created successfully!"
+            : "Blog created successfully!"
+        );
       } else {
-        toast.error("Failed to create blog. Please try again.");
+        toast.error("Failed to create. Please try again.");
       }
     } catch (error) {
       console.error("Error creating blog:", error);
@@ -78,13 +124,17 @@ const Overlay = ({ isBlogPage, blogId }: overlayProps) => {
       <div className="w-full h-screen flex items-center justify-center">
         <div className="w-[83%] md:w-[77%] lg:w-[50%]  rounded-lg bg-white p-8 shadow-2xl">
           <div className="w-full flex items-center justify-end">
-            <Close isBlogPage={isBlogPage} setShowOverlay={setShowOverlay} blogId={blogId} />
+            <Close
+              isBlogPage={isBlogPage}
+              setShowOverlay={setShowOverlay}
+              blogId={blogId}
+            />
           </div>
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="w-full flex  flex-col  gap-10"
           >
-            <div className="flex flex-col gap-2">
+            <div className={`${blogId ? "hidden" : 'flex'} flex flex-col gap-2`}>
               <label
                 htmlFor="title"
                 className="text-sm font-semibold leading-[22px] text-[#121212]"
@@ -106,7 +156,7 @@ const Overlay = ({ isBlogPage, blogId }: overlayProps) => {
               )}
             </div>
 
-            <div className="w-full = flex  flex-col  gap-4">
+            <div className={`${blogId ? "flex" : "hidden"} w-full flex  flex-col  gap-4`}>
               <label
                 htmlFor="articleTitle"
                 className="text-sm font-semibold leading-[22px] text-[#121212]"
@@ -136,6 +186,7 @@ const Overlay = ({ isBlogPage, blogId }: overlayProps) => {
                 type="file"
                 accept="image/*"
                 // accept=".jpg,.jpeg,.png,.gif,.webp"
+                multiple
                 className="text-sm font-semibold leading-[22px] text-[#121212]"
               />
             </div>

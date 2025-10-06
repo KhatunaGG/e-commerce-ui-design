@@ -58,7 +58,6 @@
 //   _id: string;
 //   createdAt: string;
 
-
 //     presignedUrl?: string;
 // };
 
@@ -321,9 +320,6 @@
 //   )
 // );
 
-
-
-
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { BlogType } from "../components/__organism/overlay/Overlay";
@@ -356,6 +352,7 @@ export interface IBlogStore {
   blogsForArticle: DbBlogType[];
   cacheKey: string;
   cachedBlogsData: Record<string, { blogs: DbBlogType[]; totalCount: number }>;
+  blogByParams: DbBlogType | null;
   // getCacheKey: (page: number, take: number, sort: string) => string;
 
   setSortBlogs: (order: "newest" | "oldest") => void;
@@ -372,7 +369,14 @@ export interface IBlogStore {
   getAllBlogs: () => Promise<void>;
   clearBlogsCache: () => void;
   resetBlogs: () => void;
-  // createArticle: (blogId: string, formData: BlogType,  accessToken: string) => Promise<boolean>;
+  createArticle: (
+    blogId: string,
+    formData: BlogType,
+    files: File[],
+    accessToken: string
+  ) => Promise<boolean>;
+  uploadManyFiles: (files: File[], accessToken: string) => Promise<boolean>;
+  getBlogById: (id: string) => Promise<void>;
 }
 
 export type DbBlogType = {
@@ -380,13 +384,20 @@ export type DbBlogType = {
   filePath: string;
   authorFName: "";
   authorLName: "";
-  articles: [];
+  articles: ArticleType[] | [];
   authorId: "";
   _id: string;
   createdAt: string;
 
+  presignedUrl?: string;
+};
 
-    presignedUrl?: string;
+export type ArticleType = {
+  _id: string;
+  articleTitle: string;
+  context: string;
+  createdAt: string;
+  filePath: string[];
 };
 
 const getCacheKey = (page: number, take: number, sort: string) =>
@@ -406,6 +417,7 @@ export const useBlogStore = create<IBlogStore>()(
       cacheKey: "",
       cachedBlogsData: {},
       blogsForArticle: [],
+      blogByParams: null,
 
       setSortBlogs: (order: "newest" | "oldest") => {
         set({
@@ -423,7 +435,6 @@ export const useBlogStore = create<IBlogStore>()(
       toggleOverlay: () => set({ showOverlay: !get().showOverlay }),
 
       getFilePathFromAwsS3: async (file: File) => {
-        console.log(file, "file form Store");
         const signInStore = useSignInStore.getState();
         const { accessToken } = signInStore;
         if (!file) {
@@ -467,7 +478,6 @@ export const useBlogStore = create<IBlogStore>()(
         set({ isLoading: true, axiosError: null });
         try {
           const filePathFromAwsS3 = await get().getFilePathFromAwsS3(file);
-          console.log(filePathFromAwsS3, "filePathFromAwsS3");
           if (!filePathFromAwsS3) {
             set({
               isLoading: false,
@@ -568,7 +578,6 @@ export const useBlogStore = create<IBlogStore>()(
                 },
               },
             });
-
           }
         } catch (e) {
           set({
@@ -620,7 +629,6 @@ export const useBlogStore = create<IBlogStore>()(
             });
           }
         } catch (e) {
-          console.error("Error fetching blogs for articles:", e);
           set({
             isLoading: false,
             axiosError: handleApiError(e as AxiosError<ErrorResponse>),
@@ -628,11 +636,111 @@ export const useBlogStore = create<IBlogStore>()(
           });
         }
       },
-      // createArticle: async (blogId: string, formData: BlogType,  accessToken: string) => {
 
+      createArticle: async (blogId, formData, files, accessToken) => {
+        set({ isLoading: true, axiosError: null });
 
-      //   return true
-      // }
+        try {
+          const uploadedPaths = await get().uploadManyFiles(files, accessToken);
+          if (!uploadedPaths || !Array.isArray(uploadedPaths)) {
+            set({ isLoading: false, axiosError: "File upload failed" });
+            return false;
+          }
+          const updatedForm = {
+            articleTitle: formData.articleTitle,
+            context: formData.context,
+            filePath: uploadedPaths,
+          };
+
+          const res = await axiosInstance.patch(
+            `/blog/${blogId}/add-article`,
+            updatedForm,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+          if (res.status >= 200 && res.status <= 204) {
+              await get().getBlogById(blogId);
+            set({ isLoading: false });
+            return true;
+          }
+          set({ isLoading: false, axiosError: "Failed to add article" });
+          return false;
+        } catch (e) {
+          set({
+            isLoading: false,
+            axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+            blogsForArticle: [],
+          });
+          return true;
+        }
+      },
+
+      uploadManyFiles: async (files: File[], accessToken: string) => {
+        set({ isLoading: true, axiosError: null });
+        if (!accessToken) {
+          set({ axiosError: "Access token is missing" });
+          return;
+        }
+
+        const hasNonImage = Array.from(files).some(
+          (file) => !file.type.startsWith("image/")
+        );
+
+        if (hasNonImage) {
+          set({ axiosError: "Only image files are allowed." });
+          return null;
+        }
+
+        if (!files || files.length === 0) {
+          set({ axiosError: "No files selected", isLoading: false });
+          return null;
+        }
+        try {
+          const formData = new FormData();
+          files.forEach((file) => formData.append("files", file));
+          const res = await axiosInstance.post("/blog/upload-many", formData, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "multipart/form-data",
+            },
+          });
+
+          if (res.status >= 200 && res.status <= 204) {
+            set({ isLoading: false, axiosError: null });
+            return res.data.uploadedPaths;
+          } else {
+            set({ isLoading: false, axiosError: "Upload fails" });
+            return null;
+          }
+        } catch (e) {
+          set({
+            isLoading: false,
+            axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+          });
+        }
+
+        return false;
+      },
+
+      getBlogById: async (blogId: string) => {
+        set({ isLoading: true, axiosError: null });
+
+        try {
+          const res = await axiosInstance.get(`/blog/${blogId}`);
+
+          if (res.status >= 200 && res.status <= 204) {
+            set({ isLoading: false, axiosError: null, blogByParams: res.data });
+          }
+        } catch (e) {
+          set({
+            isLoading: false,
+            axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+          });
+        }
+      },
     }),
 
     {
