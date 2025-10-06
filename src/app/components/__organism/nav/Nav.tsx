@@ -68,7 +68,6 @@ import Link from "next/link";
 const Nav = () => {
   const path = usePathname();
   const handleShowNavbar = useCartStore((state) => state.handleShowNavbar);
-  // const cartDataLength = useCartStore((state) => state.cartData.length);
   const cartDataLength = useCartStore((state) => state.cartDataLength);
 
   return (

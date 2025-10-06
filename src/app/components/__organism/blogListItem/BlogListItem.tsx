@@ -53,6 +53,7 @@
 // export default BlogListItem;
 
 "use client";
+import { ArticleType } from "@/app/store/blog.store";
 import { useReviewStore } from "@/app/store/review.store";
 import Image from "next/image";
 import Link from "next/link";
@@ -62,13 +63,13 @@ export type BlogListItemProps = {
   filePath: string;
   authorFName: "";
   authorLName: "";
-  articles: [];
+  // articles: [];
+  articles: ArticleType[];
   authorId: "";
   _id: string;
   createdAt: string;
 
   sortByTwoHorizontally: boolean;
-
 
   page: string;
 };
@@ -84,15 +85,11 @@ const BlogListItem = ({
   _id,
   createdAt,
 
-
-  page
+  page,
 }: BlogListItemProps) => {
   const { formatDate } = useReviewStore();
 
-  console.log('page', page)
-
-
-
+  console.log("page", page);
 
   return (
     <Link
