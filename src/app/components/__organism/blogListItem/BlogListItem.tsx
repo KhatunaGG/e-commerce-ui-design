@@ -89,8 +89,6 @@ const BlogListItem = ({
 }: BlogListItemProps) => {
   const { formatDate } = useReviewStore();
 
-  console.log("page", page);
-
   return (
     <Link
       href={`/${page}/${_id}`}

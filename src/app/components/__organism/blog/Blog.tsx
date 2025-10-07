@@ -164,7 +164,7 @@ const Blog = () => {
             </h2>
             <button
               onClick={toggleOverlay}
-              className="text-sm font-semibold leading-[22px] text-[#121212] px-2"
+              className="text-sm font-bold leading-[22px] text-[#121212] px-2 underline"
             >
               Create your blog
             </button>
