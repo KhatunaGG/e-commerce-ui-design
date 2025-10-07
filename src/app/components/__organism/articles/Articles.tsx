@@ -64,21 +64,33 @@ import Link from "next/link";
 import { useBlogStore } from "@/app/store/blog.store";
 import { useEffect } from "react";
 
-const Articles = () => {
+
+export type ArticlesType = {
+  blogId?: string;
+}
+
+const Articles = ({blogId}: ArticlesType) => {
   const blogsForArticle = useBlogStore((state) => state.blogsForArticle);
   const getFirstThreeBlogs = useBlogStore((state) => state.getFirstThreeBlogs);
+
 
   useEffect(() => {
     getFirstThreeBlogs();
   }, [getFirstThreeBlogs]);
 
+
+
+
+
+
   if (!blogsForArticle.length) return null;
 
   return (
-    <section className="w-full py-[58.5px] lg:py-20 md:px-[11.11%] px-[8.53%] flex flex-col gap-10">
+    <section className="w-full py-[58.5px] lg:py-20 md:px-[11.11%] px-[8.53%] flex flex-col gap-10 ">
       <div className="w-full flex items-center justify-between">
         <h2 className="text-[34px] md:text-[40px] font-medium tracking-[-0.6px] leading-[38px] md:tracking-[-0.4px] md:leading-[44px]">
-          Articles
+          
+          {blogId ? "You might also like" : "Articles"}
         </h2>
         <Link href={"/blog"}>
           <MoreButton styleClass="hidden md:flex" label="Reade More" />

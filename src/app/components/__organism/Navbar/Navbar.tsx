@@ -36,7 +36,7 @@ function Navbar() {
   if (!showNavbar) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-end bg-black/20 ">
+    <div className="fixed inset-0 z-40 flex items-start justify-end bg-black/20 ">
       <div className=" min-w-[91.46%] max-w-[91.46%] md:min-w-[53.77%] lg:min-w-[28.68%] h-full bg-white flex flex-col items-start justify-start py-10 px-6 gap-2 md:gap-4">
         <div className="w-full flex items-center justify-between">
           <h2 className="font-normal text-[28px] leading-[34px] tracking-[-0.6px] ">

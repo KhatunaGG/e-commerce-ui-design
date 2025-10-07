@@ -28,16 +28,14 @@ const Article = ({
   const { normalizeFirstChar } = useShopStore();
   const articleBlogImage = filePath[0];
 
-
   return (
-    <div className="w-full flex flex-col gap-6 md:gap-8 mt-[36px] lg:mt-[48px] bg-violet-200">
+    <div className="w-full flex flex-col gap-6 md:gap-8 mt-[36px] lg:mt-[48px]">
       <p className="uppercase font-bold text-sm leading-[12px]">article</p>
-      <h1 className="text-[28px] leading-[34px] lg:text-[54px] lg:leading-[58px] font-medium lg:max-w-[834px]">{normalizeFirstChar(articleTitle)}</h1>
-
-
+      <h1 className="text-[28px] leading-[34px] lg:text-[54px] lg:leading-[58px] font-medium lg:max-w-[834px]">
+        {normalizeFirstChar(articleTitle)}
+      </h1>
 
       <div className="flex flex-col gap-4 md:flex-row items-start justify-between md:justify-start  md:gap-6">
-
         <div className="w-1/2 flex items-center gap-[6px] md:w-auto">
           <span className="w-fit">
             <User blogId={blogId} style={"#6C7275"} />
@@ -45,26 +43,17 @@ const Article = ({
           <h2 className="flex  text-wrap font-normal text-base leading-[26px] text-[#6C7275]">
             {normalizeFirstChar(blogOwenName)}{" "}
             {normalizeFirstChar(blogOwnerLastName)}
-          </h2> 
+          </h2>
         </div>
         <div className="w-1/2 flex items-center gap-[6px] md:w-auto ">
           <span>
             <Calendar />
           </span>
-          <h2 className="text-base leading-[26px] text-[#6C7275]">{formatDate(createdAt)}</h2>
+          <h2 className="text-base leading-[26px] text-[#6C7275]">
+            {formatDate(createdAt)}
+          </h2>
         </div>
-
       </div>
-
-
-
-
-
-
-
-
-
-
 
       <div className="w-full relative">
         <Image
@@ -77,7 +66,7 @@ const Article = ({
           priority
         />
       </div>
-      <p>{" "}{context}</p>
+      <p> {context}</p>
       <div className="w-full flex items-center justify-center flex-col md:flex-row gap-6">
         {filePath.slice(1).map((img, i) => {
           return (

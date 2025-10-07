@@ -7,6 +7,7 @@ import { useEffect, useMemo } from "react";
 import { useShopStore } from "@/app/store/shop-page.store";
 
 import Article from "../article/Article";
+import Articles from "../articles/Articles";
 
 export type UserBlogItemsProps = {
   params: string;
@@ -40,14 +41,12 @@ const UserBlogItems = ({ params }: UserBlogItemsProps) => {
     ? blogByParams!.articles
     : [];
 
-  console.log("blogByParams", blogByParams);
-
   return (
-    <section className="w-full bg-green-200  min-h-[calc(100vh-61px)]">
+    <section className="w-full min-h-[calc(100vh-61px)]">
       <div className="w-full md:px-[11.11%] px-[8.53%] flex flex-col pt-8 md:pt-6 pb-10  min-h-screen relative">
         {showOverlay && <Overlay blogId={params} />}
 
-        <div className="w-full flex flex-col items-center  gap-4 md:gap-10">
+        <div className="w-full flex flex-col items-center  gap-4 md:gap-10 ">
           <div className="w-full flex flex-col gap-4 ">
             <div className="w-full flex flex-col lg:flex-row items-start gap-4 lg:gap-0 lg:items-center justify-between ">
               <div className="hidden md:flex items-center gap-4 text-sm font-medium leading-[24px]">
@@ -58,21 +57,21 @@ const UserBlogItems = ({ params }: UserBlogItemsProps) => {
                 <ChevronRight />
                 <span>{blogByParams?.title}</span>
               </div>
-              <button onClick={toggleOverlay}>Create your Article</button>
+              <button onClick={toggleOverlay} className="text-sm font-bold leading-[22px] text-[#121212] px-2 underline">Create your Article</button>
             </div>
             <div className="w-full flex items-start">
               <button
                 onClick={() => router.push(`/${page}`)}
                 className="flex items-center gap-2 cursor-pointer"
               >
-                <div className="mt-1">
-                  <ChevronLeft />
+                <div className="mt-[3px]">
+                  <ChevronLeft dark={true} />
                 </div>
-                <span>Back</span>
+                <span className="text-sm md:text-base font-bold text-[#121212]">Back</span>
               </button>
             </div>
 
-            <div className="w-full ">
+            {/* <div className="w-full ">
               {articleArray.map((article) => {
                 return (
                   <Article
@@ -84,10 +83,33 @@ const UserBlogItems = ({ params }: UserBlogItemsProps) => {
                   />
                 );
               })}
+            </div> */}
+
+            <div className="w-full">
+              {articleArray.length > 0 ? (
+                articleArray.map((article) => (
+                  <Article
+                    key={`${article._id}-${article?.articleTitle}`}
+                    {...article}
+                    blogOwenName={blogByParams?.authorFName ?? ""}
+                    blogOwnerLastName={blogByParams?.authorLName ?? ""}
+                    blogId={params} 
+                  />
+                ))
+              ) : (
+                <div className="w-full text-center flex items-center justify-center text-xs md:text-base text-red-600 italic">
+                  <h2>
+                    You haven’t added any articles yet. Start sharing your
+                    thoughts!
+                  </h2>
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {articleArray.length > 0 && <Articles blogId={params} />}
     </section>
   );
 };

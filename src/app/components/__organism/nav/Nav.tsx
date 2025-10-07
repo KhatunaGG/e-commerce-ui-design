@@ -72,7 +72,9 @@ const Nav = () => {
 
   return (
     <>
-      <nav className="w-full flex items-center justify-between py-[18px] md:px-[11.11%] px-[8.53%]">
+      <div className="bg-violet-400 absolute top-[61px] min-h w-full h-auto z-50">1111111111111</div>
+      <nav className="w-full flex items-center justify-between py-[18px] md:px-[11.11%] px-[8.53%] relative">
+         
         <div className="flex items-center gap-1">
           <div className="w-6 h-6 flex items-center justify-center mb-[3px] md:mb-0 md:hidden">
             <Burger />
@@ -81,6 +83,11 @@ const Nav = () => {
             <Logo />
           </Link>
         </div>
+
+
+
+
+     
 
         <div className="hidden md:flex items-center md:gap-6 lg:gap-10 text-sm font-medium text-[#6C7275]">
           <NavLink href="/" isActive={path === "/"}>
