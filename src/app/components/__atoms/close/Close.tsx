@@ -1,14 +1,28 @@
-
 export type CloseProps = {
   isBlogPage?: boolean;
   setShowOverlay?: (val: boolean) => void;
   blogId?: string;
+  mobileMenu?: boolean;
+  setMobileMenu?: (val: boolean) => void;
 };
 
-const Close = ({ isBlogPage, setShowOverlay, blogId }: CloseProps) => {
+const Close = ({
+  isBlogPage,
+  setShowOverlay,
+  blogId,
+  mobileMenu,
+  setMobileMenu,
+}: CloseProps) => {
   return (
     <svg
-      onClick={() => (isBlogPage || blogId) && setShowOverlay?.(false)}
+      // onClick={() => (isBlogPage || blogId) && setShowOverlay?.(false)}
+      onClick={() => {
+        if (mobileMenu) {
+          setMobileMenu?.(false);
+        } else if (isBlogPage || blogId) {
+          setShowOverlay?.(false);
+        }
+      }}
       width="20"
       height="20"
       viewBox="0 0 20 20"

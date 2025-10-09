@@ -16,7 +16,7 @@ export { default as Footer } from "./footer/Footer"
 export { default as Banner } from "./banner/Banner"
 export { default as FilterSection } from "./filterSection/FilterSection"
 export { default as Products } from "./products/Products"
-export { default as Menu } from "./menu/Menu"
+// export { default as Menu } from "./menu/Menu"
 export { default as Product } from "./product/Product"
 export { default as FilterOptions } from "./filterOptions/FilterOptions"
 export { default as StarRating } from "./starRating/StarRating"
@@ -61,6 +61,9 @@ export { default as Overlay } from "./overlay/Overlay"
 export { default as BlogListItem } from "./blogListItem/BlogListItem"
 export { default as UserBlogItems } from "./userBlogItems/UserBlogItems"
 export { default as Article } from "./article/Article"
+export { default as MobileMenu } from "./mobileMenu/MobileMenu"
+export { default as PageMenu } from "./pageMenu/PageMenu"
+
 
 
 
