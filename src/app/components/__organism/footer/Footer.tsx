@@ -1,7 +1,19 @@
+"use client";
+import { usePathname } from "next/navigation";
 import { Facebook, Instagram, Logo, Youtube } from "../../__atoms";
 import { NavLink } from "../../__molecules";
 
+// export type FooterProps = {
+//   href: string;
+//   isActive: boolean;
+//   children: React.ReactNode;
+// };
+
+//{href, isActive, children}: FooterProps
+
 const Footer = () => {
+  const path = usePathname();
+
   return (
     <section className="w-full bg-[#141718]  md:px-[11.11%] px-[8.53%]        py-12  md:pt-20 md:pb-[32px] flex flex-col ">
       <div className="w-full flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-8 md:gap-10">
@@ -13,11 +25,21 @@ const Footer = () => {
           </p>
         </div>
         <div className="flex flex-col md:flex-row gap-6 items-center md:gap-6 lg:gap-10 text-sm font-normal text-[#FEFEFE]">
-          <NavLink href="/">Home</NavLink>
-          <NavLink href="/shop">Shop</NavLink>
-          <NavLink href="/product">Product</NavLink>
-          <NavLink href="/product">Blog</NavLink>
-          <NavLink href="/contact">Contact Us</NavLink>
+          <NavLink href="/" isActive={path === "/"} variant="footer">
+            Home
+          </NavLink>
+          <NavLink href="/shop" isActive={path === "/shop"} variant="footer">
+            Shop
+          </NavLink>
+          <NavLink href="/wishlist" isActive={path === "/wishlist"} variant="footer">
+            Wishlist
+          </NavLink>
+          <NavLink href="/blog" isActive={path === "/blog"} variant="footer">
+            Blog
+          </NavLink>
+          <NavLink href="/contact" isActive={path === "/contact"} variant="footer">
+            Contact Us
+          </NavLink>
         </div>
       </div>
 
