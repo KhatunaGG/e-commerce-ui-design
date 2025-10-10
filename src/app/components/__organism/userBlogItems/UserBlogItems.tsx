@@ -37,6 +37,22 @@ const UserBlogItems = ({ params }: UserBlogItemsProps) => {
     fetchBlogById();
   }, [getBlogById, params]);
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
   const articleArray = Array.isArray(blogByParams?.articles)
     ? blogByParams!.articles
     : [];

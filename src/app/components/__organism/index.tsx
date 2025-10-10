@@ -63,6 +63,7 @@ export { default as UserBlogItems } from "./userBlogItems/UserBlogItems"
 export { default as Article } from "./article/Article"
 export { default as MobileMenu } from "./mobileMenu/MobileMenu"
 export { default as PageMenu } from "./pageMenu/PageMenu"
+export { default as ContactUs } from "./contactUs/ContactUs"
 
 
 
