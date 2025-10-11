@@ -202,7 +202,7 @@ const SaleOffer = ({ images, page }: SaleOfferProps) => {
             </p>
           </div>
 
-          <Link className="w-ful flex items-start  gap-1 " href={""}>
+          <Link className="w-ful flex items-start  gap-1 " href={"/shop"}>
             <button className="text-base font-medium leading-[28px] tracking-[-0.4px] cursor-pointer">
               Shop Now
             </button>
