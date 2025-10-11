@@ -47,14 +47,6 @@ export const priceFilter = [
   "400.00+",
 ];
 
-// export const priceFilter = [
-//   `${(0.0).toFixed(2)} - ${(99.99).toFixed(2)}`,
-//   `${(100.0).toFixed(2)} - ${(199.99).toFixed(2)}`,
-//   `${(200.0).toFixed(2)} - ${(299.99).toFixed(2)}`,
-//   `${(300.0).toFixed(2)} - ${(399.99).toFixed(2)}`,
-//   `${(400.0).toFixed(2)}+`,
-// ];
-
 export const sortBy = [
   "Sort By",
   "Latest",
@@ -65,18 +57,7 @@ export const sortBy = [
   "Lowest",
 ];
 
-// export const sortByOptions = {
-//   "Latest": "latest",
-//   "Oldest": "oldest",
-//   "A to Z": "a-z",
-//   "Z to A": "z-a",
-//   "Highest": "highest",
-//   "Lowest": "lowest",
-// };
-
 export const emojis = ["😀", "😂", "😍", "😢", "😠", "👍", "🙏", "💯"];
-
-
 
 export const shippings = [
   {
@@ -93,6 +74,27 @@ export const shippings = [
   },
 ];
 
+export const accountLinks = [
+  "account",
+  "address",
+  "orders",
+  "wishlists",
+  "logout",
+];
 
- export const accountLinks = ["account", "address", "orders", "wishlists", "logout"];
-
+export const contacts = [
+  {
+    segment: "address",
+    country: "united kingdom",
+    street: "42 Elmhurst Road",
+    zip: "M14 5QN",
+    city: "Manchester",
+    iconName: "store",
+  },
+  { segment: "Contact Us", tel: "+44 1632 960123", iconName: "call" },
+  {
+    segment: "Email",
+    mail: "hello@3legant.com",
+    iconName: "mail",
+  },
+];
