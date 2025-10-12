@@ -171,13 +171,6 @@ const SignUpForm = () => {
     },
   });
 
-  // const isTermsValue = watch("isTerms");
-
-  // const handleTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   console.log("📋 Checkbox changed:", e.target.checked);
-  //   setValue("isTerms", e.target.checked);
-  // };
-
   const onSubmit = async (formData: SignUpType) => {
     try {
       const isSuccess = await signUp(formData);

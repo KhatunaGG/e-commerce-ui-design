@@ -31,9 +31,8 @@ export default function RootLayout({
     <html lang="en">
       <ReactLenis root>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased            h-full w-full `}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased  h-full w-full `}
         >
-           {/* <div className="bg-violet-400 absolute top-[61px] min-h w-full h-auto z-50">1111111111111</div> */}
           {children}
           <ToastContainer />
         </body>
