@@ -12,7 +12,7 @@ export default function MainLayout({
         <Nav />
         {children}
       </div>
-      <Join />
+      {/* <Join /> */}
       <Footer />
     </section>
   );
