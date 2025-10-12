@@ -1,4 +1,4 @@
-import { Footer, Join, Nav, Navbar } from "../components/__organism";
+import { Footer, Nav, Navbar } from "../components/__organism";
 
 export default function MainLayout({
   children,
