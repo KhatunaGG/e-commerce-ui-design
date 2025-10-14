@@ -90,7 +90,6 @@ import Info from "../info/Info";
 
 const Footer = () => {
   const path = usePathname();
-  console.log("path", path);
 
   return (
     <div className="w-full ">
