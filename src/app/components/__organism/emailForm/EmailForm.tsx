@@ -6,6 +6,9 @@ import { Input } from "../../__molecules";
 import { usePathname } from "next/navigation";
 import { useMemo } from "react";
 import Image from "next/image";
+import { useMenuStore } from "@/app/store/menu.store";
+import { useSignInStore } from "@/app/store/sign-in.store";
+import { toast } from "react-toastify";
 
 export const mailSchema = z.object({
   fullName: z.string().min(1, "Full name is required"),
@@ -14,6 +17,7 @@ export const mailSchema = z.object({
     .min(1, "Email is required")
     .max(50, "Email is too long")
     .nonempty("Email is required"),
+  message: z.string().min(1, "Message is required"),
 });
 
 export type MailType = z.infer<typeof mailSchema>;
@@ -24,21 +28,43 @@ const EmailForm = () => {
     const parts = pathName.split("/") || [];
     return parts[1] || "default";
   }, [pathName]);
+  const { isLoading, sendEmail } = useMenuStore();
+  const { initialize } = useSignInStore();
 
   const {
     register,
-    // handleSubmit,
+    handleSubmit,
     formState: { errors },
-    // reset,
+    reset,
   } = useForm<MailType>({
     resolver: zodResolver(mailSchema),
     defaultValues: {
       fullName: "",
       yourEmail: "",
+      message: "",
     },
   });
+
+  const onSubmit = async (formData: MailType) => {
+    console.log("formData", formData);
+    await initialize();
+    const token = useSignInStore.getState().accessToken;
+    if (!token) {
+      toast.error("You must be signed in to send email");
+      return;
+    }
+    const success = await sendEmail(formData, token ?? "");
+    if (success) {
+      reset();
+      toast.success("Message sent successfully!");
+    }
+  };
+
   return (
-    <form className="w-full flex items-start flex-col lg:flex-row lg:gap-[28px] gap-6">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="w-full flex items-start flex-col lg:flex-row lg:gap-[28px] gap-6"
+    >
       <div className="w-full flex flex-col gap-5 lg:flex-1">
         <Input
           register={register}
@@ -55,26 +81,26 @@ const EmailForm = () => {
         <div className="w-full flex flex-col gap-3">
           <label className="uppercase text-[#6C7275]">massage</label>
           <textarea
+            {...register("message")}
             placeholder="Your message"
             className="resize-none outline-none w-full border border-[#CBCBCB] p-4 rounded-lg min-h-[140px]"
           ></textarea>
+          {errors.message && (
+            <span className="text-red-500 text-sm">
+              {errors.message.message}
+            </span>
+          )}
         </div>
         <div className="w-full flex items-center justify-center md:items-start md:justify-start">
-          <button className="w-fit px-10 py-[6px] text-white bg-[#141718] rounded-lg text-base font-medium leading-[28px] tracking-[-0.4px]">
-            Send Message
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-fit px-10 py-[6px] text-white bg-[#141718] rounded-lg text-base font-medium leading-[28px] tracking-[-0.4px]"
+          >
+            {isLoading ? "Sending..." : "Send Message"}
           </button>
         </div>
       </div>
-
-      {/* <div className="lg:flex-1 relative w-[311px] h-[311px] md:w-[548px] md:h-[404px] ">
-        <Image
-          src={"/assets/map.png"}
-          alt={"Map"}
-          fill
-          className="object-cover rounded-lg"
-        />
-      </div>
-   */}
 
       <div className="relative min-w-[311px] min-h-[311px] md:min-w-[548px] md:min-h-[404px] lg:w-[548px] lg:h-[404px] w-full h-full ">
         <Image
@@ -90,4 +116,3 @@ const EmailForm = () => {
 };
 
 export default EmailForm;
-
