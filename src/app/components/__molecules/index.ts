@@ -16,6 +16,7 @@ export { default as Pagination } from "./pagination/Pagination";
 export { default as RouterButton } from "./routerButton/RouterButton";
 export { default as SimplePagination } from "./simplePagination/SimplePagination";
 export { default as SortSelect } from "./sortSelect/SortSelect";
+export { default as MobileFilter } from "./mobileFilter/MobileFilter";
 
 
 

@@ -175,21 +175,21 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
       pageNumber: 1,
       productsData: [],
       productsDataLengthByKey: 0,
-      productsDataTotalLength: 0,
+      // productsDataTotalLength: 0,
     });
     get().getAllProducts(false);
   },
 
-  setFilters: (filters) => {
-    set({
-      filters,
-      pageNumber: 1,
-      productsData: [],
-      productsDataLengthByKey: 0,
-      productsDataTotalLength: 0,
-    });
-    get().getAllProducts(false);
-  },
+ setFilters: (filters) => {
+  set({
+    filters,
+    pageNumber: 1,
+    productsData: [],
+    productsDataLengthByKey: 0,
+    productsDataTotalLength: 0,
+  });
+  get().getAllProducts(false);
+},
 
   setPageNumber: (pageNumber: number) => set({ pageNumber }),
 
@@ -380,98 +380,6 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
     return mapping[sortValue] || "";
   },
 
-  // getAllProducts: async (isLoadMore = false) => {
-  //   const state = get();
-  //   const {
-  //     pageNumber,
-  //     take,
-  //     filters,
-  //     sortBy,
-  //     mapSortValueToBackend,
-  //     buildCacheKey,
-  //   } = state;
-  //   const currentPage = isLoadMore ? pageNumber : 1;
-
-  //   const backendSortValue = mapSortValueToBackend(sortBy);
-  //   const cacheKey = buildCacheKey(
-  //     currentPage,
-  //     take,
-  //     filters.category,
-  //     filters.priceRange,
-  //     backendSortValue
-  //   );
-  //   const cachedData = state.cachedProductsData[cacheKey];
-  //   const cachedDataLength = state.cachedDataLengthByKey?.[cacheKey];
-
-  //   if (cachedData && cachedData.length > 0) {
-  //     if (isLoadMore) {
-  //       set({
-  //         productsData: [...state.productsData, ...cachedData],
-  //         productsDataLengthByKey:
-  //           state.productsDataLengthByKey + cachedData.length,
-  //         isLoadingMore: false,
-  //         axiosError: null,
-  //       });
-  //     } else {
-  //       set({
-  //         productsData: cachedData,
-  //         productsDataLengthByKey: cachedDataLength || cachedData.length,
-  //         isLoading: false,
-  //         axiosError: null,
-  //       });
-  //     }
-  //     // console.log(`Loaded page ${currentPage} from cache`);
-  //     return;
-  //   }
-
-  //   if (isLoadMore) {
-  //     set({ isLoadingMore: true, axiosError: null });
-  //   } else {
-  //     set({ isLoading: true, axiosError: null });
-  //   }
-
-  //   try {
-  //     const query = `/product?${cacheKey}`;
-  //     const res = await axiosInstance.get(query);
-
-  //     if (res.status >= 200 && res.status <= 204) {
-  //       const newProducts = res.data.data;
-  //       const filteredTotalLength = res.data.productsDataLength;
-
-  //       set((prev) => ({
-  //         productsData: isLoadMore
-  //           ? [...prev.productsData, ...newProducts]
-  //           : newProducts,
-  //         productsDataLengthByKey: isLoadMore
-  //           ? prev.productsDataLengthByKey + newProducts.length
-  //           : newProducts.length,
-  //         productsDataTotalLength: filteredTotalLength,
-  //         isLoading: false,
-  //         isLoadingMore: false,
-  //         axiosError: null,
-  //         cachedProductsData: {
-  //           ...prev.cachedProductsData,
-  //           [cacheKey]: newProducts,
-  //         },
-  //         cachedDataLengthByKey: {
-  //           ...prev.cachedDataLengthByKey,
-  //           [cacheKey]: newProducts.length,
-  //         },
-  //       }));
-
-  //       // console.log(get().productsData, "productsData");
-  //       // console.log(get().cachedProductsData, "cachedProductsData");
-  //     }
-  //   } catch (e) {
-  //     set({
-  //       axiosError: handleApiError(e as AxiosError<ErrorResponse>),
-  //       isLoading: false,
-  //       isLoadingMore: false,
-  //       productsData: isLoadMore ? get().productsData : [],
-  //     });
-  //   }
-  // },
-
   getAllProducts: async (isLoadMore = false) => {
     const state = get();
     const {
@@ -591,21 +499,64 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
   //   await get().getAllProducts(true);
   // },
 
-  loadMoreProducts: async () => {
-    const state = get();
-    if (!get().hasMoreProducts()) {
-      // console.log("No more products to load");
-      return;
-    }
+  // loadMoreProducts: async () => {
+  //   const state = get();
+  //   if (!get().hasMoreProducts()) {
+  //     // console.log("No more products to load");
+  //     return;
+  //   }
 
-    if (state.isLoadingMore) {
-      // console.log("Already loading more products");
-      return;
-    }
-    const nextPage = state.pageNumber + 1;
-    set({ pageNumber: nextPage, isLoadingMore: true });
-    await get().getAllProducts(true);
-  },
+  //   if (state.isLoadingMore) {
+  //     // console.log("Already loading more products");
+  //     return;
+  //   }
+  //   const nextPage = state.pageNumber + 1;
+  //   set({ pageNumber: nextPage, isLoadingMore: true });
+  //   await get().getAllProducts(true);
+  // },
+
+loadMoreProducts: async () => {
+  const state = get();
+  console.log('🔍 Load More Check:', {
+    productsDataLength: state.productsData.length,
+    productsDataTotalLength: state.productsDataTotalLength,
+    pageNumber: state.pageNumber,
+    hasMore: get().hasMoreProducts()
+  });
+  
+  if (!get().hasMoreProducts()) {
+    console.log("❌ No more products to load");
+    return;
+  }
+
+  if (state.isLoadingMore) {
+    console.log("❌ Already loading more products");
+    return;
+  }
+  
+  const nextPage = state.pageNumber + 1;
+  console.log('📄 Loading page:', nextPage);
+  set({ pageNumber: nextPage, isLoadingMore: true });
+  await get().getAllProducts(true);
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   clearCache: () => {
     set({
       productsData: [],
