@@ -74,32 +74,6 @@ const currentPriceRange = useShopStore((state) => state.filters.priceRange);
         <h2 className="font-semibold md:text-sm lg:text-base leading-[26px] text-[#121212] uppercase">
           Price
         </h2>
-        {/* {priceFilter.map((price) => {
-          const id = `price-${price}`;
-          return (
-            <div
-              key={id}
-              className="w-full flex items-center justify-between text-[#807E7E] "
-            >
-              <label
-                htmlFor={id}
-                className={`${
-                  currentPriceRange === price
-                    ? "font-bold underline"
-                    : " font-semibold"
-                } md:text-sm lg:text-base leading-[26px] cursor-pointer`}
-              >
-                {price}
-              </label>
-
-              <Checkbox
-                id={id}
-                checked={currentPriceRange === price}
-                onChange={() => handlePriceChange(price as PriceFilter)}
-              />
-            </div>
-          );
-        })} */}
         {priceFilter.map((price) => {
           const id = `price-${price}`;
           return (

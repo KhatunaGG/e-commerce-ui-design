@@ -101,13 +101,6 @@ const SortByIcons = ({
   //   if (isBlogPage && !activeIcon && sortIcons.includes("ThirdFilterIcon")) {
   //     setActiveIcon("ThirdFilterIcon");
   //     onIconClick?.("ThirdFilterIcon");
-  //   }
-  // }, [isBlogPage, activeIcon, sortIcons, setActiveIcon, onIconClick]);
-
-  // useEffect(() => {
-  //   if (isBlogPage && !activeIcon && sortIcons.includes("ThirdFilterIcon")) {
-  //     setActiveIcon("ThirdFilterIcon");
-  //     onIconClick?.("ThirdFilterIcon");
   //   } else if (
   //     !isBlogPage &&
   //     !activeIcon &&
@@ -115,7 +108,15 @@ const SortByIcons = ({
   //   ) {
   //     setActiveIcon("FirstFilterIcon");
   //     onIconClick?.("FirstFilterIcon");
+  //   }else if (
+  //     !isBlogPage &&
+  //     !activeIcon &&
+  //     sortIcons.includes("ThirdFilterIcon")
+  //   ) {
+  //     setActiveIcon("ThirdFilterIcon");
+  //     onIconClick?.("ThirdFilterIcon");
   //   }
+  // }, [isBlogPage, activeIcon, sortIcons, setActiveIcon, onIconClick]);
 
   useEffect(() => {
     if (isBlogPage && !activeIcon && sortIcons.includes("ThirdFilterIcon")) {
@@ -128,15 +129,15 @@ const SortByIcons = ({
     ) {
       setActiveIcon("FirstFilterIcon");
       onIconClick?.("FirstFilterIcon");
-    }else if (
+    } else if (
       !isBlogPage &&
       !activeIcon &&
       sortIcons.includes("ThirdFilterIcon")
     ) {
       setActiveIcon("ThirdFilterIcon");
       onIconClick?.("ThirdFilterIcon");
-    } 
-  }, [isBlogPage, activeIcon, sortIcons, setActiveIcon, onIconClick]);
+    }
+  }, []);
 
   return (
     <div className="flex items-end">

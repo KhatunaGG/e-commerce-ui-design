@@ -1,7 +1,7 @@
 "use client";
 import { Down } from "../../__atoms";
 
-type SortSelectProps = {
+export type SortSelectProps = {
   value: "newest" | "oldest";
   onChange: (value: "newest" | "oldest") => void;
   isBlogPage?: boolean;

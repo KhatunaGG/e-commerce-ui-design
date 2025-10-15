@@ -1,15 +1,18 @@
 // "use client";
 // import { useProductStore } from "@/app/store/product.store";
 // import { useShopStore } from "@/app/store/shop-page.store";
+// import { useBlogStore } from "@/app/store/blog.store";
 
 // export type ShowMoreButtonPropsType = {
 //   isWishlistPage?: boolean;
 //   isAccountWishlistPage?: boolean;
+//   isBlogPage?: boolean;
 // };
 
 // const ShowMoreButton = ({
 //   isWishlistPage,
 //   isAccountWishlistPage,
+//   isBlogPage,
 // }: ShowMoreButtonPropsType) => {
 //   const {
 //     loadMoreProducts,
@@ -20,8 +23,6 @@
 //     productsDataTotalLength,
 //   } = useShopStore();
 
-//   const isAnyWishlist = isWishlistPage || isAccountWishlistPage;
-
 //   const {
 //     wishlistData,
 //     wishlistDataLength,
@@ -29,7 +30,24 @@
 //     loadMoreWishList,
 //   } = useProductStore();
 
+//   const {
+//     blogsData,
+//     blogsTotalLength,
+//     // page,
+//     // take,
+//     isLoading: isLoadingBlogs,
+//     getAllBlogs,
+//     // setPage
+//   } = useBlogStore();
+
+//   const isAnyWishlist = isWishlistPage || isAccountWishlistPage;
+
 //   const handleLoadMore = async () => {
+//     if (isBlogPage) {
+//     await getAllBlogs();
+//     return;
+//   }
+
 //     if (!isAnyWishlist) {
 //       if (hasMoreProducts() && !isLoadingMore) {
 //         await loadMoreProducts();
@@ -39,7 +57,12 @@
 //     }
 //   };
 
-//   const isDisabled = isAnyWishlist
+//   const isDisabled = isBlogPage
+//     ? !blogsData ||
+//       blogsData.length === 0 ||
+//       blogsData.length >= blogsTotalLength ||
+//       isLoadingBlogs
+//     : isAnyWishlist
 //     ? !wishlistData ||
 //       wishlistData.length === 0 ||
 //       wishlistData.length >= wishlistDataLength
@@ -50,6 +73,13 @@
 //       (productsData.length === 0 && productsDataTotalLength === 0);
 
 //   const getButtonText = () => {
+//     if (isBlogPage) {
+//       if (isLoadingBlogs) return "Loading...";
+//       if (!blogsData || blogsData.length === 0) return "No blogs";
+//       if (blogsData.length >= blogsTotalLength) return "All blogs loaded";
+//       return "Show more";
+//     }
+
 //     if (isAnyWishlist) {
 //       if (isLoading || isLoadingFromProducts) return "Loading...";
 //       if (!wishlistData || wishlistData.length === 0) return "No items";
@@ -67,6 +97,7 @@
 
 //   if (
 //     (!isAnyWishlist &&
+//       !isBlogPage &&
 //       productsData.length === 0 &&
 //       productsDataTotalLength === 0 &&
 //       !isLoadingMore &&
@@ -80,14 +111,11 @@
 //     <button
 //       onClick={handleLoadMore}
 //       disabled={isDisabled}
-//       className={`
-//         text-base font-medium leading-[28px] tracking-[-0.4px] text-[#141718] py-[6px] px-10 rounded-[80px] border border-[#141718]
-//         ${
-//           isDisabled
-//             ? "opacity-50 cursor-not-allowed"
-//             : "hover:opacity-90 cursor-pointer"
-//         }
-//       `}
+//       className={`text-base font-medium leading-[28px] tracking-[-0.4px] text-[#141718] py-[6px] px-10 rounded-[80px] border border-[#141718] ${
+//         isDisabled
+//           ? "opacity-50 cursor-not-allowed"
+//           : "hover:opacity-90 cursor-pointer"
+//       }`}
 //     >
 //       {getButtonText()}
 //     </button>
@@ -95,9 +123,6 @@
 // };
 
 // export default ShowMoreButton;
-
-
-
 
 "use client";
 import { useProductStore } from "@/app/store/product.store";
@@ -143,20 +168,55 @@ const ShowMoreButton = ({
 
   const isAnyWishlist = isWishlistPage || isAccountWishlistPage;
 
-  const handleLoadMore = async () => {
-    if (isBlogPage) {
-    await getAllBlogs(); 
+  // const handleLoadMore = async () => {
+  //   if (isBlogPage) {
+  //     await getAllBlogs();
+  //     return;
+  //   }
+
+  //   if (!isAnyWishlist) {
+  //     if (hasMoreProducts() && !isLoadingMore) {
+  //       await loadMoreProducts();
+  //     }
+  //   } else {
+  //     await loadMoreWishList();
+  //   }
+  // };
+
+
+const handleLoadMore = async () => {
+  if (isBlogPage) {
+    await getAllBlogs();
     return;
   }
 
-    if (!isAnyWishlist) {
-      if (hasMoreProducts() && !isLoadingMore) {
-        await loadMoreProducts();
-      }
-    } else {
-      await loadMoreWishList();
+  if (!isAnyWishlist) {
+    if (!isLoadingMore) {
+      await loadMoreProducts();
     }
-  };
+  } else {
+    await loadMoreWishList();
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -169,11 +229,9 @@ const ShowMoreButton = ({
     ? !wishlistData ||
       wishlistData.length === 0 ||
       wishlistData.length >= wishlistDataLength
-    : !hasMoreProducts() ||
+    : (productsDataTotalLength > 0 && !hasMoreProducts()) ||
       isLoadingMore ||
-      isLoading ||
-      isLoadingFromProducts ||
-      (productsData.length === 0 && productsDataTotalLength === 0);
+      isLoading;
 
   const getButtonText = () => {
     if (isBlogPage) {
@@ -191,25 +249,29 @@ const ShowMoreButton = ({
     } else {
       if (isLoading || isLoadingFromProducts || isLoadingMore)
         return "Loading...";
-      if (productsData.length === 0 && productsDataTotalLength === 0)
+      if (
+        productsData.length === 0 &&
+        productsDataTotalLength === 0 &&
+        !isLoading
+      )
         return "No products";
-      if (!hasMoreProducts()) return "All products loaded";
+      if (productsDataTotalLength > 0 && !hasMoreProducts())
+        return "All products loaded";
       return "Show more";
     }
   };
 
   if (
-    (!isAnyWishlist &&
-      !isBlogPage &&
-      productsData.length === 0 &&
-      productsDataTotalLength === 0 &&
-      !isLoadingMore &&
-      !isLoading) ||
-    isLoadingFromProducts
+    !isAnyWishlist &&
+    !isBlogPage &&
+    productsData.length === 0 &&
+    productsDataTotalLength === 0 &&
+    !isLoadingMore &&
+    !isLoading &&
+    !isLoadingFromProducts
   ) {
     return null;
   }
-
   return (
     <button
       onClick={handleLoadMore}
