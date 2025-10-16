@@ -104,6 +104,8 @@ export interface IUseShopStore {
   newArrivalsLoading: boolean;
   isLoadingMore: boolean;
 
+    cachedDataTotalLengthByKey: Record<string, number>;
+
   calculateDiscount: (price?: number, discount?: number) => string;
   setSortBy: (sortBy: string) => void;
   setFilters: (filters: FiltersType) => void;
@@ -139,6 +141,12 @@ export interface IUseShopStore {
     sortBy: string
   ) => string;
   handleIconClick: (icon: string) => void;
+
+  buildFilterKey: (
+  category: string | null,
+  priceRange: string | null,
+  sortBy: string
+) =>  string;
 }
 
 export const useShopStore = create<IUseShopStore>((set, get) => ({
@@ -168,6 +176,8 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
   productsDataLengthByKey: 0,
   productsDataTotalLength: 0,
   cachedProductsDataTotalLength: 0,
+
+   cachedDataTotalLengthByKey: {} as Record<string, number>,
 
   setSortBy: (sortValue: string) => {
     set({
@@ -335,25 +345,66 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
     }
   },
 
+  // buildCacheKey: (
+  //   page: number,
+  //   take: number,
+  //   category: string | null,
+  //   priceRange: string | null,
+  //   sortBy: string
+  // ): string => {
+  //   let key = `page=${page}&take=${take}`;
+  //   if (category) {
+  //     key += `&category=${category}`;
+  //   }
+  //   if (priceRange) {
+  //     key += `&priceRange=${priceRange}`;
+  //   }
+  //   if (sortBy && sortBy !== "Sort By") {
+  //     key += `&sortBy=${sortBy}`;
+  //   }
+  //   return key;
+  // },
+
+
+
+
   buildCacheKey: (
-    page: number,
-    take: number,
-    category: string | null,
-    priceRange: string | null,
-    sortBy: string
-  ): string => {
-    let key = `page=${page}&take=${take}`;
-    if (category) {
-      key += `&category=${category}`;
-    }
-    if (priceRange) {
-      key += `&priceRange=${priceRange}`;
-    }
-    if (sortBy && sortBy !== "Sort By") {
-      key += `&sortBy=${sortBy}`;
-    }
-    return key;
-  },
+  page: number,
+  take: number,
+  category: string | null,
+  priceRange: string | null,
+  sortBy: string
+): string => {
+  let key = `page=${page}&take=${take}`;
+  if (category) {
+    key += `&category=${category}`;
+  }
+  if (priceRange) {
+    key += `&priceRange=${priceRange}`;
+  }
+  if (sortBy && sortBy !== "Sort By") {
+    key += `&sortBy=${sortBy}`;
+  }
+  return key;
+},
+
+buildFilterKey: (
+  category: string | null,
+  priceRange: string | null,
+  sortBy: string
+): string => {
+  let key = "products";
+  if (category) {
+    key += `&category=${category}`;
+  }
+  if (priceRange) {
+    key += `&priceRange=${priceRange}`;
+  }
+  if (sortBy && sortBy !== "Sort By") {
+    key += `&sortBy=${sortBy}`;
+  }
+  return key;
+},
 
   getProductsFromCacheOrApi: async () => {
     await get().getAllProducts(false);
@@ -380,107 +431,118 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
     return mapping[sortValue] || "";
   },
 
-  getAllProducts: async (isLoadMore = false) => {
-    const state = get();
-    const {
-      pageNumber,
-      take,
-      filters,
-      sortBy,
-      mapSortValueToBackend,
-      buildCacheKey,
-    } = state;
-    const currentPage = isLoadMore ? pageNumber : 1;
+  // getAllProducts: async (isLoadMore = false) => {
+  //   const state = get();
+  //   const {
+  //     pageNumber,
+  //     take,
+  //     filters,
+  //     sortBy,
+  //     mapSortValueToBackend,
+  //     buildCacheKey,
+  //   } = state;
+  //   const currentPage = isLoadMore ? pageNumber : 1;
 
-    const backendSortValue = mapSortValueToBackend(sortBy);
-    const cacheKey = buildCacheKey(
-      currentPage,
-      take,
-      filters.category,
-      filters.priceRange,
-      backendSortValue
-    );
+  //   const backendSortValue = mapSortValueToBackend(sortBy);
+  //   const cacheKey = buildCacheKey(
+  //     currentPage,
+  //     take,
+  //     filters.category,
+  //     filters.priceRange,
+  //     backendSortValue
+  //   );
 
-    const cachedData = state.cachedProductsData[cacheKey];
-    const cachedDataLength = state.cachedDataLengthByKey?.[cacheKey];
+  //   const cachedData = state.cachedProductsData[cacheKey];
+  //   const cachedDataLength = state.cachedDataLengthByKey?.[cacheKey];
 
-    if (cachedData && cachedData.length > 0) {
-      console.log("✅ Loading from cache:", cachedData.length, "products");
-      if (isLoadMore) {
-        const existingIds = new Set(
-          state.productsData.map((p: ProductsDataType) => p._id)
-        );
-        const uniqueCachedData = cachedData.filter(
-          (p: ProductsDataType) => !existingIds.has(p._id)
-        );
-        set({
-          productsData: [...state.productsData, ...uniqueCachedData],
-          productsDataLengthByKey:
-            state.productsDataLengthByKey + uniqueCachedData.length,
-          isLoadingMore: false,
-          axiosError: null,
-        });
-      } else {
-        set({
-          productsData: cachedData,
-          productsDataLengthByKey: cachedDataLength || cachedData.length,
-          isLoading: false,
-          axiosError: null,
-        });
-      }
-      return;
-    }
+  //   if (cachedData && cachedData.length > 0) {
+  //     console.log("✅ Loading from cache:", cachedData.length, "products");
+  //     if (isLoadMore) {
+  //       const existingIds = new Set(
+  //         state.productsData.map((p: ProductsDataType) => p._id)
+  //       );
+  //       const uniqueCachedData = cachedData.filter(
+  //         (p: ProductsDataType) => !existingIds.has(p._id)
+  //       );
+  //       set({
+  //         productsData: [...state.productsData, ...uniqueCachedData],
+  //         productsDataLengthByKey:
+  //           state.productsDataLengthByKey + uniqueCachedData.length,
+  //         isLoadingMore: false,
+  //         axiosError: null,
+  //       });
+  //     } else {
+  //       set({
+  //         productsData: cachedData,
+  //         productsDataLengthByKey: cachedDataLength || cachedData.length,
+  //         isLoading: false,
+  //         axiosError: null,
+  //       });
+  //     }
+  //     return;
+  //   }
 
-    if (isLoadMore) {
-      set({ isLoadingMore: true, axiosError: null });
-    } else {
-      set({ isLoading: true, axiosError: null });
-    }
+  //   if (isLoadMore) {
+  //     set({ isLoadingMore: true, axiosError: null });
+  //   } else {
+  //     set({ isLoading: true, axiosError: null });
+  //   }
 
-    try {
-      const query = `/product?${cacheKey}`;
-      const res = await axiosInstance.get(query);
+  //   try {
+  //     const query = `/product?${cacheKey}`;
+  //     const res = await axiosInstance.get(query);
 
-      if (res.status >= 200 && res.status <= 204) {
-        const newProducts = res.data.data;
-        const filteredTotalLength = res.data.productsDataLength;
+  //     if (res.status >= 200 && res.status <= 204) {
+  //       const newProducts = res.data.data;
+  //       const filteredTotalLength = res.data.productsDataLength;
 
-        const existingIds = new Set(
-          state.productsData.map((p: ProductsDataType) => p._id)
-        );
-        const uniqueNewProducts = isLoadMore
-          ? newProducts.filter((p: ProductsDataType) => !existingIds.has(p._id))
-          : newProducts;
-        set((prev) => ({
-          productsData: isLoadMore
-            ? [...prev.productsData, ...uniqueNewProducts]
-            : newProducts,
-          productsDataLengthByKey: isLoadMore
-            ? prev.productsDataLengthByKey + uniqueNewProducts.length
-            : newProducts.length,
-          productsDataTotalLength: filteredTotalLength,
-          isLoading: false,
-          isLoadingMore: false,
-          axiosError: null,
-          cachedProductsData: {
-            ...prev.cachedProductsData,
-            [cacheKey]: newProducts,
-          },
-          cachedDataLengthByKey: {
-            ...prev.cachedDataLengthByKey,
-            [cacheKey]: newProducts.length,
-          },
-        }));
-      }
-    } catch (e) {
-      set({
-        axiosError: handleApiError(e as AxiosError<ErrorResponse>),
-        isLoading: false,
-        isLoadingMore: false,
-        productsData: isLoadMore ? get().productsData : [],
-      });
-    }
-  },
+  //       const existingIds = new Set(
+  //         state.productsData.map((p: ProductsDataType) => p._id)
+  //       );
+  //       const uniqueNewProducts = isLoadMore
+  //         ? newProducts.filter((p: ProductsDataType) => !existingIds.has(p._id))
+  //         : newProducts;
+  //       set((prev) => ({
+  //         productsData: isLoadMore
+  //           ? [...prev.productsData, ...uniqueNewProducts]
+  //           : newProducts,
+  //         productsDataLengthByKey: isLoadMore
+  //           ? prev.productsDataLengthByKey + uniqueNewProducts.length
+  //           : newProducts.length,
+  //         productsDataTotalLength: filteredTotalLength,
+  //         isLoading: false,
+  //         isLoadingMore: false,
+  //         axiosError: null,
+  //         cachedProductsData: {
+  //           ...prev.cachedProductsData,
+  //           [cacheKey]: newProducts,
+  //         },
+  //         cachedDataLengthByKey: {
+  //           ...prev.cachedDataLengthByKey,
+  //           [cacheKey]: newProducts.length,
+  //         },
+  //       }));
+  //     }
+  //   } catch (e) {
+  //     set({
+  //       axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+  //       isLoading: false,
+  //       isLoadingMore: false,
+  //       productsData: isLoadMore ? get().productsData : [],
+  //     });
+  //   }
+  // },
+
+
+
+
+
+
+
+
+
+
+
 
   // loadMoreProducts: async () => {
   //   const state = get();
@@ -514,6 +576,124 @@ export const useShopStore = create<IUseShopStore>((set, get) => ({
   //   set({ pageNumber: nextPage, isLoadingMore: true });
   //   await get().getAllProducts(true);
   // },
+
+getAllProducts: async (isLoadMore = false) => {
+  const state = get();
+  const {
+    pageNumber,
+    take,
+    filters,
+    sortBy,
+    mapSortValueToBackend,
+    buildCacheKey,
+    buildFilterKey,
+  } = state;
+  
+  const currentPage = isLoadMore ? pageNumber : 1;
+  const backendSortValue = mapSortValueToBackend(sortBy);
+  const cacheKey = buildCacheKey(
+    currentPage,
+    take,
+    filters.category,
+    filters.priceRange,
+    backendSortValue
+  );
+  
+  // Use filter key to store/retrieve total length across all pages
+  const filterKey = buildFilterKey(
+    filters.category,
+    filters.priceRange,
+    backendSortValue
+  );
+
+  const cachedData = state.cachedProductsData[cacheKey];
+  const cachedTotalLength = state.cachedDataTotalLengthByKey?.[filterKey];
+
+  if (cachedData && cachedData.length > 0) {
+    console.log("✅ Loading from cache:", cachedData.length, "products");
+    if (isLoadMore) {
+      const existingIds = new Set(
+        state.productsData.map((p: ProductsDataType) => p._id)
+      );
+      const uniqueCachedData = cachedData.filter(
+        (p: ProductsDataType) => !existingIds.has(p._id)
+      );
+      set({
+        productsData: [...state.productsData, ...uniqueCachedData],
+        productsDataLengthByKey:
+          state.productsDataLengthByKey + uniqueCachedData.length,
+        isLoadingMore: false,
+        axiosError: null,
+      });
+    } else {
+      set({
+        productsData: cachedData,
+        productsDataLengthByKey: cachedData.length,
+        // Use cached total length if available, otherwise use current page length
+        productsDataTotalLength: cachedTotalLength || cachedData.length,
+        isLoading: false,
+        axiosError: null,
+      });
+    }
+    return;
+  }
+
+  if (isLoadMore) {
+    set({ isLoadingMore: true, axiosError: null });
+  } else {
+    set({ isLoading: true, axiosError: null });
+  }
+
+  try {
+    const query = `/product?${cacheKey}`;
+    const res = await axiosInstance.get(query);
+
+    if (res.status >= 200 && res.status <= 204) {
+      const newProducts = res.data.data;
+      const filteredTotalLength = res.data.productsDataLength;
+
+      const existingIds = new Set(
+        state.productsData.map((p: ProductsDataType) => p._id)
+      );
+      const uniqueNewProducts = isLoadMore
+        ? newProducts.filter((p: ProductsDataType) => !existingIds.has(p._id))
+        : newProducts;
+      
+      set((prev) => ({
+        productsData: isLoadMore
+          ? [...prev.productsData, ...uniqueNewProducts]
+          : newProducts,
+        productsDataLengthByKey: isLoadMore
+          ? prev.productsDataLengthByKey + uniqueNewProducts.length
+          : newProducts.length,
+        productsDataTotalLength: filteredTotalLength,
+        isLoading: false,
+        isLoadingMore: false,
+        axiosError: null,
+        cachedProductsData: {
+          ...prev.cachedProductsData,
+          [cacheKey]: newProducts,
+        },
+        // Store total length by filter key, not by page key
+        cachedDataTotalLengthByKey: {
+          ...prev.cachedDataTotalLengthByKey,
+          [filterKey]: filteredTotalLength,
+        },
+      }));
+    }
+  } catch (e) {
+    set({
+      axiosError: handleApiError(e as AxiosError<ErrorResponse>),
+      isLoading: false,
+      isLoadingMore: false,
+      productsData: isLoadMore ? get().productsData : [],
+    });
+  }
+},
+
+
+
+
 
 loadMoreProducts: async () => {
   const state = get();
@@ -557,19 +737,19 @@ loadMoreProducts: async () => {
 
 
 
-  clearCache: () => {
-    set({
-      productsData: [],
-      isLoading: false,
-      axiosError: null,
-      cachedProductsData: {},
-      cachedDataLengthByKey: {},
-
-      productsDataTotalLength: 0,
-      productsDataLengthByKey: 0,
-      pageNumber: 1,
-    });
-  },
+ clearCache: () => {
+  set({
+    productsData: [],
+    isLoading: false,
+    axiosError: null,
+    cachedProductsData: {},
+    cachedDataLengthByKey: {},
+    cachedDataTotalLengthByKey: {},
+    productsDataTotalLength: 0,
+    productsDataLengthByKey: 0,
+    pageNumber: 1,
+  });
+},
   clearCurrentPageData: () =>
     set({
       productsData: [],

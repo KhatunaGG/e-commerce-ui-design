@@ -6,13 +6,17 @@ import { Filter } from "../../__atoms";
 //   CategoryFilter,
 //   PriceFilter,
 // } from "@/app/store/useShopPage.store";
-import { CategoryFilter, PriceFilter, useShopStore } from "@/app/store/shop-page.store";
+import {
+  CategoryFilter,
+  PriceFilter,
+  useShopStore,
+} from "@/app/store/shop-page.store";
 
 const FilterSection = () => {
   // const currentCategory = useShopStore.getState().filters.category;
   // const currentPriceRange = useShopStore.getState().filters.priceRange;
   const currentCategory = useShopStore((state) => state.filters.category);
-const currentPriceRange = useShopStore((state) => state.filters.priceRange);
+  const currentPriceRange = useShopStore((state) => state.filters.priceRange);
 
   const handleCategoryChange = (category: CategoryFilter) => {
     const normalizedCategory = category === "All Rooms" ? null : category;
@@ -35,8 +39,6 @@ const currentPriceRange = useShopStore((state) => state.filters.priceRange);
       useShopStore.getState().sortBy
     );
   };
-
-
 
   return (
     <section className="w-full hidden  h-full md:w-[40%] lg:w-[22.67%] md:flex flex-col items-start justify-start md:gap-8">
