@@ -1,12 +1,12 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { AnimateSpin } from "../../__molecules";
 import Banner from "../banner/Banner";
 import FilterSection from "../filterSection/FilterSection";
 import Products from "../products/Products";
 import { useHomePageStore } from "@/app/store/useHomePage.store.";
-import { useShopStore } from "@/app/store/shop-page.store";
+import { CategoryFilter, useShopStore } from "@/app/store/shop-page.store";
 
 const Shop = () => {
   const pathName = usePathname();
@@ -14,6 +14,33 @@ const Shop = () => {
     () => pathName?.split("/").pop() || "default",
     [pathName]
   );
+  const searchParams = useSearchParams();
+  const { setFilters } = useShopStore();
+
+  // useEffect(() => {
+  //   const category = searchParams.get("category");
+  //   if (category) {
+  //     setFilters({
+  //       category: decodeURIComponent(category) as CategoryFilter,
+  //       priceRange: null,
+  //     });
+  //   }
+  // }, [searchParams, setFilters]);
+
+  useEffect(() => {
+    const category = searchParams.get("category");
+    if (category) {
+      setFilters({
+        category: decodeURIComponent(category) as CategoryFilter,
+        priceRange: null,
+      });
+    } else {
+      setFilters({
+        category: null,
+        priceRange: null,
+      });
+    }
+  }, [searchParams, setFilters]);
 
   const {
     imagesData,
@@ -53,8 +80,6 @@ const Shop = () => {
     imagesData.filter((img) => img.componentUsage?.includes("banner")) || [];
   const isResorted =
     sortedByFour || sortByTwoVertically || sortByTwoHorizontally;
-
-
 
   return (
     <section className="w-full min-h-screen">

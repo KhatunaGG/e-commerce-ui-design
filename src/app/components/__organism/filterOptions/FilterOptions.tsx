@@ -100,25 +100,6 @@ const FilterOptions = () => {
             {currentCategory}
           </h2>
         </div>
-
-        {/* {(sortedByFour || sortByTwoVertically || sortByTwoHorizontally) ? (
-          <div className="w-full flex items-center justify-start gap-6 flex-col md:flex-row">
-            <MobileFilter />
-          </div>
-        ) : (
-          ""
-        )} */}
-
-        {/* <div
-          className={`w-full ${
-            sortedByFour || sortByTwoVertically || sortByTwoHorizontally
-              ? "flex"
-              : "md:hidden "
-          } items-center justify-start gap-6 flex-col md:flex-row`}
-        >
-          <MobileFilter />
-        </div> */}
-
         <div
           className={`w-full ${
             sortedByFour || sortByTwoVertically || sortByTwoHorizontally
