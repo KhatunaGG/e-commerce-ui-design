@@ -1,4 +1,3 @@
-
 "use client";
 import { Down } from "../../__atoms";
 import { categoriesFilter, priceFilter } from "@/app/commons/data";
@@ -9,10 +8,12 @@ import {
   // PriceFilter,
   useShopStore,
 } from "@/app/store/shop-page.store";
+import { useState } from "react";
 
 const MobileFilter = () => {
   const { filters } = useShopStore();
-
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isPriceOpen, setIsPriceOpen] = useState(false);
   const currentCategory = useShopStore((state) => state.filters.category);
   const currentPriceRange = useShopStore((state) => state.filters.priceRange);
 
@@ -25,6 +26,7 @@ const MobileFilter = () => {
       },
       useShopStore.getState().sortBy
     );
+    setIsCategoryOpen(false);
   };
 
   const handlePriceChange = (priceRange: PriceFilter) => {
@@ -36,12 +38,13 @@ const MobileFilter = () => {
       },
       useShopStore.getState().sortBy
     );
+    setIsPriceOpen(false);
   };
 
   return (
     <>
       <div className="w-full md:w-fit flex flex-col gap-4 md:min-w-[170px] lg:min-w-[261px]">
-        <label htmlFor="category" className="uppercase">
+        <label htmlFor="category" className="uppercase ">
           Categories
         </label>
         <div className="relative">
@@ -53,7 +56,9 @@ const MobileFilter = () => {
               const selected = e.target.value as CategoryFilter;
               handleCategoryChange(selected);
             }}
-            className="w-full py-[14px] px-4 border border-[#6C7275] rounded-md text-sm outline-none appearance-none"
+            onFocus={() => setIsCategoryOpen(true)}
+            onBlur={() => setIsCategoryOpen(false)}
+            className="peer w-full py-[14px] px-4 border border-[#6C7275] rounded-md text-sm outline-none appearance-none"
           >
             {Array.isArray(categoriesFilter) &&
               categoriesFilter.map((category, i) => (
@@ -62,14 +67,24 @@ const MobileFilter = () => {
                 </option>
               ))}
           </select>
-          <div className="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+          {/* <div className="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500   transition-transform duration-300 peer-focus:rotate-180">
+            <Down />
+          </div> */}
+
+          <div
+            className={`pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 transition-transform duration-200 ${
+              isCategoryOpen ? "rotate-180" : ""
+            }`}
+          >
             <Down />
           </div>
+
+          
         </div>
       </div>
 
       <div className="w-full md:w-fit flex flex-col gap-4 lg:min-w-[261px] md:min-w-[170px]">
-        <label htmlFor="price" className="uppercase">
+        <label htmlFor="price" className="uppercase ">
           Price Range
         </label>
         <div className="relative">
@@ -81,6 +96,8 @@ const MobileFilter = () => {
               const selected = e.target.value as PriceFilter;
               handlePriceChange(selected);
             }}
+            onFocus={() => setIsPriceOpen(true)}
+            onBlur={() => setIsPriceOpen(false)}
             className="w-full py-[14px] px-4 border border-[#6C7275] rounded-md text-sm outline-none appearance-none"
           >
             {priceFilter.map((price, i) => (
@@ -89,7 +106,14 @@ const MobileFilter = () => {
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+          {/* <div className="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500          transition-transform duration-300 peer-focus:rotate-180">
+            <Down />
+          </div> */}
+          <div
+            className={`pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 transition-transform duration-200 ${
+              isPriceOpen ? "rotate-180" : ""
+            }`}
+          >
             <Down />
           </div>
         </div>
