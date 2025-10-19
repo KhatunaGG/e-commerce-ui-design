@@ -6,18 +6,13 @@ import Image from "next/image";
 import "swiper/css";
 import "swiper/css/navigation";
 import { SwipeLeft, SwipeRight } from "../../__atoms";
-// import useHomePAgeStore, {
-//   IImageData,
-// } from "@/app/store/manage-image.store";
 import { AnimateSpin } from "../../__molecules";
-import { IImageData, useHomePageStore } from "@/app/store/useHomePage.store.";
-
+import { useHomePageStore } from "@/app/store/useHomePage.store.";
+import { IImageData } from "@/app/interfaces/interface";
 
 const Hero = ({ images }: { images: IImageData[] }) => {
   const [isMounted, setIsMounted] = useState(false);
   const { isLoading } = useHomePageStore();
-
-
 
   useEffect(() => {
     setIsMounted(true);
@@ -40,7 +35,6 @@ const Hero = ({ images }: { images: IImageData[] }) => {
             modules={[Navigation, Autoplay]}
             slidesPerView={1}
             loop={images.length > 1}
-            // loop={true}
             autoplay={{
               delay: 3000,
               disableOnInteraction: false,
@@ -53,11 +47,9 @@ const Hero = ({ images }: { images: IImageData[] }) => {
             className="rounded-lg h-full"
           >
             {images.map(({ presignedUrl, imageName }, index) => (
-              
               <SwiperSlide key={index} className="relative shadow-xl">
                 <Image
                   src={presignedUrl}
-                  // src={"/assets/swipe_5.png"}
                   alt={imageName}
                   fill
                   style={{ objectFit: "cover" }}
@@ -87,4 +79,3 @@ const Hero = ({ images }: { images: IImageData[] }) => {
 };
 
 export default Hero;
-

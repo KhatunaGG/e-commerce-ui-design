@@ -23,8 +23,6 @@ const ContactUs = () => {
     return parts[1] || "default";
   }, [pathName]);
 
-
-
   const { normalizeFirstChar } = useShopStore();
   const { getAllImages, cachedImagesByPage, isLoading, axiosError } =
     useHomePageStore();
@@ -105,11 +103,9 @@ const ContactUs = () => {
                 <div className="h-10 flex items-center justify-center mb-4">
                   {Icon && <Icon />}
                 </div>
-
                 <h2 className="text-lg font-semibold mb-2">
                   {contact.segment}
                 </h2>
-
                 <div className="text-sm text-[#6C7275] flex flex-col gap-1">
                   {contact.street && (
                     <>
@@ -120,7 +116,6 @@ const ContactUs = () => {
                       <p>{contact.country}</p>
                     </>
                   )}
-
                   {contact.tel && <p>{contact.tel}</p>}
                   {contact.mail && <p>{contact.mail}</p>}
                 </div>
@@ -128,10 +123,7 @@ const ContactUs = () => {
             );
           })}
         </div>
-
         <EmailForm />
-
-
       </div>
     </section>
   );

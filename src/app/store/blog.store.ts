@@ -1,13 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { BlogType } from "../components/__organism/overlay/Overlay";
 import axios, { AxiosError } from "axios";
 import { useSignInStore } from "./sign-in.store";
 import { axiosInstance } from "../libs/axiosInstance";
-
-export interface ErrorResponse {
-  message: string;
-}
+import { ErrorResponse, IBlogStore } from "../interfaces/interface";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -16,68 +12,6 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   }
   const unexpectedError = "An unexpected error occurred";
   return unexpectedError;
-};
-
-export interface IBlogStore {
-  isLoading: boolean;
-  axiosError: string | null;
-  showOverlay: boolean;
-  blogsData: DbBlogType[];
-  take: number;
-  page: number;
-  blogsTotalLength: number;
-  sortBlogs: "newest" | "oldest";
-  blogsForArticle: DbBlogType[];
-  cacheKey: string;
-  cachedBlogsData: Record<string, { blogs: DbBlogType[]; totalCount: number }>;
-  blogByParams: DbBlogType | null;
-  cachedArticles: Record<string, DbBlogType>;
-
-  cachedBlogsForArticle: DbBlogType[] | null;
-
-  setSortBlogs: (order: "newest" | "oldest") => void;
-  setPage: (newPage: number) => void;
-  getFirstThreeBlogs: () => Promise<void>;
-  setShowOverlay: (val: boolean) => void;
-  toggleOverlay: () => void;
-  createBlog: (
-    formData: BlogType,
-    file: File,
-    accessToken: string
-  ) => Promise<boolean>;
-  getFilePathFromAwsS3: (file: File) => Promise<string>;
-  getAllBlogs: () => Promise<void>;
-  clearBlogsCache: () => void;
-  resetBlogs: () => void;
-  createArticle: (
-    blogId: string,
-    formData: BlogType,
-    files: File[],
-    accessToken: string
-  ) => Promise<boolean>;
-  uploadManyFiles: (files: File[], accessToken: string) => Promise<boolean>;
-  getBlogById: (id: string) => Promise<void>;
-}
-
-export type DbBlogType = {
-  title: string;
-  filePath: string;
-  authorFName: "";
-  authorLName: "";
-  articles: ArticleType[] | [];
-  authorId: "";
-  _id: string;
-  createdAt: string;
-
-  presignedUrl?: string;
-};
-
-export type ArticleType = {
-  _id: string;
-  articleTitle: string;
-  context: string;
-  createdAt: string;
-  filePath: string[];
 };
 
 const getCacheKey = (page: number, take: number, sort: string) =>
@@ -130,7 +64,6 @@ export const useBlogStore = create<IBlogStore>()(
           set({ axiosError: "Only image files are allowed." });
           return null;
         }
-
         set({ isLoading: true, axiosError: null });
         try {
           const formData = new FormData();
@@ -167,7 +100,6 @@ export const useBlogStore = create<IBlogStore>()(
             });
             return false;
           }
-
           const updatedFormData = {
             ...formData,
             filePath: filePathFromAwsS3,
@@ -180,9 +112,7 @@ export const useBlogStore = create<IBlogStore>()(
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-
           });
-
           if (res.status >= 200 && res.status <= 204) {
             set({
               cachedBlogsData: {},
@@ -193,9 +123,7 @@ export const useBlogStore = create<IBlogStore>()(
               blogsTotalLength: 0,
               cacheKey: "",
             });
-
             await get().getAllBlogs();
-
             set({ isLoading: false });
             return true;
           }
@@ -287,7 +215,6 @@ export const useBlogStore = create<IBlogStore>()(
           set({ blogsForArticle: cachedBlogsForArticle });
           return;
         }
-
         set({ isLoading: true, axiosError: null });
         try {
           const res = await axiosInstance.get("/blog/get-for-articles");
@@ -319,7 +246,6 @@ export const useBlogStore = create<IBlogStore>()(
 
       createArticle: async (blogId, formData, files, accessToken) => {
         set({ isLoading: true, axiosError: null });
-
         try {
           const uploadedPaths = await get().uploadManyFiles(files, accessToken);
           if (!uploadedPaths || !Array.isArray(uploadedPaths)) {
@@ -331,7 +257,6 @@ export const useBlogStore = create<IBlogStore>()(
             context: formData.context,
             filePath: uploadedPaths,
           };
-
           const res = await axiosInstance.patch(
             `/blog/${blogId}/add-article`,
             updatedForm,
@@ -343,7 +268,6 @@ export const useBlogStore = create<IBlogStore>()(
           );
           if (res.status >= 200 && res.status <= 204) {
             const { cachedArticles } = get();
-            // const { [blogId]: _, ...restCache } = cachedArticles;
             const { [blogId]: _unused, ...restCache } = cachedArticles;
             set({ cachedArticles: restCache });
             await get().getBlogById(blogId);
@@ -368,16 +292,13 @@ export const useBlogStore = create<IBlogStore>()(
           set({ axiosError: "Access token is missing" });
           return;
         }
-
         const hasNonImage = Array.from(files).some(
           (file) => !file.type.startsWith("image/")
         );
-
         if (hasNonImage) {
           set({ axiosError: "Only image files are allowed." });
           return null;
         }
-
         if (!files || files.length === 0) {
           set({ axiosError: "No files selected", isLoading: false });
           return null;
@@ -391,7 +312,6 @@ export const useBlogStore = create<IBlogStore>()(
               "Content-Type": "multipart/form-data",
             },
           });
-
           if (res.status >= 200 && res.status <= 204) {
             set({ isLoading: false, axiosError: null });
             return res.data.uploadedPaths;
@@ -408,24 +328,6 @@ export const useBlogStore = create<IBlogStore>()(
 
         return false;
       },
-
-      // getBlogById: async (blogId: string) => {
-      //   set({ isLoading: true, axiosError: null });
-
-      //   try {
-      //     const res = await axiosInstance.get(`/blog/${blogId}`);
-
-      //     if (res.status >= 200 && res.status <= 204) {
-      //       set({ isLoading: false, axiosError: null, blogByParams: res.data });
-      //     }
-      //   } catch (e) {
-      //     set({
-      //       isLoading: false,
-      //       axiosError: handleApiError(e as AxiosError<ErrorResponse>),
-      //     });
-      //   }
-      // },
-
       getBlogById: async (blogId: string) => {
         const { cachedArticles } = get();
         if (cachedArticles[blogId]) {
@@ -454,7 +356,6 @@ export const useBlogStore = create<IBlogStore>()(
         }
       },
     }),
-
     {
       name: "blog-store",
       partialize: (state) => ({

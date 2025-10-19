@@ -6,10 +6,7 @@ import { useShopStore } from "@/app/store/shop-page.store";
 import { SimplePagination, SortSelect } from "../../__molecules";
 import { useQuestionStore } from "@/app/store/question.store";
 import { useReviewStore } from "@/app/store/review.store";
-
-export type QuestionPropsType = {
-  productId: string;
-};
+import { QuestionPropsType } from "@/app/interfaces/interface";
 
 const Questions = ({ productId }: QuestionPropsType) => {
   const {
@@ -24,7 +21,6 @@ const Questions = ({ productId }: QuestionPropsType) => {
   const [activeQuestionId, setActiveQuestionId] = useState<string | null>(null);
   const { setSortQuestions, sortQuestions } = useQuestionStore();
   const { formatDate } = useReviewStore();
-
 
   useEffect(() => {
     if (questionData.length === 0) {
@@ -65,7 +61,6 @@ const Questions = ({ productId }: QuestionPropsType) => {
             setSortQuestions(order, productId)
           }
         />
-
         {questionData.length > 0 &&
           questionData.map((item, i) => {
             return (
@@ -110,7 +105,6 @@ const Questions = ({ productId }: QuestionPropsType) => {
                     />
                   )}
                 </div>
-
                 <div className="w-[80%] ml-auto flex flex-col items-start gap-4">
                   {item.answers.length > 0 &&
                     item.answers.map((answer) => {
@@ -129,7 +123,6 @@ const Questions = ({ productId }: QuestionPropsType) => {
               </div>
             );
           })}
-
         {questionData.length > 0 && (
           <SimplePagination
             handlePrevPage={handlePrevPage}

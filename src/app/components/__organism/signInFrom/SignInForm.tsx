@@ -2,56 +2,20 @@
 import { Input, Submit } from "../../__molecules";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
 import Link from "next/link";
 import { useSignInStore } from "@/app/store/sign-in.store";
 import { useRouter } from "next/navigation";
-
-
-export const signInSchema = z.object({
-  signInName: z
-    .string()
-    .min(1, "Username or email is required")
-    .max(50, "Too long")
-    .refine(
-      (val) =>
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val) ||
-        /^[a-zA-Z0-9_]{1,}$/.test(val),
-      {
-        message: "Enter a valid email or username",
-      }
-    ),
-  password: z
-    .string()
-    .min(4, "Password must be at least 4 characters")
-    .max(15, "Password must be less then 15 characters")
-    .nonempty("Password is required"),
-  rememberMe: z.boolean().optional(),
-});
-
-export type SignInType = z.infer<typeof signInSchema>;
+import { signInSchema } from "@/app/schema/shema";
+import { SignInType } from "@/app/interfaces/interface";
 
 const SignInForm = () => {
   const { signIn } = useSignInStore();
   const router = useRouter();
-
-  // useEffect(() => {
-  //   initialize();
-  // }, [initialize]);
-
-  // useEffect(() => {
-  //   if (accessToken) {
-  //     router.push("/");
-  //   }
-  // }, [accessToken, router]);
-
   const {
     register,
     handleSubmit,
     setValue,
-    formState: { errors,
-      // isSubmitting 
-    },
+    formState: { errors },
     reset,
   } = useForm<SignInType>({
     resolver: zodResolver(signInSchema),
@@ -101,10 +65,7 @@ const SignInForm = () => {
           </p>
         </Link>
       </div>
-      <Submit
-      //  isSubmitting={isSubmitting}
-       
-       />
+      <Submit />
     </form>
   );
 };

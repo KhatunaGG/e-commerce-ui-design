@@ -1,14 +1,16 @@
 import axios, { AxiosError } from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { ReviewType } from "../components/__organism/reviewsForm/ReviewsForm";
 import { axiosInstance } from "../libs/axiosInstance";
 import { toast } from "react-toastify";
 import { useSignInStore } from "./sign-in.store";
-
-export interface ErrorResponse {
-  message: string;
-}
+import {
+  ErrorResponse,
+  IUseReviewStore,
+  LikeType,
+  ReplyType,
+  ReviewType,
+} from "../interfaces/interface";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -16,86 +18,6 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   }
   return "An unexpected error occurred";
 };
-
-export interface ReplyType {
-  replyToId?: string;
-  replyOwnerId?: string;
-  text: string;
-  productId: string;
-  status: string;
-  ratedBy: RateType[];
-}
-
-export type RateType = {
-  rating: number;
-  ratedById: string;
-};
-
-export type LikeType = {
-  like: number;
-  likedById: string;
-};
-
-export interface DbReplyType extends ReplyType {
-  userName: string;
-  lastName: string;
-  filePath: string;
-  replyOwnerName: string;
-  replyOwnerLastName: string;
-  createdAt: string;
-  ratedBy: RateType[];
-  _id: string;
-}
-
-export interface DbReviewType extends ReviewType {
-  reviewOwnerId: string | null;
-  likes: LikeType[];
-  status: "review" | "reply";
-  rating: number;
-  replies: DbReplyType[];
-  _id?: string;
-  reviewText: string;
-  productId: string;
-  createdAt: string;
-  ratedBy: RateType[];
-}
-
-export interface IUseReviewStore {
-  rating: number;
-  reviewFormData: {
-    text: string;
-    productId: string;
-  };
-  reviewData: DbReviewType[];
-  isLoading: boolean;
-  axiosError: string | null;
-  emojiVisible: boolean;
-  replyOwnerName: string;
-  replyOwnerLastName: string;
-  reviewLength: number;
-  take: number;
-  page: number;
-  sortReview: "newest" | "oldest";
-  totalRating: number;
-  likes: LikeType[];
-  setSortReview: (order: "newest" | "oldest", productId: string) => void;
-  setPage: (page: number, productId: string) => void;
-  setEmojiVisible: (emojiVisible: boolean) => void;
-  submitReview: (formData: ReviewType, accessToken: string) => Promise<boolean>;
-  getAllReviews: (productId: string) => Promise<void>;
-  addReplayToReview: (formData: ReplyType) => Promise<boolean>;
-  formatDate: (dateString: string | "") => string;
-  getReviewsCountOnly: () => Promise<void>;
-  resetReviewStore: () => void;
-  updateReviewRating: (score: number, reviewId: string) => Promise<boolean>;
-  updateReplyRating: (
-    score: number,
-    replyId: string,
-    productId: string,
-    reviewId: string
-  ) => Promise<boolean>;
-  likeReview: (reviewId: string, userId: string) => Promise<void>;
-}
 
 export const useReviewStore = create<IUseReviewStore>()(
   persist(
@@ -317,7 +239,6 @@ export const useReviewStore = create<IUseReviewStore>()(
         reviewId: string
       ) => {
         const { accessToken } = useSignInStore.getState();
-
         set({
           isLoading: true,
           axiosError: null,
@@ -358,7 +279,6 @@ export const useReviewStore = create<IUseReviewStore>()(
           return false;
         }
       },
-
 
       likeReview: async (reviewId: string, userId: string) => {
         const state = get();

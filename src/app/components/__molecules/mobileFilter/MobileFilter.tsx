@@ -1,13 +1,8 @@
 "use client";
 import { Down } from "../../__atoms";
 import { categoriesFilter, priceFilter } from "@/app/commons/data";
-import {
-  CategoryFilter,
-  PriceFilter,
-  // CategoryFilter,
-  // PriceFilter,
-  useShopStore,
-} from "@/app/store/shop-page.store";
+import { CategoryFilter, PriceFilter } from "@/app/interfaces/interface";
+import { useShopStore } from "@/app/store/shop-page.store";
 import { useState } from "react";
 
 const MobileFilter = () => {
@@ -51,7 +46,6 @@ const MobileFilter = () => {
           <select
             id="category"
             value={filters.category ?? ""}
-            // onChange={handleCategoryChange}
             onChange={(e) => {
               const selected = e.target.value as CategoryFilter;
               handleCategoryChange(selected);
@@ -67,10 +61,6 @@ const MobileFilter = () => {
                 </option>
               ))}
           </select>
-          {/* <div className="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500   transition-transform duration-300 peer-focus:rotate-180">
-            <Down />
-          </div> */}
-
           <div
             className={`pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 transition-transform duration-200 ${
               isCategoryOpen ? "rotate-180" : ""
@@ -78,8 +68,6 @@ const MobileFilter = () => {
           >
             <Down />
           </div>
-
-          
         </div>
       </div>
 
@@ -91,7 +79,6 @@ const MobileFilter = () => {
           <select
             id="price"
             value={filters.priceRange ?? ""}
-            // onChange={handlePriceChange}
             onChange={(e) => {
               const selected = e.target.value as PriceFilter;
               handlePriceChange(selected);
@@ -106,9 +93,6 @@ const MobileFilter = () => {
               </option>
             ))}
           </select>
-          {/* <div className="pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500          transition-transform duration-300 peer-focus:rotate-180">
-            <Down />
-          </div> */}
           <div
             className={`pointer-events-none absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 transition-transform duration-200 ${
               isPriceOpen ? "rotate-180" : ""

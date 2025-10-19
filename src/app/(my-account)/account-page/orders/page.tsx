@@ -1,8 +1,9 @@
-import { OrderSection } from '@/app/components/__organism'
-import React from 'react'
+import { OrderSection } from "@/app/components/__organism";
 
 export default function page() {
   return (
-    <div><OrderSection /></div>
-  )
+    <div>
+      <OrderSection />
+    </div>
+  );
 }

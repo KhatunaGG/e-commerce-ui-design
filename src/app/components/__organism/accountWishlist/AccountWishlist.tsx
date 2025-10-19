@@ -1,7 +1,11 @@
 "use client";
 import { useProductStore } from "@/app/store/product.store";
 import { useEffect } from "react";
-import { AddToCartButton, AnimateSpin, ShowMoreButton } from "../../__molecules";
+import {
+  AddToCartButton,
+  AnimateSpin,
+  ShowMoreButton,
+} from "../../__molecules";
 import { useSignInStore } from "@/app/store/sign-in.store";
 import { Close } from "../../__atoms";
 import { usePathname } from "next/navigation";
@@ -14,13 +18,7 @@ const AccountWishlist = () => {
   const isAccountWishlistPage = path.includes("/account-page/wishlists");
   const { accessToken, initialize } = useSignInStore();
   const addProductToCart = useCartStore((state) => state.addProductToCart);
-  const {
-    getAllWishlist,
-    // loadMoreWishList,
-    wishlistData,
-    isLoading,
-    // wishlistDataLength,
-  } = useProductStore();
+  const { getAllWishlist, wishlistData, isLoading } = useProductStore();
 
   useEffect(() => {
     initialize();
@@ -30,35 +28,23 @@ const AccountWishlist = () => {
     getAllWishlist("1");
   }, []);
 
- 
-  // const handleLoadMore = () => {
-  //   loadMoreWishList();
-  // };
-
-
-
   const handleRemoveFromWishlist = async (id: string) => {
-  const { cashedWishList, wishlistData, updateProduct } = useProductStore.getState();
+    const { cashedWishList, wishlistData, updateProduct } =
+      useProductStore.getState();
+    const updatedWishlistData = wishlistData.filter((p) => p._id !== id);
 
-  // Optimistically update wishlistData and cashedWishList
-  const updatedWishlistData = wishlistData.filter((p) => p._id !== id);
-
-  const updatedCache = Object.fromEntries(
-    Object.entries(cashedWishList).map(([page, products]) => [
-      page,
-      products.filter((p) => p._id !== id),
-    ])
-  );
-
-  useProductStore.setState({
-    wishlistData: updatedWishlistData,
-    cashedWishList: updatedCache,
-  });
-
-  // Call API to update the backend
-  await updateProduct(id, false);
-};
-
+    const updatedCache = Object.fromEntries(
+      Object.entries(cashedWishList).map(([page, products]) => [
+        page,
+        products.filter((p) => p._id !== id),
+      ])
+    );
+    useProductStore.setState({
+      wishlistData: updatedWishlistData,
+      cashedWishList: updatedCache,
+    });
+    await updateProduct(id, false);
+  };
 
   if (isLoading && wishlistData.length === 0) {
     return <AnimateSpin />;
@@ -73,15 +59,14 @@ const AccountWishlist = () => {
       </h2>
 
       <div className="w-full h-full flex flex-col gap-2 pb-2 ">
-        <div className="WISHLISTHEADER w-full flex items-center justify-between border-b border-b-[#E8ECEF]">
-          {/* <div className="flex-1  bg-green-200">Product</div> */}
+        <div className="w-full flex items-center justify-between border-b border-b-[#E8ECEF]">
           <div className="w-full md:w-[50%] ">Product</div>
           <div className="hidden md:flex flex-1 ">Price</div>
           <div className="hidden md:flex flex-1 ">Action</div>
         </div>
 
-        <div className="WISHLISTITEM-container flex flex-col">
-          <div className="WISHLISTITEM w-full flex flex-col items-center">
+        <div className="flex flex-col">
+          <div className=" w-full flex flex-col items-center">
             {wishlistData.map((item, i) => {
               return (
                 <div
@@ -90,12 +75,15 @@ const AccountWishlist = () => {
                 >
                   <div className="w-full md:w-[50%] flex gap-[10px] items-center">
                     <div
-                    onClick={() =>handleRemoveFromWishlist(item._id)}
-                    className="w-fit flex items-center ">
+                      onClick={() => handleRemoveFromWishlist(item._id)}
+                      className="w-fit flex items-center "
+                    >
                       <Close />
                     </div>
                     <Link
-                  href={`/shop/${item._id}`} className="flex items-center gap-[10px]">
+                      href={`/shop/${item._id}`}
+                      className="flex items-center gap-[10px]"
+                    >
                       <div
                         className={` w-[23.32%] md:w-[19.37%]  h-full  lg:h-full `}
                       >
@@ -115,8 +103,6 @@ const AccountWishlist = () => {
                           </div>
                         )}
                       </div>
-
-                      {/* <div className="flex items-center ">{item.presignedUrl}</div> */}
                       <div className="lex flex-col items-center gap-2">
                         <p>{item.productName}</p>
                         <p>{item.color ?? ""}</p>
@@ -130,14 +116,6 @@ const AccountWishlist = () => {
                   <div className="hidden md:flex flex-1">
                     ${item.price.toFixed(2)}
                   </div>
-
-                  {/* <button
-                    className={`
-      w-full md:flex-1 bg-[#141718] mx-[6px] text-white rounded-lg py-[8px] md:py-[6.29px] lg:py-[9px] text-sm md:text-base font-medium leading-[28px] tracking-[-0.4px] hover:bg-gray-800 transition-colors duration-300`}
-                  >
-                    Add to cart
-                  </button> */}
-
                   <AddToCartButton
                     params={item._id}
                     onClick={() => addProductToCart(item._id)}

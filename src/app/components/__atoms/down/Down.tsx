@@ -1,6 +1,4 @@
-export type ChevronDownPropsType = {
-  styles?: string;
-};
+import { ChevronDownPropsType } from "@/app/interfaces/interface";
 
 const Down = ({ styles }: ChevronDownPropsType) => {
   return (

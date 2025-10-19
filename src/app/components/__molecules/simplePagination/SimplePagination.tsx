@@ -1,12 +1,5 @@
-import React from "react";
+import { SimplePaginationPromsType } from "@/app/interfaces/interface";
 import { ChevronLeft, ChevronRight } from "../../__atoms";
-
-export type SimplePaginationPromsType = {
-  handlePrevPage: () => void;
-  handleNextPage: () => void;
-  page: number;
-  totalPages: number;
-};
 
 const SimplePagination = ({
   handlePrevPage,
@@ -21,7 +14,7 @@ const SimplePagination = ({
         disabled={page === 1}
         className="bg-gray-200 px-4 py-2 rounded disabled:opacity-50"
       >
-       <ChevronLeft />
+        <ChevronLeft />
       </button>
       <span className="text-sm">
         Page {page} of {totalPages}
@@ -31,7 +24,7 @@ const SimplePagination = ({
         disabled={page === totalPages}
         className="bg-gray-200 px-4 py-2 rounded disabled:opacity-50"
       >
-       <ChevronRight />
+        <ChevronRight />
       </button>
     </div>
   );

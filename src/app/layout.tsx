@@ -3,9 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import ReactLenis from "lenis/react";
-// import ReactLenis from "lenis/react";
-import 'react-phone-number-input/style.css';
-
+import "react-phone-number-input/style.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

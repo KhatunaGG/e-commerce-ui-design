@@ -8,8 +8,9 @@ import { Scrollbar } from "swiper/modules";
 import Link from "next/link";
 import { Label, MoreButton } from "../../__molecules";
 import Image from "next/image";
-import { ProductsDataType } from "@/app/store/shop-page.store";
+
 import { useProductStore } from "@/app/store/product.store";
+import { ProductsDataType } from "@/app/interfaces/interface";
 
 const NewArrivals = ({ images }: { images: ProductsDataType[] }) => {
   const swiperRef = useRef<SwiperRef | null>(null);
@@ -21,7 +22,6 @@ const NewArrivals = ({ images }: { images: ProductsDataType[] }) => {
         await getAverageRating(item._id);
       }
     };
-
     fetchRatings();
   }, [images, getAverageRating]);
 
@@ -94,8 +94,6 @@ const NewArrivals = ({ images }: { images: ProductsDataType[] }) => {
                   <Label
                     productName={item.productName}
                     price={item.price}
-                    // rating={ratings[item._id] || 0}
-                    // rating={averageRatings[item._id] || 0}
                     rating={averageRatings[item._id] ?? 0}
                     discount={item.discount}
                     details={item.details}
@@ -105,13 +103,11 @@ const NewArrivals = ({ images }: { images: ProductsDataType[] }) => {
               );
             })}
           </Swiper>
-
           <div className="custom-scrollbar  h-[4px] bg-gray-300 rounded-full  mr-[8.53%] lg:mr-[11.11%] ">
             <div className="swiper-scrollbar-drag bg-black h-full rounded-full "></div>
           </div>
         </div>
       </div>
-
       <MoreButton
         handleMoreProducts={handleMoreProducts}
         styleClass="flex md:hidden mt-6"

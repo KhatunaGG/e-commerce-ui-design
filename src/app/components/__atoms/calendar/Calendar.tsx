@@ -1,5 +1,3 @@
-
-
 const Calendar = () => {
   return (
     <svg

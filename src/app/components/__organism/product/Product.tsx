@@ -4,20 +4,7 @@ import { AddToCartButton, Label } from "../../__molecules";
 import { useCartStore } from "@/app/store/cart.store";
 import { useEffect, useState } from "react";
 import { useProductStore } from "@/app/store/product.store";
-
-export type ProductPropsType = {
-  sortByTwoHorizontally?: boolean;
-  newProduct: boolean;
-  discount: number;
-  image?: string;
-  productName: string;
-  price: number;
-  rating: number;
-  details: string;
-  _id: string;
-  wishlist: boolean;
-  params?: string;
-};
+import { ProductPropsType } from "@/app/interfaces/interface";
 
 const Product = ({
   sortByTwoHorizontally,
@@ -26,7 +13,6 @@ const Product = ({
   image,
   productName,
   price,
-  // rating,
   details,
   _id,
   params,

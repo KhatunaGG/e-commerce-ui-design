@@ -1,30 +1,19 @@
 "use client";
+import { CounterPropsType } from "@/app/interfaces/interface";
 import { Add, Minus } from "../../__atoms";
-
-export type CounterPropsType = {
-  id: string;
-  color?: string | null;
-  quantity: number;
-  onChange: (qty: number) => void;
-  show?: boolean;
-  isCartPage?: boolean;
-  isCheckoutPage?: boolean;
-};
 
 const Counter = ({
   show,
   quantity,
   onChange,
   isCartPage,
-  isCheckoutPage
+  isCheckoutPage,
 }: CounterPropsType) => {
-
-    const handleChange = (newQty: number) => {
+  const handleChange = (newQty: number) => {
     if (!isCartPage && !isCheckoutPage) {
       onChange(newQty);
     }
   };
-
 
   return (
     <div
@@ -37,7 +26,6 @@ const Counter = ({
       }    flex items-center justify-center gap-3  md:gap-6 bg-[#F5F5F5]`}
     >
       <button
-        // onClick={() => onChange(quantity - 1)}
         onClick={() => handleChange(quantity - 1)}
         className={`${
           isCartPage ? " w-4 h-4" : " w-[20px] h-[20px]"
@@ -47,7 +35,6 @@ const Counter = ({
       </button>
       <p className="text-xs font-semibold">{quantity}</p>
       <button
-        // onClick={() => onChange(quantity + 1)}
         onClick={() => handleChange(quantity + 1)}
         className={`${
           isCartPage ? " w-4 h-4" : " w-[20px] h-[20px]"

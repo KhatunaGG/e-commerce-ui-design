@@ -3,87 +3,18 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { axiosInstance } from "../libs/axiosInstance";
 import { toast } from "react-toastify";
-
-export type AnswerType = {
-  _id: string;
-  answerText: string;
-  answerOwnerName: string;
-  answerOwnerLastName: string;
-  answersOwnerId: string;
-  createdAt: string;
-  status: "answer";
-};
-
-export type IQuestions = {
-  id: string;
-  text: string;
-  answers: AnswerType[];
-  status: "question" | "answer";
-  productId: string;
-  questionsOwnerId?: string;
-};
-
-export interface DbQuestions {
-  _id: string;
-  question: string;
-  questionsOwnerId?: string;
-  answers: AnswerType[];
-  status: "question";
-  productId: string;
-  createdAt: string;
-  questionOwnerName: string;
-  questionOwnerLastName: string;
-}
-
-export type QuestionInput = {
-  text: string;
-  productId: string;
-  status: "question" | "answer";
-  questionId?: string;
-  ownerId?: string;
-};
-
-export type AnswerInput = {
-  answerText: string;
-  answersOwnerId?: string;
-  questionId: string;
-  productId: string;
-  status: "answer";
-};
-
-export interface ErrorResponse {
-  message: string;
-}
+import {
+  AnswerInput,
+  ErrorResponse,
+  IQuestionStoreType,
+  QuestionInput,
+} from "../interfaces/interface";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
     return error.response?.data.message || "An error occurred";
   }
   return "An unexpected error occurred";
-};
-
-export type IQuestionStoreType = {
-  isLoading: boolean;
-  axiosError: string | null;
-  questionData: DbQuestions[];
-  showQuestionTextarea: boolean;
-  take: number;
-  page: number;
-  questionsTotalLength: number;
-  answerOwnerName: string | "";
-  answerOwnerLastName: string | null;
-  sortQuestions: "newest" | "oldest";
-  setSortQuestions: (order: "newest" | "oldest", productId: string) => void;
-  setShowQuestionTextarea: (show: boolean) => void;
-  submitQuestion: (
-    formData: QuestionInput,
-    accessToken: string
-  ) => Promise<boolean>;
-  getAllQuestions: (productId: string) => Promise<void>;
-  getQuestionsCountOnly: () => Promise<void>;
-  setPage: (page: number, productId: string) => void;
-  submitAnswer: (data: AnswerInput, token: string) => Promise<boolean>;
-  resetQuestionStore: () => void;
 };
 
 export const useQuestionStore = create<IQuestionStoreType>()(
@@ -98,7 +29,6 @@ export const useQuestionStore = create<IQuestionStoreType>()(
       questionsTotalLength: 0,
       answerOwnerName: "",
       answerOwnerLastName: "",
-
       sortQuestions: "newest",
       setSortQuestions: (order, productId) => {
         set({ sortQuestions: order });
@@ -222,6 +152,7 @@ export const useQuestionStore = create<IQuestionStoreType>()(
           set({ isLoading: false });
         }
       },
+
       resetQuestionStore: () => {
         set({
           questionData: [],
@@ -229,7 +160,7 @@ export const useQuestionStore = create<IQuestionStoreType>()(
           answerOwnerLastName: "",
           page: 1,
           take: 5,
-          sortQuestions: "newest", 
+          sortQuestions: "newest",
           axiosError: null,
           isLoading: false,
         });

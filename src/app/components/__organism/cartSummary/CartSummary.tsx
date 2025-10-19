@@ -49,10 +49,7 @@ const CartSummary = () => {
             );
           })}
         </div>
-        <CostSummary
-          selectedShipping={selectedShipping}
-          cartData={cartData}
-        />
+        <CostSummary selectedShipping={selectedShipping} cartData={cartData} />
       </div>
     </div>
   );

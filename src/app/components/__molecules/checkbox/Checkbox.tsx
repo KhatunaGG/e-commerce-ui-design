@@ -1,18 +1,8 @@
 "use client";
+import { CheckboxPropsType } from "@/app/interfaces/interface";
 import { Check } from "../../__atoms";
 
-
-export type CheckboxPropsType = {
-  id: string;
-  checked: boolean;
-  onChange: () => void;
-};
-
-const Checkbox = ({id, checked, onChange}: CheckboxPropsType) => {
-
-
-
-
+const Checkbox = ({ id, checked, onChange }: CheckboxPropsType) => {
   return (
     <div className="md:w-5 md:h-5 lg:w-6 lg:h-6 relative">
       <input

@@ -31,7 +31,6 @@ const Blog = () => {
     [pathName]
   );
 
-
   useEffect(() => {
     if (!page) return;
     clearCurrentPageData();

@@ -1,90 +1,9 @@
-// import Image from "next/image";
-// import { ChevronRight } from "../../__atoms";
-// import { IImageData } from "@/app/store/useHomePage.store.";
-// import { useShopStore } from "@/app/store/shop-page.store";
-// // import { useShopPageStore } from "@/app/store/useShopPage.store";
-
-// export type ImagesPropsTypes = {
-//   images: IImageData[];
-// };
-
-// const Banner = ({ images }: ImagesPropsTypes) => {
-//   const currentCategory = useShopStore.getState().filters.category;
-//   const hasValidImage = images && images.length > 0 && images[0];
-
-//   const title = hasValidImage ? images[0].title?.split("/")[0] : "Shop Page";
-//   const subText = hasValidImage
-//     ? images[0].title?.split("/")[1]
-//     : "Let’s design the place you always imagined.";
-
-
-//   return (
-//     <section className="w-full md:px-[11.11%] px-[8.53%]">
-//       <div className="w-full  relative ">
-//         <Image
-//           src={images[0]?.presignedUrl || "/assets/product_banner.png"}
-//           alt={images[0]?.imageName || "Banner image"}
-//           width={1120}
-//           height={392}
-//           sizes="(max-width: 767px) 311px, 100vw"
-//           className="object-cover shadow-xl w-[311px] h-[308px] md:w-full md:h-auto"
-//           priority
-//         />
-//         <div className="w-full h-full absolute inset-0 flex flex-col items-center justify-center gap-4 lg:gap-6">
-//           <div className="w-fill h-fit flex  items-center justify-center gap-4">
-//             <div className="flex items-center gap-1">
-//               <p className="text-sm text-[#605F5F] font-medium leading-[24px]">
-//                 Home
-//               </p>
-//               <div className="w-auto h-fit flex items-center justify-center pt-1">
-//                 <ChevronRight />
-//               </div>
-//             </div>
-
-//             <div className="flex items-center gap-1">
-//               <p className="text-sm text-[#605F5F] font-medium leading-[24px]">
-//                 Shop
-//               </p>
-//               {currentCategory && (
-//                 <div className="w-auto h-fit flex items-center justify-center pt-1">
-//                   <ChevronRight />
-//                 </div>
-//               )}
-//             </div>
-//             {currentCategory && (
-//               <p className="text-sm text-[#605F5F] font-medium leading-[24px]">
-//                 {currentCategory}
-//               </p>
-//             )}
-//           </div>
-
-//           <h1 className="font-medium text-[40px] text-[#121212] leading-[44px] md:text-[54px] md:leading-[58px] tracking-[-0.4px] md:tracking-[-1px]">
-//             {title}
-//           </h1>
-//           <p className="text-base md:text-[20px] font-normal leading-[26px] md:leading-[32px] text-[#121212] px-4 md:px-0 text-center">
-//             {subText}
-//           </p>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default Banner;
-
-
-
-"use client"
+"use client";
 import Image from "next/image";
 import { ChevronRight } from "../../__atoms";
-import { IImageData } from "@/app/store/useHomePage.store.";
 import { useShopStore } from "@/app/store/shop-page.store";
 import { usePathname } from "next/navigation";
-// import { useShopPageStore } from "@/app/store/useShopPage.store";
-
-export type ImagesPropsTypes = {
-  images: IImageData[];
-};
+import { ImagesPropsTypes } from "@/app/interfaces/interface";
 
 const Banner = ({ images }: ImagesPropsTypes) => {
   const currentCategory = useShopStore.getState().filters.category;
@@ -92,25 +11,10 @@ const Banner = ({ images }: ImagesPropsTypes) => {
   const pathname = usePathname();
   const currentPage = pathname?.split("/").pop() || "shop";
 
-  
-
   const title = hasValidImage ? images[0].title?.split("/")[0] : "Shop Page";
   const subText = hasValidImage
     ? images[0].title?.split("/")[1]
     : "Let’s design the place you always imagined.";
-
-
-  //    const title = hasValidImage 
-  //   ? images[0].title?.split("/")[0] 
-  //   : (currentPage === "blog" ? "Our Blog" : "Shop Page");
-    
-  // const subText = hasValidImage
-  //   ? images[0].title?.split("/")[1]
-  //   : "Let's design the place you always imagined.";
-
-  // console.log(images)
-
-
 
   return (
     <section className="w-full md:px-[11.11%] px-[8.53%]">
@@ -137,7 +41,6 @@ const Banner = ({ images }: ImagesPropsTypes) => {
 
             <div className="flex items-center gap-1">
               <p className="text-sm text-[#605F5F] font-medium leading-[24px]">
-                {/* Shop */}
                 {currentPage === "blog" ? "Blog" : "Shop"}
               </p>
               {currentCategory && (
@@ -166,5 +69,3 @@ const Banner = ({ images }: ImagesPropsTypes) => {
 };
 
 export default Banner;
-
-

@@ -1,11 +1,12 @@
 import { create } from "zustand";
 import axios, { AxiosError } from "axios";
 import { axiosInstance } from "../libs/axiosInstance";
-import { ProductsDataType, useShopStore } from "./shop-page.store";
-
-export interface ErrorResponse {
-  message: string;
-}
+import { useShopStore } from "./shop-page.store";
+import {
+  ErrorResponse,
+  IUseProductStore,
+  ProductsDataType,
+} from "../interfaces/interface";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -15,30 +16,6 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   const unexpectedError = "An unexpected error occurred";
   return unexpectedError;
 };
-
-export interface IUseProductStore {
-  cashedWishList: Record<string, ProductsDataType[]>;
-  productById: ProductsDataType | null;
-  isLoading: boolean;
-  axiosError: string | null;
-  wishlistData: ProductsDataType[];
-  wishListStatus: boolean | undefined;
-  pageNumber: number;
-  take: number;
-  wishlistDataLength: number;
-  activeTab: string;
-  getProductById: (id: string) => Promise<void>;
-  clearProduct: () => void;
-  setActiveTab: (activeTab: string) => void;
-  updateProduct: (id: string, val: boolean) => Promise<void>;
-  getAllWishlist: (page: string) => Promise<void>;
-  loadMoreWishList: () => void;
-  clearWishlist: () => void;
-  setWishlistDataFromCache: (page: string) => void;
-  averageRatings: Record<string, number>;
-  getAverageRating: (productId: string) => Promise<number>;
-  setAverageRating: (productId: string, rating: number) => void;
-}
 
 export const useProductStore = create<IUseProductStore>((set, get) => ({
   cashedWishList: {},
@@ -75,7 +52,6 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
       set({ productById: searchedProduct, isLoading: false });
       return;
     }
-
     try {
       const res = await axiosInstance.get(`/product/${id}`);
       if (res.status >= 200 && res.status <= 204) {
@@ -92,12 +68,10 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
 
   updateProduct: async (id: string, val: boolean) => {
     set({ isLoading: true, axiosError: null });
-
     try {
       const res = await axiosInstance.patch(`/product/${id}`, {
         wishlist: val,
       });
-
       if (res.status >= 200 && res.status <= 204) {
         const wishlistStatus = res.data.wishlist;
         const currentProduct = get().productById;
@@ -196,7 +170,6 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
           axiosError: null,
           cashedWishList: {
             ...prev.cashedWishList,
-            // [wishlistPage]: updatedWishlistData,
             [wishlistPage]: newWishlist,
           },
         }));
@@ -245,20 +218,6 @@ export const useProductStore = create<IUseProductStore>((set, get) => ({
       });
     }
   },
-  // getAverageRating: async (productId: string) => {
-  //   try {
-  //     const res = await axiosInstance.get(
-  //       `/review/average-rating/${productId}`
-  //     );
-  //     if (res.status >= 200 && res.status <= 204) {
-  //       console.log(res.data.averageRating, "res.data.averageRating")
-  //       return res.data.averageRating;
-  //     }
-  //   } catch (e) {
-  //     console.error("Error fetching average rating", e);
-  //     return 0;
-  //   }
-  // },
 
   getAverageRating: async (productId) => {
     const cachedRating = get().averageRatings[productId];

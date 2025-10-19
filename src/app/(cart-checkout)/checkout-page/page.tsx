@@ -1,5 +1,4 @@
 import Checkout from "@/app/components/__organism/checkout/Checkout";
-import React from "react";
 
 export default function Page() {
   return (

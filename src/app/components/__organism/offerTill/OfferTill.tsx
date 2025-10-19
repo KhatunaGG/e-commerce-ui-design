@@ -1,9 +1,6 @@
-"use client"
+"use client";
+import { OfferTillPropsType } from "@/app/interfaces/interface";
 import React, { useEffect, useState, useCallback } from "react";
-
-export type OfferTillPropsType = {
-  till: string;
-};
 
 const OfferTill = ({ till }: OfferTillPropsType) => {
   const getTimeLeft = useCallback(() => {
@@ -20,7 +17,6 @@ const OfferTill = ({ till }: OfferTillPropsType) => {
         seconds: 0,
       };
     }
-
     return {
       expired: false,
       days: Math.floor(difference / (1000 * 60 * 60 * 24)),
@@ -28,13 +24,11 @@ const OfferTill = ({ till }: OfferTillPropsType) => {
       minutes: Math.floor((difference / 1000 / 60) % 60),
       seconds: Math.floor((difference / 1000) % 60),
     };
-  }, [till]); 
-
+  }, [till]);
   const [timeLeft, setTimeLeft] = useState(getTimeLeft());
 
   useEffect(() => {
     if (timeLeft.expired) return;
-
     const timer = setInterval(() => {
       const updatedTime = getTimeLeft();
       setTimeLeft(updatedTime);
@@ -42,7 +36,6 @@ const OfferTill = ({ till }: OfferTillPropsType) => {
         clearInterval(timer);
       }
     }, 1000);
-
     return () => clearInterval(timer);
   }, [getTimeLeft, timeLeft.expired]);
 

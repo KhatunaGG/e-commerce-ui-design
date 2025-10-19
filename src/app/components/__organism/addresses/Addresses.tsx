@@ -1,32 +1,19 @@
 "use client";
 import { useSignInStore } from "@/app/store/sign-in.store";
 import { Edit } from "../../__atoms";
-import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ShippingAddress from "../shippingAddress/ShippingAddress";
 import { usePathname } from "next/navigation";
-import { AddressDataType, useAddressStore } from "@/app/store/address.store";
+import { useAddressStore } from "@/app/store/address.store";
 import { useShopStore } from "@/app/store/shop-page.store";
 import { useEffect } from "react";
 import { parsePhoneNumber } from "react-phone-number-input";
-
-const myAccountShippingSchema = z.object({
-  _id: z.string().optional(),
-  type: z.string().optional(),
-  streetAddress: z.string().min(1, "Street address is required"),
-  townCity: z.string().min(1, "Town/City is required"),
-  country: z.string().min(1, "Country is required"),
-  state: z.string().min(1, "State is required"),
-  zipCode: z.string().min(1, "ZIP code is required"),
-  differentBilling: z.boolean().optional(),
-  phoneNumber: z
-    .string()
-    .min(1, "Phone number is required")
-    .regex(/^\+[\d\s]+$/, "Enter a valid international phone number"),
-});
-
-type MyAccountShippingFormType = z.infer<typeof myAccountShippingSchema>;
+import { myAccountShippingSchema } from "@/app/schema/shema";
+import {
+  AddressDataType,
+  MyAccountShippingFormType,
+} from "@/app/interfaces/interface";
 
 const Addresses = () => {
   const { accessToken, initialize } = useSignInStore();
@@ -54,8 +41,6 @@ const Addresses = () => {
     clearAddressData();
     getAllShippingAddresses();
   }, []);
-
-  console.log(addressData, "addressData");
 
   const {
     handleSubmit,

@@ -7,9 +7,8 @@ import { useEffect } from "react";
 import { useCartStore } from "@/app/store/cart.store";
 import Image from "next/image";
 
-
 const Complete = () => {
-  const { checkoutData,  formatDate} = useCheckoutStore();
+  const { checkoutData, formatDate } = useCheckoutStore();
   console.log(checkoutData, "checkoutData form Complete");
 
   useEffect(() => {
@@ -22,20 +21,10 @@ const Complete = () => {
     };
   }, []);
 
-  // const formattedDate = checkoutData?.createdAt
-  //   ? new Date(checkoutData.createdAt).toLocaleDateString("en-US", {
-  //       year: "numeric",
-  //       month: "long",
-  //       day: "numeric",
-  //     })
-  //   : "";
-
   const formattedDate = checkoutData?.createdAt
-  ? formatDate(checkoutData.createdAt)
-  : "";
-
+    ? formatDate(checkoutData.createdAt)
+    : "";
   const slicedPresignedUrl = checkoutData?.presignedUrls?.slice(0, 3) ?? [];
-
 
   return (
     <div className=" h-full flex flex-col items-center justify-center min-h-[calc(100vh-61px)]  py-20 gap-10 md:gap-20 rounded-lg">
@@ -59,8 +48,6 @@ const Complete = () => {
             Your order has been received
           </h1>
         </div>
-
-        {/* <div className="grid grid-cols-3 gap-4 md:gap-10 relative "> */}
         <div className="flex items-center justify-center gap-4 md:gap-10 relative  bg-green-300">
           {slicedPresignedUrl.map((item, i) => {
             return (
@@ -125,7 +112,10 @@ const Complete = () => {
           </div>
         </div>
 
-        <Link className="w-full flex items-center justify-center px-4 md:px-[50px] lg::px-[112.5px] " href={"/account-page/orders"}>
+        <Link
+          className="w-full flex items-center justify-center px-4 md:px-[50px] lg::px-[112.5px] "
+          href={"/account-page/orders"}
+        >
           <button className="w-full bg-[#141718] rounded-[80px] md:px-10 text-white py-3 text-base font-medium leading-[28px] tracking-[-0.4px] hover:bg-gray-800 transition-colors duration-300 ease-in-out">
             Purchase history
           </button>

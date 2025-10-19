@@ -1,5 +1,3 @@
-import React from "react";
-
 const Instagram = ({ color }: { color?: string }) => {
   return (
     <svg
@@ -15,22 +13,14 @@ const Instagram = ({ color }: { color?: string }) => {
         width="20"
         height="20"
         rx="4"
-        // stroke="#FEFEFE"
         stroke={color ? color : "#FEFEFE"}
         strokeWidth="1.5"
       />
-      <circle
-        cx="18"
-        cy="6"
-        r="1"
-        // fill="#FEFEFE"
-        fill={color ? color : "#FEFEFE"}
-      />
+      <circle cx="18" cy="6" r="1" fill={color ? color : "#FEFEFE"} />
       <circle
         cx="12"
         cy="12"
         r="5"
-        //  stroke="#FEFEFE"
         stroke={color ? color : "#FEFEFE"}
         strokeWidth="1.5"
       />

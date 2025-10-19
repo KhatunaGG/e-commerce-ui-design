@@ -1,14 +1,7 @@
 "use client";
-
-import { FieldErrors, UseFormRegister } from "react-hook-form";
-import { MyAccountType } from "../account/Account";
+import { AccountPasswordPropsType } from "@/app/interfaces/interface";
 import { Input } from "../../__molecules";
 
-export type AccountPasswordPropsType = {
-  register: UseFormRegister<MyAccountType>;
-  errors: FieldErrors<MyAccountType>;
-  isMyAccountPage: boolean;
-};
 const AccountPassword = ({
   register,
   errors,

@@ -1,9 +1,4 @@
-export type SubmitPropsType = {
-  isSubmitting?: boolean;
-};
-const Submit = (
-  // { isSubmitting }: SubmitPropsType
-) => {
+const Submit = () => {
   return (
     <button
       type="submit"

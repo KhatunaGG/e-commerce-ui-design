@@ -1,14 +1,16 @@
 import axios, { AxiosError } from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { ProductsDataType, useShopStore } from "./shop-page.store";
+import { useShopStore } from "./shop-page.store";
 import { useProductStore } from "./product.store";
 import { toast } from "react-toastify";
 import { useSignInStore } from "./sign-in.store";
-
-export interface ErrorResponse {
-  message: string;
-}
+import {
+  CartItemType,
+  ErrorResponse,
+  IUseCartStore,
+  ProductsDataType,
+} from "../interfaces/interface";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -16,53 +18,6 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   }
   return "An unexpected error occurred";
 };
-
-export type CartItemType = {
-  productName: string;
-  filePath: string | "";
-  new: boolean;
-  discount: number;
-  price: number;
-  colors?: string[];
-  color: string | null;
-  stock: number;
-  wishlist: boolean;
-  discountTill: string;
-  _id: string;
-  purchasedQty: number;
-  presignedUrl?: string | "";
-};
-
-export type ShippingsType = {
-  shippingCost: number;
-  shippingOption: string;
-};
-
-export interface IUseCartStore {
-  isLoading: boolean;
-  axiosError: string | null;
-  showNavbar: boolean;
-  cartData: CartItemType[];
-  cartDataLength: number;
-  show: boolean;
-
-  selectedQty: number;
-  selectedColor: string | null;
-  selectedShipping: ShippingsType | null;
-  setSelectedShipping: (shipping: ShippingsType | null) => void;
-  setShow: (show: boolean) => void;
-  setSelectedQty: (qty: number) => void;
-  setSelectedColor: (color: string | null) => void;
-
-  handleShowNavbar: () => void;
-  addProductToCart: (id: string, color?: string | null, qty?: number) => void;
-  handleSelectColor: (id: string, color: string) => void;
-
-  updateCartQty: (id: string, color: string | null, newQty: number) => void;
-  deleteProductFromCart: (id: string, color: string | null) => void;
-  handleCheckout: () => Promise<void>;
-  resetCartStore: () => void;
-}
 
 export const useCartStore = create<IUseCartStore>()(
   persist(
@@ -72,19 +27,16 @@ export const useCartStore = create<IUseCartStore>()(
       showNavbar: false,
       cartData: [],
       cartDataLength: 0,
-
       selectedQty: 0,
       selectedColor: null,
       show: false,
       selectedShipping: null,
-
       setShow: (show: boolean) => {
         set({ show });
       },
       setSelectedShipping: (shipping) => set({ selectedShipping: shipping }),
       handleSelectColor: (id, color) => {
         set({ selectedColor: color });
-
         if (color) {
           const state = get();
           const existingIndex = state.cartData.findIndex(
@@ -97,20 +49,17 @@ export const useCartStore = create<IUseCartStore>()(
               ...existingItem,
               color,
             };
-
             const itemsToMerge = state.cartData.filter(
               (item, index) =>
                 item._id === id &&
                 item.color === color &&
                 index !== existingIndex
             );
-
             const totalMergedQty =
               itemsToMerge.reduce(
                 (acc, item) => acc + (item.purchasedQty || 0),
                 0
               ) + (existingItem.purchasedQty || 0);
-
             const filteredCart = state.cartData.filter(
               (item) =>
                 !(
@@ -118,12 +67,10 @@ export const useCartStore = create<IUseCartStore>()(
                   (item.color === null || item.color === color)
                 )
             );
-
             const mergedItem = {
               ...updatedItem,
               purchasedQty: totalMergedQty,
             };
-
             set({
               cartData: [...filteredCart, mergedItem],
             });
@@ -165,7 +112,6 @@ export const useCartStore = create<IUseCartStore>()(
         let product: ProductsDataType | undefined =
           shopStore.productsData.find((item) => item._id === id) ??
           shopStore.cachedProductsData.shop?.find((item) => item._id === id);
-
         if (!product) {
           try {
             const { getProductById } = useProductStore.getState();
@@ -179,7 +125,6 @@ export const useCartStore = create<IUseCartStore>()(
             return;
           }
         }
-
         if (!product) {
           console.warn("Product not found:", id);
           return;
@@ -258,9 +203,7 @@ export const useCartStore = create<IUseCartStore>()(
         const indexToRemove = copiedCart.findIndex(
           (item) => item._id === id && item.color === color
         );
-
         if (indexToRemove === -1) return;
-
         copiedCart.splice(indexToRemove, 1);
         set({
           cartData: copiedCart,
@@ -272,7 +215,6 @@ export const useCartStore = create<IUseCartStore>()(
         const state = get();
         const signInStore = useSignInStore.getState();
         set({ isLoading: true, axiosError: null });
-
         await signInStore.initialize();
 
         if (state.cartData.length === 0) {

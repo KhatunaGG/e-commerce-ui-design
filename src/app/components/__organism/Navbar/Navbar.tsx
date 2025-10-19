@@ -14,11 +14,9 @@ function Navbar() {
   const { cartData, setShow, show } = useCartStore();
   const hasToSelectColor = cartData.some((item) => item.color === null);
 
-
-
   useEffect(() => {
     if (showNavbar && cartData.length === 0) {
-       toast.info("Your cart is currently empty.");
+      toast.info("Your cart is currently empty.");
     }
   }, [showNavbar, cartData]);
 

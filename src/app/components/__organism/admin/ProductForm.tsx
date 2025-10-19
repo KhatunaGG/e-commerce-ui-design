@@ -16,8 +16,6 @@ export const productFormSchema = z.object({
   discount: z.number().min(0, "Discount must be 0 or more"),
   colors: z.string().min(1, "Colors cannot be empty"),
   category: z.string().min(1, "Category cannot be empty"),
-  // reviews: z.string().optional(), 
-  // questions: z.string().optional(),
   stock: z.number().min(0, "Stock must be 0 or more"),
   wishlist: z.boolean(),
   measurements: z.string().optional(),
@@ -34,16 +32,10 @@ export type ProductFormSchemaType = z.infer<typeof productFormSchema>;
 
 const ProductForm = () => {
   const [file, setFile] = useState<File | null>(null);
-  const {
-    register,
-    reset,
-    handleSubmit,
-    // formState: { errors, isSubmitting },
-  } = useForm<ProductFormSchemaType>({
+  const { register, reset, handleSubmit } = useForm<ProductFormSchemaType>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
       productName: "",
-      // filePath: '',
       pages: "",
       components: "",
       new: false,
@@ -52,8 +44,6 @@ const ProductForm = () => {
       category: "",
       price: 0,
       colors: "",
-      // reviews: "",
-      // questions: "",
       stock: 0,
       wishlist: false,
       measurements: "",
@@ -83,7 +73,7 @@ const ProductForm = () => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     console.log("=== FORM SUBMIT EVENT ===");
-    e.preventDefault(); 
+    e.preventDefault();
     handleSubmit(onSubmit)(e);
   };
 
@@ -113,16 +103,14 @@ const ProductForm = () => {
         components: componentsArray || "",
         colors: colorsArray || "",
         category: categoryArray || "",
-        // reviews: reviewsArray || "",
-        // questions: questionsArray || "",
-        filePath: filePath
+        filePath: filePath,
       };
-      const res = await axiosInstance.post(`/product`, newFormData)
-      if(res.status >= 200 && res.status <= 204) {
-        reset()
+      const res = await axiosInstance.post(`/product`, newFormData);
+      if (res.status >= 200 && res.status <= 204) {
+        reset();
       }
 
-      console.log(newFormData, "newFormData")
+      console.log(newFormData, "newFormData");
     } catch (e) {
       console.log(e);
     }
@@ -130,7 +118,6 @@ const ProductForm = () => {
 
   return (
     <form
-      // onSubmit={handleSubmit(onSubmit)}
       onSubmit={handleFormSubmit}
       noValidate
       className="w-[68%] flex-col items-center justify-center py-10 min-h-screen"
@@ -187,7 +174,6 @@ const ProductForm = () => {
               Price
             </label>
             <input
-              // {...register("price")}
               {...register("price", { valueAsNumber: true })}
               type="text"
               className="flex-1 py-2 px-4 rounded-lg border border-gray-400 outline-none"
@@ -199,8 +185,7 @@ const ProductForm = () => {
               discount
             </label>
             <input
-              // {...register("discount")}
-                {...register("discount", { valueAsNumber: true })}
+              {...register("discount", { valueAsNumber: true })}
               type="text"
               className="flex-1 py-2 px-4 rounded-lg border border-gray-400 outline-none"
               placeholder="discount"
@@ -211,7 +196,6 @@ const ProductForm = () => {
               stock
             </label>
             <input
-              // {...register("stock")}
               {...register("stock", { valueAsNumber: true })}
               type="text"
               className="flex-1 py-2 px-4 rounded-lg border border-gray-400 outline-none"
@@ -291,61 +275,3 @@ const ProductForm = () => {
 };
 
 export default ProductForm;
-
-// const newFormData = {
-//   ...formData,
-//   new: true,
-//   filePath,
-//   rate: 0,
-//   wishlist: false,
-//   reviews: reviewsArray,
-//   page: pagesArray,
-//   category: componentsArray,
-//   colors: colorArray,
-//   questions: questionsArray,
-// };
-// console.log(newFormData, "newFormData");
-// const res = axiosInstance.post(`/product`);
-
-//     export type ProductPropsType = {
-// presignedUrl: string;
-// imageName: string;
-// new: boolean;         //true
-// discount: number;
-// rate: number;        //0
-// category: string[];
-// price: number;
-// colors: string[];
-// reviews: string[];         //""
-// stock: number;
-// wishlist: boolean;       //false
-// measurements: string;
-// details: string;
-// packaging: string;
-// questions: string[];  //string[]
-// };
-
-// export const productFormSchema = z.object({
-//   productName: z.string().min(1, "Image name is required"),
-//   // filePath: z.string().min(1, "File path is required"),
-//   pages: z.array(z.string().min(1)).min(1, "Pages cannot be empty"),
-//   components: z.array(z.string().min(1)).optional(),
-//   new: z.boolean(),
-//   discount: z.number().min(0, "Discount must be 0 or more"),
-//   rate: z.number().min(0, "Rate must be 0 or more"),
-//   category: z.array(z.string().min(1)).min(1, "Category cannot be empty"),
-//   price: z.number().min(0, "Price must be 0 or more"),
-//   colors: z.array(z.string().min(1)).min(1, "Colors cannot be empty"),
-//   reviews: z.array(z.string()).optional(),
-//   stock: z.number().min(0, "Stock must be 0 or more"),
-//   wishlist: z.boolean(),
-//   measurements: z.string().optional(),
-//   details: z.string().min(1, "Details are required"),
-//   questions: z.array(z.string().min(1)).optional(),
-//   discountTill: z
-//     .string()
-//     .min(1)
-//     .refine((val) => !isNaN(Date.parse(val)), {
-//       message: "Discount end date must be a valid date",
-//     }),
-// });

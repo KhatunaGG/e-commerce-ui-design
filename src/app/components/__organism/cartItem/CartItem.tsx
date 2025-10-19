@@ -4,45 +4,26 @@ import { useShopStore } from "@/app/store/shop-page.store";
 import Image from "next/image";
 import Counter from "../counter/Counter";
 import { Close } from "../../__atoms";
-
-export type CartItemPropsType = {
-  isLastItem: boolean;
-  isFirstItem: boolean;
-  _id: string;
-  productName: string;
-  price: number;
-  purchasedQty: number;
-  color: string | null;
-  presignedUrl?: string;
-  isCartPage?: boolean;
-  show?: boolean;
-  isNotSelected?: boolean;
-  colors?: string[];
-  handleSelectColor?: (id: string, color: string) => void;
-  isCheckoutPage?: boolean
-};
+import { CartItemPropsType } from "@/app/interfaces/interface";
 
 const CartItem = ({
   isFirstItem,
   isLastItem,
   isCartPage,
   isNotSelected,
-  //   show,
   handleSelectColor,
   isCheckoutPage,
   ...item
 }: CartItemPropsType) => {
   const { _id, productName, price, purchasedQty, color, presignedUrl, colors } =
     item;
-
   const { updateCartQty, deleteProductFromCart } = useCartStore();
   const { normalizeFirstChar } = useShopStore();
+
   return (
     <div
-      className={`${isLastItem && "border-b-0"} ${
-        isFirstItem && "border-t-0"
-      } 
-      ${(isCheckoutPage && isLastItem) ? "border-b border-b-black/20" : ""} 
+      className={`${isLastItem && "border-b-0"} ${isFirstItem && "border-t-0"} 
+      ${isCheckoutPage && isLastItem ? "border-b border-b-black/20" : ""} 
       w-full flex items-start gap-2 md:gap-4 py-4 md:py-6  border-t border-t-black/20 border-b border-b-black/20`}
     >
       <div className={` w-[23.32%] md:w-[19.37%]  h-full  lg:h-full `}>
@@ -73,10 +54,10 @@ const CartItem = ({
             isCartPage ? "lg:w-[32.65%] flex-1" : "flex-1"
           }   h-full flex flex-col items-start gap-2 md:gap-0 md:justify-between`}
         >
-          <p className="text-xs md:text-sm font-semibold leading-[22px] text-[#141718]            ">
+          <p className="text-xs md:text-sm font-semibold leading-[22px] text-[#141718]">
             {productName}
           </p>
-          <p className="text-xs font-normal leading-[20px] text-black/60 cursor-pointer           ">
+          <p className="text-xs font-normal leading-[20px] text-black/60 cursor-pointer">
             Color:{" "}
             <span className={`${isNotSelected && "text-red-600"} `}>
               {color === null
@@ -121,7 +102,7 @@ const CartItem = ({
               onChange={(newQty: number) => updateCartQty(_id, color, newQty)}
               isCartPage={isCartPage}
               show={true}
-             isCheckoutPage={isCheckoutPage}
+              isCheckoutPage={isCheckoutPage}
             />
           </div>
         </div>
@@ -156,7 +137,11 @@ const CartItem = ({
           <Close />
         </button>
 
-        <p className={`${isCartPage ? "lg:flex lg:justify-end hidden" : "hidden"}  lg:w-full`}>
+        <p
+          className={`${
+            isCartPage ? "lg:flex lg:justify-end hidden" : "hidden"
+          }  lg:w-full`}
+        >
           ${price.toFixed(2)}
         </p>
       </div>
