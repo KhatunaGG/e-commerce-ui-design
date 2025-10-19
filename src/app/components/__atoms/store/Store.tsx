@@ -1,5 +1,3 @@
-
-
 const Store = () => {
   return (
     <svg

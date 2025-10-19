@@ -6,7 +6,8 @@ import Banner from "../banner/Banner";
 import FilterSection from "../filterSection/FilterSection";
 import Products from "../products/Products";
 import { useHomePageStore } from "@/app/store/useHomePage.store.";
-import { CategoryFilter, useShopStore } from "@/app/store/shop-page.store";
+import { useShopStore } from "@/app/store/shop-page.store";
+import { CategoryFilter } from "@/app/interfaces/interface";
 
 const Shop = () => {
   const pathName = usePathname();
@@ -16,16 +17,6 @@ const Shop = () => {
   );
   const searchParams = useSearchParams();
   const { setFilters } = useShopStore();
-
-  // useEffect(() => {
-  //   const category = searchParams.get("category");
-  //   if (category) {
-  //     setFilters({
-  //       category: decodeURIComponent(category) as CategoryFilter,
-  //       priceRange: null,
-  //     });
-  //   }
-  // }, [searchParams, setFilters]);
 
   useEffect(() => {
     const category = searchParams.get("category");
@@ -60,10 +51,8 @@ const Shop = () => {
 
   useEffect(() => {
     if (!page) return;
-
     clearHomePageData();
     clearShopPageData();
-
     getAllImages(page);
     getProductsFromCacheOrApi();
   }, [

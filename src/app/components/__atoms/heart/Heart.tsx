@@ -1,9 +1,6 @@
-export type HeartPropsType = {
-  wishlist?: boolean;
-};
+import { HeartPropsType } from "@/app/interfaces/interface";
 
 const Heart = ({ wishlist }: HeartPropsType) => {
-
   return (
     <svg
       width="24"

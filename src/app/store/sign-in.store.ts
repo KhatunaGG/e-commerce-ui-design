@@ -1,10 +1,9 @@
 import axios, { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { create } from "zustand";
-import { SignInType } from "../components/__organism/signInFrom/SignInForm";
 import { axiosInstance } from "../libs/axiosInstance";
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
-import { ErrorResponse, useHomePageStore } from "./useHomePage.store.";
+import { useHomePageStore } from "./useHomePage.store.";
 import { useProductStore } from "./product.store";
 import { useShopStore } from "./shop-page.store";
 import { useAddressStore } from "./address.store";
@@ -13,6 +12,7 @@ import { useQuestionStore } from "./question.store";
 import { useReviewStore } from "./review.store";
 import { useBlogStore } from "./blog.store";
 import { useCartStore } from "./cart.store";
+import { ErrorResponse, IUser, IUseSignInStore } from "../interfaces/interface";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -24,37 +24,6 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   toast.error(unexpectedError);
   return unexpectedError;
 };
-
-export interface IUser {
-  userName: string;
-  yourName: string;
-  reviews: string[];
-  email: string;
-  _id: string;
-  lastName?: string;
-
-  questions: [];
-}
-
-export interface IUseSignInStore {
-  signInName: string;
-  password: string;
-  rememberMe: boolean;
-  axiosError: string;
-  isLoading: boolean;
-  accessToken: string | null;
-  currentUser: IUser | null;
-  setFormData: (
-    signInName: string,
-    password: string,
-    rememberMe: boolean
-  ) => void;
-  setAccessToken: (accessToken: string | null) => void;
-  signIn: (formData: SignInType) => Promise<boolean>;
-  initialize: () => void;
-  logout: () => void;
-  getCurrentUser: (accessToken: string | undefined) => void;
-}
 
 export const useSignInStore = create<IUseSignInStore>((set) => ({
   isLoading: false,
@@ -123,39 +92,6 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
       set({ axiosError: errorMessage });
     }
   },
-  // logout: () => {
-  //   deleteCookie("accessToken");
-  //   useBlogStore.getState().resetBlogs();
-  //   localStorage.removeItem("blog-store");
-
-  //   useReviewStore.getState().resetReviewStore();
-  //   localStorage.removeItem("review-store");
-
-  //   useQuestionStore.getState().resetQuestionStore();
-  //   localStorage.removeItem("question-store");
-
-  //   useHomePageStore.getState().clearCache();
-  //   useShopStore.getState().clearCache();
-
-  //   // localStorage.removeItem("review-store");
-  //   // localStorage.removeItem("question-store");
-  //   useProductStore.getState().clearWishlist();
-  //   useProductStore.setState({
-  //     cashedWishList: {},
-  //   });
-
-  //   useAddressStore.getState().clearAddressData();
-  //   useAddressStore.getState().clearOrdersData();
-  //   localStorage.removeItem("address-storage");
-  //   useAccountStore.getState().clearAccountData();
-  //   localStorage.removeItem("account-storage");
-
-  //   useCartStore.getState().resetCartStore();
-  //   localStorage.removeItem("cartData-store");
-  //   localStorage.clear();
-  //   set({ currentUser: null, accessToken: "" });
-  //   window.location.href = "/";
-  // },
 
   logout: () => {
     deleteCookie("accessToken");
@@ -170,11 +106,8 @@ export const useSignInStore = create<IUseSignInStore>((set) => ({
     useAddressStore.getState().clearOrdersData();
     useAccountStore.getState().clearAccountData();
     useCartStore.getState().resetCartStore();
-
     localStorage.clear();
-
     set({ currentUser: null, accessToken: "" });
-
     window.location.href = "/";
   },
 }));

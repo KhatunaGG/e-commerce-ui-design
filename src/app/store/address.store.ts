@@ -1,17 +1,13 @@
-//
-
-//after perisit purchaseData
 import axios, { AxiosError } from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { axiosInstance } from "../libs/axiosInstance";
 import { useSignInStore } from "./sign-in.store";
-import { ICheckoutData } from "./checkout.store";
-
-
-export interface ErrorResponse {
-  message: string;
-}
+import {
+  AddressDataType,
+  ErrorResponse,
+  IUseAddressStore,
+} from "../interfaces/interface";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -19,46 +15,6 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   }
   return "An unexpected error occurred";
 };
-
-export type AddressDataType = {
-  streetAddress: string;
-  townCity: string;
-  country: string;
-  state: string;
-  zipCode: string;
-  phoneNumber: string;
-  differentBilling?: boolean;
-  type: string;
-  _id: string;
-};
-
-export interface IUseAddressStore {
-  isLoading: boolean;
-  axiosError: string | null;
-  editAddress: boolean;
-  editAddressId: string | null;
-  addressType: string | null;
-  addressData: AddressDataType[];
-  purchasesData: ICheckoutData[];
-  page: number;
-  take: number;
-  ordersTotalCount: number;
-  isOpen: boolean;
-  selectedLabel: string;
-  setSelectedLabel: (selectedLabel: string) => void;
-  setIsOpen: (open: boolean) => void;
-  setEditAddressId: (id: string | null) => void;
-  setAddressType: (addressType: string | null) => void;
-  getAllShippingAddresses: () => Promise<void>;
-  clearAddressData: () => void;
-  submitEditAddress: (formData: AddressDataType) => Promise<boolean>;
-  getAllOrders: () => Promise<void>;
-  getOrderStatus: (createdAt?: string) => string;
-  setPage: (page: number) => Promise<void>;
-
-  purchasesDataByPage: Record<number, ICheckoutData[]>;
-  clearOrdersData: () => void;
-}
 
 export const useAddressStore = create<IUseAddressStore>()(
   persist(
@@ -73,14 +29,11 @@ export const useAddressStore = create<IUseAddressStore>()(
       page: 1,
       take: 5,
       ordersTotalCount: 0,
-
       purchasesDataByPage: {},
       isOpen: false,
       selectedLabel: "Account",
-      setSelectedLabel: (selectedLabel) => set({selectedLabel}),
+      setSelectedLabel: (selectedLabel) => set({ selectedLabel }),
       setIsOpen: (isOpen) => set({ isOpen }),
-
-
       setPage: async (page: number) => {
         set({ page });
         await get().getAllOrders();
@@ -98,14 +51,12 @@ export const useAddressStore = create<IUseAddressStore>()(
       setEditAddressId: (id) => set({ editAddressId: id }),
       getAllShippingAddresses: async () => {
         if (get().addressData.length > 0) return;
-
         const signInStore = useSignInStore.getState();
         try {
           set({ isLoading: true, axiosError: null });
           const res = await axiosInstance.get("/address", {
             headers: { Authorization: `Bearer ${signInStore.accessToken}` },
           });
-
           if (res.status >= 200 && res.status <= 204) {
             set({ addressData: res.data, isLoading: false, axiosError: null });
           }
@@ -128,7 +79,6 @@ export const useAddressStore = create<IUseAddressStore>()(
               headers: { Authorization: `Bearer ${signInStore.accessToken}` },
             }
           );
-
           if (res.status >= 200 && res.status <= 204) {
             set({ addressData: [] });
             await get().getAllShippingAddresses();
@@ -150,10 +100,8 @@ export const useAddressStore = create<IUseAddressStore>()(
       getAllOrders: async () => {
         const { page, purchasesDataByPage } = get();
         if (purchasesDataByPage[page]) return;
-
         set({ isLoading: true, axiosError: null });
         const signInStore = useSignInStore.getState();
-
         try {
           const res = await axiosInstance.get(
             `/purchase?page=${get().page}&take=${get().take}`,
@@ -167,7 +115,6 @@ export const useAddressStore = create<IUseAddressStore>()(
                 ...purchasesDataByPage,
                 [page]: res.data.orders,
               },
-              // purchasesData: res.data.orders,
               isLoading: false,
               axiosError: null,
               ordersTotalCount: res.data.ordersTotalLength,
@@ -194,7 +141,6 @@ export const useAddressStore = create<IUseAddressStore>()(
       name: "address-storage",
       partialize: (state) => ({
         addressData: state.addressData,
-
         purchasesDataByPage: state.purchasesDataByPage,
         page: state.page,
         take: state.take,

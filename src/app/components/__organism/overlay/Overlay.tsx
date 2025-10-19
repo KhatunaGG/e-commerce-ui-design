@@ -1,33 +1,18 @@
 "use client";
 import { useBlogStore } from "@/app/store/blog.store";
 import { Close, UploadImage } from "../../__atoms";
-import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef } from "react";
 import { toast } from "react-toastify";
 import { useSignInStore } from "@/app/store/sign-in.store";
-
-export const blogSchema = z.object({
-  // title: z.string().min(1, "Title is required"),
-  title: z.string().optional(),
-  filepath: z.string().optional(),
-  context: z.string().optional(),
-  articleTitle: z.string().optional(),
-});
-
-export type BlogType = z.infer<typeof blogSchema>;
-
-export type overlayProps = {
-  isBlogPage?: boolean;
-  blogId?: string;
-};
+import { blogSchema } from "@/app/schema/shema";
+import { BlogType, overlayProps } from "@/app/interfaces/interface";
 
 const Overlay = ({ isBlogPage, blogId }: overlayProps) => {
   const { setShowOverlay, createBlog } = useBlogStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { initialize } = useSignInStore();
-
   const {
     register,
     handleSubmit,
@@ -42,38 +27,6 @@ const Overlay = ({ isBlogPage, blogId }: overlayProps) => {
       articleTitle: "",
     },
   });
-
-  // const onSubmit = async (formData: BlogType) => {
-  //   await initialize();
-  //  const updatedAccessToken = useSignInStore.getState().accessToken;
-
-  //   if (!updatedAccessToken) {
-  //     toast.error("You must be signed in to proceed.");
-  //     return;
-  //   }
-
-  //   const file = fileInputRef.current?.files?.[0];
-  //   if (!file) {
-  //     toast.error("Please upload a file.");
-  //     return;
-  //   }
-  //   console.log(file, "file from Overlay");
-  //   try {
-  //     const success = await createBlog(formData, file, updatedAccessToken);
-  //     if (success) {
-  //       reset();
-  //       if (fileInputRef.current) fileInputRef.current.value = "";
-  //       setShowOverlay(false);
-  //       toast.success("Blog created successfully!");
-  //     } else {
-  //       toast.error("Failed to create blog. Please try again.");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error creating blog:", error);
-  //     toast.error("An error occurred while creating the blog.");
-  //   }
-  // };
-
   const onSubmit = async (formData: BlogType) => {
     await initialize();
     const updatedAccessToken = useSignInStore.getState().accessToken;
@@ -134,7 +87,9 @@ const Overlay = ({ isBlogPage, blogId }: overlayProps) => {
             onSubmit={handleSubmit(onSubmit)}
             className="w-full flex  flex-col  gap-10"
           >
-            <div className={`${blogId ? "hidden" : 'flex'} flex flex-col gap-2`}>
+            <div
+              className={`${blogId ? "hidden" : "flex"} flex flex-col gap-2`}
+            >
               <label
                 htmlFor="title"
                 className="text-sm font-semibold leading-[22px] text-[#121212]"
@@ -156,7 +111,11 @@ const Overlay = ({ isBlogPage, blogId }: overlayProps) => {
               )}
             </div>
 
-            <div className={`${blogId ? "flex" : "hidden"} w-full flex  flex-col  gap-4`}>
+            <div
+              className={`${
+                blogId ? "flex" : "hidden"
+              } w-full flex  flex-col  gap-4`}
+            >
               <label
                 htmlFor="articleTitle"
                 className="text-sm font-semibold leading-[22px] text-[#121212]"
@@ -185,12 +144,10 @@ const Overlay = ({ isBlogPage, blogId }: overlayProps) => {
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
-                // accept=".jpg,.jpeg,.png,.gif,.webp"
                 multiple
                 className="text-sm font-semibold leading-[22px] text-[#121212]"
               />
             </div>
-
             <button
               type="submit"
               className="py-2 px-4 text-base font-semibold leading-[22px] text-[#121212] w-fit"

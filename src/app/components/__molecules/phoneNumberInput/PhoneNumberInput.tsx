@@ -1,22 +1,9 @@
 "use client";
+import { PhoneNumberInputProps } from "@/app/interfaces/interface";
 import React from "react";
-import {
-  Controller,
-  Control,
-  FieldErrors,
-  Path,
-  FieldValues,
-} from "react-hook-form";
+import { Controller, FieldValues } from "react-hook-form";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-
-type PhoneNumberInputProps<T extends FieldValues> = {
-  control: Control<T>;
-  errors: FieldErrors<T>;
-  fieldName: Path<T>;
-  isCheckoutPage?: boolean;
-  isMyAccountPage?: boolean;
-};
 
 export default function PhoneNumberInput<T extends FieldValues>({
   control,
@@ -49,11 +36,11 @@ export default function PhoneNumberInput<T extends FieldValues>({
             defaultCountry="US"
             value={value || ""}
             onChange={(val) => {
-              console.log('Phone onChange:', val);
+              console.log("Phone onChange:", val);
               if (!val) {
                 onChange("");
               } else {
-                const digitsOnly = val.replace(/[^\d]/g, '');
+                const digitsOnly = val.replace(/[^\d]/g, "");
                 if (digitsOnly.length <= 3) {
                   onChange("");
                 } else {
@@ -67,7 +54,6 @@ export default function PhoneNumberInput<T extends FieldValues>({
           />
         )}
       />
-
       {errors[fieldName] && (
         <span className="absolute bottom-[-18px] left-0 text-red-500 text-sm mt-1">
           {(errors[fieldName] as { message?: string })?.message}

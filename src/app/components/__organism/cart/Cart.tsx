@@ -23,9 +23,7 @@ const Cart = () => {
           <ChevronLeft />
           <h2> Back</h2>
         </Link>
-
         <CartHeader />
-
         <div className="w-full flex flex-col lg:flex-row gap-6 lg:gap-[64px]">
           <div className="w-full flex lg:hidden ">
             <Coupons />
@@ -56,13 +54,7 @@ const Cart = () => {
           </div>
 
           <div className="w-full lg:flex-1">
-            <CartSummary
-            // subtotal={cartData.reduce((acc, item) => {
-            //   const discountedPrice =
-            //     item.price - (item.price * item.discount) / 100;
-            //   return acc + discountedPrice * item.purchasedQty;
-            // }, 0)}
-            />
+            <CartSummary />
           </div>
         </div>
         <div className="hidden lg:flex">

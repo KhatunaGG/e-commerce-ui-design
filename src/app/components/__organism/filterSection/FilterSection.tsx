@@ -2,19 +2,10 @@
 import { categoriesFilter, priceFilter } from "../../../commons/data";
 import Checkbox from "../../__molecules/checkbox/Checkbox";
 import { Filter } from "../../__atoms";
-// import {
-//   CategoryFilter,
-//   PriceFilter,
-// } from "@/app/store/useShopPage.store";
-import {
-  CategoryFilter,
-  PriceFilter,
-  useShopStore,
-} from "@/app/store/shop-page.store";
+import { useShopStore } from "@/app/store/shop-page.store";
+import { CategoryFilter, PriceFilter } from "@/app/interfaces/interface";
 
 const FilterSection = () => {
-  // const currentCategory = useShopStore.getState().filters.category;
-  // const currentPriceRange = useShopStore.getState().filters.priceRange;
   const currentCategory = useShopStore((state) => state.filters.category);
   const currentPriceRange = useShopStore((state) => state.filters.priceRange);
 

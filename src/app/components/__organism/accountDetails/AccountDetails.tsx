@@ -1,13 +1,6 @@
 "use client";
-import { FieldErrors, UseFormRegister } from "react-hook-form";
+import { AccountDetailsPropsType } from "@/app/interfaces/interface";
 import { Input } from "../../__molecules";
-import { MyAccountType } from "../account/Account";
-
-export type AccountDetailsPropsType = {
-  register: UseFormRegister<MyAccountType>;
-  errors: FieldErrors<MyAccountType>;
-  isMyAccountPage: boolean;
-};
 
 const AccountDetails = ({
   register,
@@ -16,7 +9,9 @@ const AccountDetails = ({
 }: AccountDetailsPropsType) => {
   return (
     <div className="w-full flex flex-col gap-6 ">
-      <h2 className="text-black font-semibold leading-[32px] text-[20px]">Account Details</h2>
+      <h2 className="text-black font-semibold leading-[32px] text-[20px]">
+        Account Details
+      </h2>
       <div className="w-full flex flex-col  gap-6">
         <Input
           register={register}

@@ -1,10 +1,11 @@
 import axios, { AxiosError } from "axios";
 import { create } from "zustand";
 import { axiosInstance } from "../libs/axiosInstance";
-
-export interface ErrorResponse {
-  message: string;
-}
+import {
+  ErrorResponse,
+  IImageData,
+  IUseHomePageStore,
+} from "../interfaces/interface";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -13,28 +14,6 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   }
   return "An unexpected error occurred";
 };
-
-export interface IImageData {
-  imageName: string;
-  url: string;
-  componentUsage: string[];
-  pages: string[];
-  presignedUrl: string;
-  title?: string;
-}
-
-export interface IUseHomePageStore {
-  cachedImagesByPage: Record<string, IImageData[]>;
-  imagesData: IImageData[];
-  isLoading: boolean;
-  axiosError: string | null;
-  currentPage: string;
-  setCurrentPage: (page: string) => void;
-  getAllImages: (page: string) => Promise<void>;
-  setCachedImagesByPage: (cachedImages: Record<string, IImageData[]>) => void;
-  clearCache: () => void;
-  clearCurrentPageData: () => void;
-}
 
 export const useHomePageStore = create<IUseHomePageStore>((set, get) => ({
   cachedImagesByPage: {},

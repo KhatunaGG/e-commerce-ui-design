@@ -4,16 +4,7 @@ import { useReviewStore } from "@/app/store/review.store";
 import { useShopStore } from "@/app/store/shop-page.store";
 import { User } from "../../__atoms";
 import Calendar from "../../__atoms/calendar/Calendar";
-
-export type ArticleProps = {
-  articleTitle: string;
-  context: string;
-  filePath: string[];
-  blogOwenName: string;
-  blogOwnerLastName: string;
-  createdAt: string;
-  blogId: string;
-};
+import { ArticleProps } from "@/app/interfaces/interface";
 
 const Article = ({
   articleTitle,

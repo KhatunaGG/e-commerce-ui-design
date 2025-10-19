@@ -1,14 +1,14 @@
 import axios, { AxiosError } from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { MyAccountType } from "../components/__organism/account/Account";
 import { useSignInStore } from "./sign-in.store";
 import { axiosInstance } from "../libs/axiosInstance";
 import { toast } from "react-toastify";
-
-export interface ErrorResponse {
-  message: string;
-}
+import {
+  ErrorResponse,
+  IUseAccountStore,
+  MyAccountType,
+} from "../interfaces/interface";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -19,21 +19,6 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   return unexpectedError;
 };
 
-export interface IUseAccountStore {
-  isLoading: boolean;
-  axiosError: string | null;
-  formData: MyAccountType | null;
-  avatar: string | null;
-  setFormData: (formData: MyAccountType) => void;
-  submitAccountSettings: (
-    formState: Partial<MyAccountType>,
-    accessToken: string
-  ) => Promise<boolean>;
-  handleFileChange: (file: File) => Promise<void>;
-  getUsersAvatar: (id: string) => Promise<void>;
-  clearAccountData: () => void;
-}
-
 export const useAccountStore = create<IUseAccountStore>()(
   persist(
     (set, get) => ({
@@ -41,7 +26,6 @@ export const useAccountStore = create<IUseAccountStore>()(
       axiosError: null,
       formData: null,
       avatar: null,
-
       setFormData: (data) => set({ formData: data }),
       submitAccountSettings: async (
         formState: Partial<MyAccountType>,
@@ -67,15 +51,10 @@ export const useAccountStore = create<IUseAccountStore>()(
         for (const key of fieldsToCompare) {
           const newVal = normalizeLower(formState[key]);
           const oldVal = normalizeLower(original[key]);
-          // if (newVal && newVal !== oldVal) {
-          //   changedFields[key] = newVal;
-          // }
-
           if (newVal && newVal !== oldVal) {
             changedFields[key] = formState[key];
           }
         }
-
         const passwordChanged = !!(
           formState.oldPassword?.trim() &&
           formState.newPassword?.trim() &&
@@ -84,18 +63,15 @@ export const useAccountStore = create<IUseAccountStore>()(
             formState.newPassword !== original.newPassword ||
             formState.confirmPassword !== original.confirmPassword)
         );
-
         if (passwordChanged) {
           changedFields.oldPassword = formState.oldPassword;
           changedFields.newPassword = formState.newPassword;
           changedFields.confirmPassword = formState.confirmPassword;
         }
-
         if (Object.keys(changedFields).length === 0) {
           set({ isLoading: false });
           return false;
         }
-
         const mappedPayload: Record<string, string> = {};
 
         if (changedFields.accountName)
@@ -111,7 +87,6 @@ export const useAccountStore = create<IUseAccountStore>()(
           mappedPayload.newPassword = formState.newPassword!;
           mappedPayload.confirmPassword = formState.confirmPassword!;
         }
-
         try {
           const res = await axiosInstance.patch(`/auth/update`, mappedPayload, {
             headers: { Authorization: `Bearer ${accessToken}` },
@@ -132,15 +107,12 @@ export const useAccountStore = create<IUseAccountStore>()(
                 confirmPassword: "",
               },
             });
-
             set({ isLoading: false });
             toast.success(
               "Your account settings have been updated successfully."
             );
-
             return true;
           }
-
           set({ isLoading: false });
           return false;
         } catch (e) {
@@ -156,12 +128,10 @@ export const useAccountStore = create<IUseAccountStore>()(
         const signInStore = useSignInStore.getState();
         const { accessToken } = signInStore;
         if (!file || !accessToken) return;
-
         if (!file.type.startsWith("image/")) {
           set({ axiosError: "Only image files are allowed." });
           return;
         }
-
         set({ isLoading: true, axiosError: null });
         try {
           const formData = new FormData();
@@ -175,7 +145,6 @@ export const useAccountStore = create<IUseAccountStore>()(
               },
             }
           );
-
           if (res.status >= 200 && res.status <= 204) {
             await get().getUsersAvatar(accessToken);
             toast.success("Your profile picture was updated successfully.");

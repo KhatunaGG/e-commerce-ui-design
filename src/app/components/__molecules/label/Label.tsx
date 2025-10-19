@@ -5,18 +5,7 @@ import AddToCartButton from "../addToCartButton/AddToCartButton";
 import WishlistButton from "../wishlistButton/WishlistButton";
 import { usePathname } from "next/navigation";
 import { useCartStore } from "@/app/store/cart.store";
-
-
-export type LabelPropsType = {
-  productName: string;
-  price: number;
-  rating: number;
-  discount: number;
-  details: string | "";
-  _id: string;
-  newProduct?: boolean;
-  wishlist?: boolean;
-};
+import { LabelPropsType } from "@/app/interfaces/interface";
 
 const Label = ({
   productName,
@@ -34,8 +23,6 @@ const Label = ({
     calculateDiscount,
   } = useShopStore();
   const addProductToCart = useCartStore((state) => state.addProductToCart);
-
-  
 
   return (
     <div
@@ -80,13 +67,8 @@ const Label = ({
             path === "/" && "hidden"
           } w-full flex flex-col gap-2 md:gap-4`}
         >
-          <AddToCartButton
-            onClick={() => addProductToCart(_id)}
-            // sortByTwoHorizontally={sortByTwoHorizontally}
-          />
-          <WishlistButton
-          // wishlist={wishlist}
-          />
+          <AddToCartButton onClick={() => addProductToCart(_id)} />
+          <WishlistButton />
         </div>
       )}
     </div>

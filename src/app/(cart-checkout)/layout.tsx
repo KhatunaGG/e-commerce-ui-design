@@ -1,7 +1,5 @@
 import { Footer, Nav } from "../components/__organism";
 
-
-
 export default function CartLayout({
   children,
 }: {

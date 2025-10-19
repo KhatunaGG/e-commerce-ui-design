@@ -1,6 +1,4 @@
-export type ChevronLeftType = {
-  dark?: boolean;
-};
+import { ChevronLeftType } from "@/app/interfaces/interface";
 
 const ChevronLeft = ({ dark = false }: ChevronLeftType) => {
   return (

@@ -4,11 +4,7 @@ import ReviewsForm from "../reviewsForm/ReviewsForm";
 import { useReviewStore } from "@/app/store/review.store";
 import { useEffect } from "react";
 import { useProductStore } from "@/app/store/product.store";
-
-export type ReviewsPropsType = {
-  productId: string;
-  productName: string;
-};
+import { ReviewsPropsType } from "@/app/interfaces/interface";
 
 const Reviews = ({ productName, productId }: ReviewsPropsType) => {
   const { reviewLength, getAllReviews, page, totalRating } = useReviewStore();
@@ -31,12 +27,6 @@ const Reviews = ({ productName, productId }: ReviewsPropsType) => {
         Customer Reviews
       </h2>
       <div className="w-full flex gap-2 items-center mb-2">
-        {/* <StarRating
-          productId={productId}
-          rating={0}
-          totalRating={totalRating}
-          readOnly
-        />{" "} */}
         <StarRating
           productId={productId}
           rating={averageRating ?? 0}

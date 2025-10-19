@@ -1,5 +1,4 @@
 "use client";
-import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../../__molecules";
@@ -9,18 +8,8 @@ import Image from "next/image";
 import { useMenuStore } from "@/app/store/menu.store";
 import { useSignInStore } from "@/app/store/sign-in.store";
 import { toast } from "react-toastify";
-
-export const mailSchema = z.object({
-  fullName: z.string().min(1, "Full name is required"),
-  yourEmail: z
-    .string()
-    .min(1, "Email is required")
-    .max(50, "Email is too long")
-    .nonempty("Email is required"),
-  message: z.string().min(1, "Message is required"),
-});
-
-export type MailType = z.infer<typeof mailSchema>;
+import { mailSchema } from "@/app/schema/shema";
+import { MailType } from "@/app/interfaces/interface";
 
 const EmailForm = () => {
   const pathName = usePathname();

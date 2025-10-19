@@ -1,15 +1,15 @@
 import axios, { AxiosError } from "axios";
 import { create } from "zustand";
-import { CheckoutType } from "../components/__organism/checkout/Checkout";
-import { CartItemType, useCartStore } from "./cart.store";
+import { useCartStore } from "./cart.store";
 import { useSignInStore } from "./sign-in.store";
 import { axiosInstance } from "../libs/axiosInstance";
 import { persist } from "zustand/middleware";
 import { useShopStore } from "./shop-page.store";
-
-export interface ErrorResponse {
-  message: string;
-}
+import {
+  ErrorResponse,
+  ICheckoutData,
+  IUseCheckoutStore,
+} from "../interfaces/interface";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -19,48 +19,6 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   const unexpectedError = "An unexpected error occurred";
   return unexpectedError;
 };
-
-export type ICheckoutData = CheckoutType & {
-  order: CartItemType[];
-  shipping: number;
-  shippingOption: string;
-  subtotal: number;
-  total: number;
-  orderCode: string;
-  createdAt?: string;
-  presignedUrls?: string[];
-};
-
-export interface IUseCheckoutStore {
-  isLoading: boolean;
-  axiosError: string | null;
-  formData: CheckoutType | null;
-  checkoutData: ICheckoutData | null;
-  subtotal: number;
-  shippingCost: number;
-  shippingOption: string;
-  generateOrderCode: () => string;
-  setSubtotalAndShipping: (
-    data: CartItemType[],
-    selectedShipping: { shippingOption: string; shippingCost: number } | null
-  ) => void;
-
-  setFormData: (data: CheckoutType) => void;
-  roundToTwo: (val: number) => number;
-  submitPurchase: (formState: CheckoutType) => Promise<boolean>;
-  normalizeZipCode: (str?: string) => string;
-  submitAddress: (addressForm: {
-    streetAddress: string;
-    townCity: string;
-    country: string;
-    state: string;
-    zipCode: string;
-    phoneNumber: string;
-    differentBilling?: boolean;
-    type: string;
-  }) => Promise<boolean>;
-  formatDate: (data?: string) => string;
-}
 
 export const useCheckoutStore = create<IUseCheckoutStore>()(
   persist(
@@ -74,8 +32,8 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
       checkoutData: null,
 
       generateOrderCode: (): string => {
-        const part1 = String(Math.floor(1000 + Math.random() * 9000)); // 4 digits
-        const part2 = String(Math.floor(10000 + Math.random() * 90000)); // 5 digits
+        const part1 = String(Math.floor(1000 + Math.random() * 9000));
+        const part2 = String(Math.floor(10000 + Math.random() * 90000));
         return `#${part1}_${part2}`;
       },
 
@@ -121,7 +79,6 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
         phoneNumber: string;
         differentBilling?: boolean;
         type: string;
-   
       }) => {
         try {
           const { accessToken } = useSignInStore.getState();
@@ -176,7 +133,7 @@ export const useCheckoutStore = create<IUseCheckoutStore>()(
         await get().submitAddress(addressFormState);
 
         const cleanedOrder = cartStore.cartData.map(
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars 
           ({ presignedUrl, colors, ...rest }) => rest
         );
 

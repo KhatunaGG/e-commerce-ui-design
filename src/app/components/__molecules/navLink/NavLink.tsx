@@ -1,13 +1,5 @@
+import { NavLinkProps } from "@/app/interfaces/interface";
 import Link from "next/link";
-import React from "react";
-
-type NavLinkProps = {
-  href: string;
-  isActive: boolean;
-  children: React.ReactNode;
-  onClick?: () => void;
-  variant?: "default" | "footer";
-};
 
 const NavLink = ({
   href,
@@ -17,7 +9,6 @@ const NavLink = ({
   variant,
 }: NavLinkProps) => {
   const baseClass = "transition-colors";
-  // const activeClass = isActive ? "font-bold text-black" : "text-[#6C7275]";
 
   const activeClass =
     variant === "footer"

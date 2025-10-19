@@ -7,10 +7,7 @@ import { usePathname } from "next/navigation";
 import DetailsSection from "../detailsSection/DetailsSection";
 import Tabs from "../tabs/Tabs";
 import { useShopStore } from "@/app/store/shop-page.store";
-
-export type ProductDetailsPropsType = {
-  params: string;
-};
+import { ProductDetailsPropsType } from "@/app/interfaces/interface";
 
 const ProductDetails = ({ params }: ProductDetailsPropsType) => {
   const { getProductById, clearProduct, productById } = useProductStore();

@@ -1,6 +1,4 @@
-import React from "react";
-
-const Search = ({hidden} : {hidden: boolean}) => {
+const Search = ({ hidden }: { hidden: boolean }) => {
   return (
     <svg
       width="24"

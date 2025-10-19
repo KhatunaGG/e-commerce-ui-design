@@ -1,22 +1,24 @@
-export type SubTextPropsType = {
-  isWishlistPage?: boolean;
-};
+import { SubTextPropsType } from "@/app/interfaces/interface";
 
 const SubText = ({ isWishlistPage }: SubTextPropsType) => {
   return (
     <section
       className={`
-        ${isWishlistPage
-          ? "inline-flex flex-col items-start  mt-0"
-          : "flex w-full lg:flex-row md:items-center md:px-[11.11%] px-[8.53%]  mt-8 "}
+        ${
+          isWishlistPage
+            ? "inline-flex flex-col items-start  mt-0"
+            : "flex w-full lg:flex-row md:items-center md:px-[11.11%] px-[8.53%]  mt-8 "
+        }
         gap-4 md:gap-6 justify-baseline lg:gap-0
       `}
     >
       <h1
         className={`
-          ${isWishlistPage
-            ? "text-2xl md:text-3xl leading-[24px] tracking-[-0.6px] lg:leading-[76px] lg:tracking-[-2px]"
-            : "text-[40px] lg:text-[72px]"}
+          ${
+            isWishlistPage
+              ? "text-2xl md:text-3xl leading-[24px] tracking-[-0.6px] lg:leading-[76px] lg:tracking-[-2px]"
+              : "text-[40px] lg:text-[72px]"
+          }
           text-[#141718] font-medium
         `}
       >
@@ -25,7 +27,9 @@ const SubText = ({ isWishlistPage }: SubTextPropsType) => {
 
       <div
         className={`${
-          isWishlistPage ? "flex items-center justify-center" : "flex items-center justify-center"
+          isWishlistPage
+            ? "flex items-center justify-center"
+            : "flex items-center justify-center"
         }`}
       >
         <h2

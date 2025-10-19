@@ -27,12 +27,7 @@ type FormData = z.infer<typeof formSchema>;
 
 const Form = () => {
   const [file, setFile] = useState<File | null>(null);
-  const {
-    register,
-    handleSubmit,
-    reset,
-    // formState: { errors, isSubmitting },
-  } = useForm<FormData>({
+  const { register, handleSubmit, reset } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       imageName: "",
@@ -167,7 +162,6 @@ const Form = () => {
           submit
         </button>
       </form>
-
     </>
   );
 };

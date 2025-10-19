@@ -1,7 +1,4 @@
-export type ChevronRightPropsType = {
-  width?: string;
-  height?: string;
-};
+import { ChevronRightPropsType } from "@/app/interfaces/interface";
 
 const ChevronRight = ({
   width = "12px",

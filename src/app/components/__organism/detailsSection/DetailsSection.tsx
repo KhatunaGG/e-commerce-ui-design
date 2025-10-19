@@ -5,17 +5,13 @@ import StarRating from "../starRating/StarRating";
 import OfferTill from "../offerTill/OfferTill";
 import ColorSection from "../colorSection/ColorSection";
 import { AddToCartButton, WishlistButton } from "../../__molecules";
-import { ProductsDataType, useShopStore } from "@/app/store/shop-page.store";
+import { useShopStore } from "@/app/store/shop-page.store";
 import { useCartStore } from "@/app/store/cart.store";
 import Counter from "../counter/Counter";
 import { useReviewStore } from "@/app/store/review.store";
 import { useEffect, useState } from "react";
 import { useProductStore } from "@/app/store/product.store";
-
-export type DetailsSectionPropsType = {
-  productById: ProductsDataType;
-  params: string;
-};
+import { DetailsSectionPropsType } from "@/app/interfaces/interface";
 
 const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
   const { calculateDiscount } = useShopStore();
@@ -30,9 +26,7 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
     };
     fetchRating();
   }, [params, getAverageRating]);
-
   const averageRating = averageRatings[params];
-
   const {
     setSelectedQty,
     setSelectedColor,
@@ -79,12 +73,6 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
       <div className="w-full lg:flex-1 flex flex-col">
         <div className="w-full flex flex-col gap-4 pb-6">
           <div className="flex items-center justify-start gap-[10px]">
-            {/* <StarRating
-              productId={params}
-              rating={averageRating || 0}
-              totalRating={totalRating}
-              readOnly
-            /> */}
             {isRatingLoaded ? (
               <StarRating
                 productId={params}
@@ -95,7 +83,6 @@ const DetailsSection = ({ productById, params }: DetailsSectionPropsType) => {
             ) : (
               <p>Loading rating...</p>
             )}
-
             <p className="font-xs font-normal leading-[20px] text-[#141718]">
               <span>{reviewLength}</span>Reviews
             </p>

@@ -1,10 +1,4 @@
-export type CloseProps = {
-  isBlogPage?: boolean;
-  setShowOverlay?: (val: boolean) => void;
-  blogId?: string;
-  mobileMenu?: boolean;
-  setMobileMenu?: (val: boolean) => void;
-};
+import { CloseProps } from "@/app/interfaces/interface";
 
 const Close = ({
   isBlogPage,
@@ -15,7 +9,6 @@ const Close = ({
 }: CloseProps) => {
   return (
     <svg
-      // onClick={() => (isBlogPage || blogId) && setShowOverlay?.(false)}
       onClick={() => {
         if (mobileMenu) {
           setMobileMenu?.(false);

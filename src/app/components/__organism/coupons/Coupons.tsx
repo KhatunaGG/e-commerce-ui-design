@@ -1,9 +1,6 @@
 import React from "react";
 import { Coupon } from "../../__atoms";
-
-export type CouponsPropsType = {
-  isCheckoutPage?: boolean;
-};
+import { CouponsPropsType } from "@/app/interfaces/interface";
 
 const Coupons = ({ isCheckoutPage }: CouponsPropsType) => {
   return (

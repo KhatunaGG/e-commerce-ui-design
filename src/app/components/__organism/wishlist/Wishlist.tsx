@@ -15,7 +15,6 @@ const Wishlist = () => {
     () => path?.split("/").filter(Boolean).pop() || "home",
     [path]
   );
-  // console.log(wishlistData, "wishlistData from WISHLIST");
 
   useEffect(() => {
     clearWishlist();
@@ -78,7 +77,6 @@ const Wishlist = () => {
             </Link>
           ))}
       </div>
-
       <div className="w-full p-6 flex items-center justify-center">
         {" "}
         <ShowMoreButton isWishlistPage={isWishlistPage} />

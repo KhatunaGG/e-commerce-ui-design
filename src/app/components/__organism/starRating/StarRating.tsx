@@ -1,22 +1,12 @@
 "use client";
+import { StarRatingPropsType } from "@/app/interfaces/interface";
 import React, { useEffect, useState } from "react";
 import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
-export type StarRatingPropsType = {
-  productId: string;
-  rating: number;
-  onRate?: (score: number) => Promise<boolean>;
-  totalRating?: number;
-  readOnly?: boolean;
-  onReplyRating?: (score: number) => Promise<boolean>;
-};
-
 const StarRating = ({
-  // productId,
   rating,
   onRate,
   readOnly = false,
-  // totalRating = 0,
   onReplyRating,
 }: StarRatingPropsType) => {
   const [hovered, setHovered] = useState<number | null>(null);
@@ -42,7 +32,7 @@ const StarRating = ({
   };
 
   const valueToRender = readOnly
-    ? rating 
+    ? rating
     : hovered !== null
     ? hovered + 1
     : selected;
@@ -74,6 +64,5 @@ const StarRating = ({
     </div>
   );
 };
-
 
 export default StarRating;

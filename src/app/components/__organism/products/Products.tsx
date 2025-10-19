@@ -12,7 +12,6 @@ const Products = () => {
     sortByTwoHorizontally,
     isLoading,
   } = useShopStore();
-
   const { productsData } = useShopStore();
 
   const resortedStyles = sortedByFour
@@ -24,7 +23,6 @@ const Products = () => {
     : "grid-cols-1  lg:grid-cols-3";
 
   if (isLoading) return <AnimateSpin />;
-
 
   return (
     <section className="w-full flex flex-col gap-10 lg:gap-20 ">
@@ -38,11 +36,7 @@ const Products = () => {
           {Array.isArray(productsData) &&
             productsData.length > 0 &&
             productsData.map((product) => (
-              <Link
-                // key={`${product._id}-${product.productName}`}
-                key={product._id}
-                href={`/shop/${product._id}`}
-              >
+              <Link key={product._id} href={`/shop/${product._id}`}>
                 <div
                   className={`${
                     sortByTwoHorizontally ? "flex-row" : "flex-col"

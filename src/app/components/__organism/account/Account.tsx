@@ -1,6 +1,5 @@
 "use client";
 import AccountDetails from "../accountDetails/AccountDetails";
-import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname } from "next/navigation";
@@ -9,39 +8,8 @@ import { useSignInStore } from "@/app/store/sign-in.store";
 import { useEffect } from "react";
 import { useAccountStore } from "@/app/store/account.store";
 import { useShopStore } from "@/app/store/shop-page.store";
-
-export const myAccountSchema = z
-  .object({
-    accountName: z.string().optional(),
-    accountLastName: z.string().optional(),
-    displayName: z.string().optional(),
-    accountEmail: z.string().email().optional(),
-    oldPassword: z.string().optional(),
-    newPassword: z.string().optional(),
-    confirmPassword: z.string(),
-  })
-  .refine(
-    (data) => {
-      const anyPasswordEntered =
-        data.oldPassword || data.newPassword || data.confirmPassword;
-      if (anyPasswordEntered) {
-        return (
-          !!data.oldPassword &&
-          !!data.newPassword &&
-          !!data.confirmPassword &&
-          data.newPassword === data.confirmPassword
-        );
-      }
-      return true;
-    },
-    {
-      message:
-        "If changing password, all password fields are required and new passwords must match.",
-      path: ["confirmPassword"],
-    }
-  );
-
-export type MyAccountType = z.infer<typeof myAccountSchema>;
+import { myAccountSchema } from "@/app/schema/shema";
+import { MyAccountType } from "@/app/interfaces/interface";
 
 const Account = () => {
   const path = usePathname();
@@ -57,7 +25,6 @@ const Account = () => {
   const {
     handleSubmit,
     formState: { errors },
-    // reset,
     register,
     setValue,
   } = useForm<MyAccountType>({
@@ -102,7 +69,6 @@ const Account = () => {
 
   const onsubmit = async (formState: MyAccountType) => {
     if (!accessToken) return;
-    // await submitAccountSettings(formState, accessToken);
     const success = await submitAccountSettings(formState, accessToken);
     if (success) {
       setValue("oldPassword", "");
@@ -129,7 +95,7 @@ const Account = () => {
         isMyAccountPage={isMyAccountPage}
       />
 
-      <div  className="w-full flex items-start">
+      <div className="w-full flex items-start">
         <button
           type="submit"
           className="text-base py-3 px-10 font-medium leading-[28px] tracking-[-0.4px] text-white bg-[#141718] rounded-lg hover:bg-gray-800 transition-colors duration-300 ease-in-out"

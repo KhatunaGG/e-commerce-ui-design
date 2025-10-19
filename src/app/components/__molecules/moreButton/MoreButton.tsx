@@ -1,14 +1,11 @@
+import { MoreButtonPropsType } from "@/app/interfaces/interface";
 import { ArrowRight } from "../../__atoms";
 
-export type MoreButtonPropsType = {
-  handleMoreProducts?: () => void;
-  styleClass: string;
-   label?: string;
-};
-
-
-const MoreButton = ({ handleMoreProducts, styleClass, label = "More Products"  }: MoreButtonPropsType) => {
-
+const MoreButton = ({
+  handleMoreProducts,
+  styleClass,
+  label = "More Products",
+}: MoreButtonPropsType) => {
   return (
     <button
       onClick={handleMoreProducts}
@@ -16,11 +13,9 @@ const MoreButton = ({ handleMoreProducts, styleClass, label = "More Products"  }
     >
       <p className="text-[#141718] text-base font-medium leading-[28px] tracking-[-0.4px] whitespace-nowrap">
         {label}
-       
-        {/* {articleTitle ? "Reade more" : " More Products"} */}
       </p>
       <span className="w-[20px] h-[20px] mt-[2px]">
-        <ArrowRight   />
+        <ArrowRight />
       </span>
     </button>
   );

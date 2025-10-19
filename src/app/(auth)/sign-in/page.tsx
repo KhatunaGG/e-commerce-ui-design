@@ -1,5 +1,4 @@
-import { MainImage, SignIn  } from "@/app/components/__organism";
-import React from "react";
+import { MainImage, SignIn } from "@/app/components/__organism";
 
 export default function page() {
   return (

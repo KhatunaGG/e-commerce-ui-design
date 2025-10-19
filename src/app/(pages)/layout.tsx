@@ -12,7 +12,6 @@ export default function MainLayout({
         <Nav />
         {children}
       </div>
-      {/* <Join /> */}
       <Footer />
     </section>
   );

@@ -2,13 +2,7 @@
 import { useCartStore } from "@/app/store/cart.store";
 import { ChevronRight } from "../../__atoms";
 import { useShopStore } from "@/app/store/shop-page.store";
-
-
-export type ColorSectionPropsType = {
-  colors: string[];
-  setSelectedColor: (color: string | null) => void;
-  selectedColor: string | null;
-};
+import { ColorSectionPropsType } from "@/app/interfaces/interface";
 
 const ColorSection = ({
   colors,
@@ -18,8 +12,6 @@ const ColorSection = ({
   const { normalizeFirstChar } = useShopStore();
   const { show, setShow } = useCartStore();
 
-
-  
   return (
     <div className="flex flex-col gap-4 items-start">
       <div className="w-full flex flex-col items-start justify-start gap-2">

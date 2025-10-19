@@ -7,8 +7,14 @@ import { useCheckoutStore } from "@/app/store/checkout.store";
 
 const OrderSection = () => {
   const { initialize, accessToken } = useSignInStore();
-  const { getAllOrders, isLoading, getOrderStatus, purchasesDataByPage, page, ordersTotalCount } =
-    useAddressStore();
+  const {
+    getAllOrders,
+    isLoading,
+    getOrderStatus,
+    purchasesDataByPage,
+    page,
+    ordersTotalCount,
+  } = useAddressStore();
   const { formatDate } = useCheckoutStore();
   const dataForCurrentPage = purchasesDataByPage[page];
 
@@ -33,7 +39,6 @@ const OrderSection = () => {
       <h2 className="font-semibold text-[20px] leading-[32px] text-black">
         Orders History
       </h2>
-
       <div className="ORDERS ">
         <div className="w-full flex md:flex-col">
           <div className="TITLES hidden w-1/2 md:w-full md:pb-2 md:flex flex-col gap-4 md:items-center md:flex-row md:justify-between md:gap-0">
@@ -46,10 +51,9 @@ const OrderSection = () => {
               </p>
             ))}
           </div>
-
           <div className="w-full flex-col ">
-            {dataForCurrentPage  &&
-            Array.isArray(dataForCurrentPage ) &&
+            {dataForCurrentPage &&
+            Array.isArray(dataForCurrentPage) &&
             ordersTotalCount > 0 ? (
               dataForCurrentPage.map((item, i) => {
                 return (
@@ -69,7 +73,6 @@ const OrderSection = () => {
                         )
                       )}
                     </div>
-
                     <div className="w-1/2 md:w-full md:py-6 flex flex-col gap-4 md:items-center md:flex-row md:justify-between md:gap-0">
                       <p className=" md:flex-1 font-normal text-sm leading-[22px] text-[#141718]">
                         {item.orderCode}
@@ -95,7 +98,6 @@ const OrderSection = () => {
           </div>
         </div>
       </div>
-
       <Pagination />
     </section>
   );

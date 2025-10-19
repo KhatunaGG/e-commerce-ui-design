@@ -1,11 +1,11 @@
 import axios, { AxiosError } from "axios";
 import { create } from "zustand";
-import { MailType } from "../components/__organism/emailForm/EmailForm";
 import { axiosInstance } from "../libs/axiosInstance";
-
-export interface ErrorResponse {
-  message: string;
-}
+import {
+  ErrorResponse,
+  IUseMenuStore,
+  MailType,
+} from "../interfaces/interface";
 
 const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   if (axios.isAxiosError(error)) {
@@ -13,15 +13,6 @@ const handleApiError = (error: AxiosError<ErrorResponse>): string => {
   }
   return "An unexpected error occurred";
 };
-
-export interface IUseMenuStore {
-  isLoading: boolean;
-  axiosError: string | null;
-  mobileMenu: boolean;
-  setMobileMenu: (val: boolean) => void;
-  toggleMenu: () => void;
-  sendEmail: (FormData: MailType, accessToken: string) => Promise<boolean>;
-}
 
 export const useMenuStore = create<IUseMenuStore>((set, get) => ({
   isLoading: false,

@@ -5,13 +5,9 @@ import { ChevronLeft, ChevronRight } from "../../__atoms";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useShopStore } from "@/app/store/shop-page.store";
-
 import Article from "../article/Article";
 import Articles from "../articles/Articles";
-
-export type UserBlogItemsProps = {
-  params: string;
-};
+import { UserBlogItemsProps } from "@/app/interfaces/interface";
 
 const UserBlogItems = ({ params }: UserBlogItemsProps) => {
   const pathName = usePathname();
@@ -37,22 +33,6 @@ const UserBlogItems = ({ params }: UserBlogItemsProps) => {
     fetchBlogById();
   }, [getBlogById, params]);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
   const articleArray = Array.isArray(blogByParams?.articles)
     ? blogByParams!.articles
     : [];
@@ -73,7 +53,12 @@ const UserBlogItems = ({ params }: UserBlogItemsProps) => {
                 <ChevronRight />
                 <span>{blogByParams?.title}</span>
               </div>
-              <button onClick={toggleOverlay} className="text-sm font-bold leading-[22px] text-[#121212] px-2 underline">Create your Article</button>
+              <button
+                onClick={toggleOverlay}
+                className="text-sm font-bold leading-[22px] text-[#121212] px-2 underline"
+              >
+                Create your Article
+              </button>
             </div>
             <div className="w-full flex items-start">
               <button
@@ -83,24 +68,11 @@ const UserBlogItems = ({ params }: UserBlogItemsProps) => {
                 <div className="mt-[3px]">
                   <ChevronLeft dark={true} />
                 </div>
-                <span className="text-sm md:text-base font-bold text-[#121212]">Back</span>
+                <span className="text-sm md:text-base font-bold text-[#121212]">
+                  Back
+                </span>
               </button>
             </div>
-
-            {/* <div className="w-full ">
-              {articleArray.map((article) => {
-                return (
-                  <Article
-                    key={`${article._id}-${article?.articleTitle}`}
-                    {...article}
-                    blogOwenName={blogByParams?.authorFName ?? ""}
-                    blogOwnerLastName={blogByParams?.authorLName ?? ""}
-                    blogId={params}
-                  />
-                );
-              })}
-            </div> */}
-
             <div className="w-full">
               {articleArray.length > 0 ? (
                 articleArray.map((article) => (
@@ -109,7 +81,7 @@ const UserBlogItems = ({ params }: UserBlogItemsProps) => {
                     {...article}
                     blogOwenName={blogByParams?.authorFName ?? ""}
                     blogOwnerLastName={blogByParams?.authorLName ?? ""}
-                    blogId={params} 
+                    blogId={params}
                   />
                 ))
               ) : (

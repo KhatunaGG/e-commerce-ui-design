@@ -1,33 +1,19 @@
 "use client";
 import { ArrowRight } from "../../__atoms";
 import EmojiSection from "../emojiSection/EmojiSection";
-import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ReplyType, useReviewStore } from "@/app/store/review.store";
+import { useReviewStore } from "@/app/store/review.store";
 import { useEffect, useRef } from "react";
 import { useEmojiInsert } from "@/app/commons/useEmoji";
 import { useSignInStore } from "@/app/store/sign-in.store";
 import { toast } from "react-toastify";
-
-export const reviewSchema = z.object({
-  text: z.string().min(1, "Please write a review"),
-  productId: z.string().min(1, "Product ID is required"),
-  status: z.enum(["review", "reply"]),
-  reviewOwnerId: z.string().nullable().optional(),
-  replyToId: z.string().optional(),
-  replyOwnerId: z.string().optional(),
-});
-
-export type ReviewType = z.infer<typeof reviewSchema>;
-
-export interface ReviewsFormProps {
-  productId: string;
-  status: "review" | "reply";
-  reviewOwnerId?: string;
-  replyToId?: string;
-  setActiveReviewId?: (id: string | null) => void;
-}
+import { reviewSchema } from "@/app/schema/shema";
+import {
+  ReplyType,
+  ReviewsFormProps,
+  ReviewType,
+} from "@/app/interfaces/interface";
 
 const ReviewsForm = ({
   productId,
@@ -39,11 +25,6 @@ const ReviewsForm = ({
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const { submitReview, isLoading, addReplayToReview } = useReviewStore();
   const { accessToken, initialize } = useSignInStore();
-
-  // useEffect(() => {
-  //   initialize();
-  // }, [initialize]);
-
   const {
     register,
     handleSubmit,
@@ -133,7 +114,6 @@ const ReviewsForm = ({
         {...register("reviewOwnerId")}
         value={reviewOwnerId ?? ""}
       />
-
       <button
         type="submit"
         disabled={isLoading}

@@ -1,23 +1,17 @@
 "use client";
 import StarRating from "../starRating/StarRating";
-import {
-  DbReplyType,
-  DbReviewType,
-  useReviewStore,
-} from "@/app/store/review.store";
+import { useReviewStore } from "@/app/store/review.store";
 import { useAccountStore } from "@/app/store/account.store";
 import { useSignInStore } from "@/app/store/sign-in.store";
 import { useShopStore } from "@/app/store/shop-page.store";
 import ReviewsForm from "../reviewsForm/ReviewsForm";
 import ReviewAvatar from "../reviewAvatar/ReviewAvatar";
 import ReplyItem from "../replyItem/ReplyItem";
-
-export type ClientReviewsItemPropsType = {
-  activeReviewId: string | null;
-  setActiveReviewId: React.Dispatch<React.SetStateAction<string | null>>;
-  rating: number;
-  onRate: (score: number) => Promise<boolean>;
-};
+import {
+  ClientReviewsItemPropsType,
+  DbReplyType,
+  DbReviewType,
+} from "@/app/interfaces/interface";
 
 const ClientReviewsItem = ({
   reviewText,

@@ -1,8 +1,9 @@
-import { AccountWishlist } from '@/app/components/__organism'
-import React from 'react'
+import { AccountWishlist } from "@/app/components/__organism";
 
 export default function page() {
   return (
-    <div><AccountWishlist /></div>
-  )
+    <div>
+      <AccountWishlist />
+    </div>
+  );
 }
